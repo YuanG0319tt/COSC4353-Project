@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Profile Management - Volunteer Registration System</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .form-container { max-width: 600px; margin: 50px auto; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <!-- Profile Management Form -->
+  <div id="profileForm" class="form-container">
+    <h2>User Profile Management</h2>
+    <form id="profile">
+      <!-- Full Name -->
+      <div class="form-group">
+        <label for="fullName">Full Name</label>
+        <input type="text" maxlength="50" class="form-control" id="fullName" placeholder="Enter your full name" required>
+      </div>
+      <!-- Address 1 -->
+      <div class="form-group">
+        <label for="address1">Address 1</label>
+        <input type="text" maxlength="100" class="form-control" id="address1" placeholder="Enter address line 1" required>
+      </div>
+      <!-- Address 2 (Optional) -->
+      <div class="form-group">
+        <label for="address2">Address 2</label>
+        <input type="text" maxlength="100" class="form-control" id="address2" placeholder="Enter address line 2 (optional)">
+      </div>
+      <!-- City -->
+      <div class="form-group">
+        <label for="city">City</label>
+        <input type="text" maxlength="100" class="form-control" id="city" placeholder="Enter city" required>
+      </div>
+      <!-- State -->
+      <div class="form-group">
+        <label for="state">State</label>
+        <select class="form-control" id="state" required>
+          <option value="">Select State</option>
+          <option value="AL">AL</option>
+          <option value="AK">AK</option>
+          <!-- ... include all other states as needed ... -->
+          <option value="WY">WY</option>
+        </select>
+      </div>
+      <!-- Zip Code -->
+      <div class="form-group">
+        <label for="zip">Zip Code</label>
+        <input type="text" maxlength="9" minlength="5" class="form-control" id="zip" placeholder="Enter zip code" required>
+      </div>
+      <!-- Skills (Multi-select) -->
+      <div class="form-group">
+        <label for="skills">Skills</label>
+        <select multiple class="form-control" id="skills" required>
+          <option value="cooking">Cooking</option>
+          <option value="driving">Driving</option>
+          <option value="firstAid">First Aid</option>
+          <option value="teaching">Teaching</option>
+          <!-- Add additional skills as needed -->
+        </select>
+        <small class="form-text text-muted">Hold down Ctrl (Windows) or Command (Mac) to select multiple options.</small>
+      </div>
+      <!-- Preferences (Optional) -->
+      <div class="form-group">
+        <label for="preferences">Preferences</label>
+        <textarea class="form-control" id="preferences" rows="3" placeholder="Enter any preferences (optional)"></textarea>
+      </div>
+      <!-- Availability (Multiple Date Picker) -->
+      <div class="form-group">
+        <label>Availability</label>
+        <div id="availabilityContainer">
+          <div class="input-group mb-2 availability-date">
+            <input type="date" class="form-control availability-input" required>
+            <div class="input-group-append">
+              <button class="btn btn-danger remove-date" type="button">Remove</button>
+            </div>
+          </div>
+        </div>
+        <button type="button" id="addDate" class="btn btn-secondary">Add Another Date</button>
+      </div>
+      <button type="submit" class="btn btn-primary">Save Profile</button>
+    </form>
+  </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+  // Add new availability date input when "Add Another Date" is clicked
+  $('#addDate').click(function() {
+    var dateInputHtml = '<div class="input-group mb-2 availability-date">' +
+      '<input type="date" class="form-control availability-input" required>' +
+      '<div class="input-group-append">' +
+      '<button class="btn btn-danger remove-date" type="button">Remove</button>' +
+      '</div>' +
+      '</div>';
+    $('#availabilityContainer').append(dateInputHtml);
+  });
+
+  // Remove an availability date input field (ensuring at least one remains)
+  $('#availabilityContainer').on('click', '.remove-date', function() {
+    if ($('#availabilityContainer .availability-date').length > 1) {
+      $(this).closest('.availability-date').remove();
+    } else {
+      alert('At least one availability date is required.');
+    }
+  });
+
+  // Handle Profile Form Submission
+  $('#profile').submit(function(e) {
+    e.preventDefault();
+    var profileData = {
+      fullName: $('#fullName').val(),
+      address1: $('#address1').val(),
+      address2: $('#address2').val(),
+      city: $('#city').val(),
+      state: $('#state').val(),
+      zip: $('#zip').val(),
+      skills: $('#skills').val(), // returns an array of selected skills
+      preferences: $('#preferences').val(),
+      availability: []
+    };
+
+    $('.availability-input').each(function() {
+      profileData.availability.push($(this).val());
+    });
+
+    console.log('Profile Data:', profileData);
+    alert('Profile saved successfully!');
+    // You can send profileData to your server here using AJAX.
+  });
+</script>
+</body>
+</html>
