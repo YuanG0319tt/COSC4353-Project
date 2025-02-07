@@ -86,49 +86,7 @@
 </div>
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script>
-  // Add new availability date input when "Add Another Date" is clicked
-  $('#addDate').click(function() {
-    var dateInputHtml = '<div class="input-group mb-2 availability-date">' +
-      '<input type="date" class="form-control availability-input" required>' +
-      '<div class="input-group-append">' +
-      '<button class="btn btn-danger remove-date" type="button">Remove</button>' +
-      '</div>' +
-      '</div>';
-    $('#availabilityContainer').append(dateInputHtml);
-  });
-
-  // Remove an availability date input field (ensuring at least one remains)
-  $('#availabilityContainer').on('click', '.remove-date', function() {
-    if ($('#availabilityContainer .availability-date').length > 1) {
-      $(this).closest('.availability-date').remove();
-    } else {
-      alert('At least one availability date is required.');
-    }
-  });
-
-  // Handle Profile Form Submission
-  $('#profile').submit(function(e) {
-    e.preventDefault();
-    var profileData = {
-      fullName: $('#fullName').val(),
-      address1: $('#address1').val(),
-      address2: $('#address2').val(),
-      city: $('#city').val(),
-      state: $('#state').val(),
-      zip: $('#zip').val(),
-      skills: $('#skills').val(), // returns an array of selected skills
-      preferences: $('#preferences').val(),
-      availability: []
-    };
-
-    $('.availability-input').each(function() {
-      profileData.availability.push($(this).val());
-    });
-
-    console.log('Profile Data:', profileData);
-    alert('Profile saved successfully!');
-    // You can send profileData to your server here using AJAX.
-  });
+  
 </script>
 </body>
 </html>
