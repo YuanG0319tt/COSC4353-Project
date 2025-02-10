@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Volunteer Matching System</title>
+  <!-- Include Bootstrap CSS from CDN -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .form-container {
+      max-width: 600px;
+      margin: 50px auto;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <!-- Volunteer Matching Form -->
+  <div id="volunteerMatchingForm" class="form-container">
+    <h2>Volunteer Matching</h2>
+    <form id="volunteer-matching-form">
+      <div class="form-group">
+        <label for="matchingName">Volunteer Name</label>
+        <input list="matchingName" class="form-control" placeholder="Enter volunteer name" required>
+        <datalist id="matchingName">
+          <!-- Options will be names autofilled from volunteer database once it has been implemented. Currently just has default options -->>
+          <option value="John Doe">
+          <option value="Jane Doe">
+        </datalist>
+      </div>
+      <div class="form-group">
+        <label for="matchingEvent">Matched Event</label>
+        <!-- Will autofill with the matched event from database based on volunteer's profile. Currently defaults to Food Pantry -->
+        <input type="text" class="form-control" id="matchingEvent" placeholder="Event" value="Food Pantry" required readonly>
+      </div>
+      <button type="submit">Assign to Event</button>
+    </form>
+  </div>
+</div>
+
+<!-- Include jQuery and Bootstrap JS from CDN -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  // Here you can add JavaScript to handle form submission, validations, or dynamically populate fields based on the backend data
+  document.getElementById('volunteer-matching-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+      
+      // Normally, you would send the form data to your backend to save it
+      alert('Volunteer assigned to event!');
+  });
+</script>
+</body>
+</html>
