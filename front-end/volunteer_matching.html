@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Volunteer Matching System</title>
+  <title>Volunteer Matching Form</title>
   <!-- Include Bootstrap CSS from CDN -->
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
   <style>
@@ -16,21 +16,24 @@
 <div class="container">
   <!-- Volunteer Matching Form -->
   <div id="volunteerMatchingForm" class="form-container">
-    <h2>Volunteer Matching</h2>
+    <h2>Volunteer Matching Form</h2>
     <form id="volunteer-matching-form">
       <div class="form-group">
         <label for="matchingName">Volunteer Name</label>
-        <input list="matchingName" class="form-control" placeholder="Enter volunteer name" required>
+        <input list="matchingName" class="form-control" placeholder="Select a Volunteer" required>
         <datalist id="matchingName">
-          <!-- Options will be names autofilled from volunteer database once it has been implemented. Currently just has default options -->>
+          <!-- Options will be names autofilled from volunteer database once it has been implemented. Currently just has default options -->
           <option value="John Doe">
           <option value="Jane Doe">
         </datalist>
       </div>
       <div class="form-group">
-        <label for="matchingEvent">Matched Event</label>
-        <!-- Will autofill with the matched event from database based on volunteer's profile. Currently defaults to Food Pantry -->
-        <input type="text" class="form-control" id="matchingEvent" placeholder="Event" value="Food Pantry" required readonly>
+        <select name="matchingEvent" id="matchingEvent" required>
+        <!-- Will autofill with the matched event from database based on volunteer's profile. -->
+          <option value="">Select an Event</option>
+          <option value="foodPantry">Food Pantry</option>
+          <option value="bloodDrive">Blood Drive</option>
+        </select>
       </div>
       <button type="submit">Assign to Event</button>
     </form>
@@ -42,11 +45,9 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
 <script>
-  // Here you can add JavaScript to handle form submission, validations, or dynamically populate fields based on the backend data
-  document.getElementById('volunteer-matching-form').addEventListener('submit', function(event) {
+  document.getElementById('volunteerMatchingForm').addEventListener('submit', function(event) {
       event.preventDefault();
-      
-      // Normally, you would send the form data to your backend to save it
+      // Normally send the form data to backend to save it
       alert('Volunteer assigned to event!');
   });
 </script>
