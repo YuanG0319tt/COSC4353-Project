@@ -1,21 +1,24 @@
 function loadContent(_tabId, htmlFile, jsFile, containerId) {
+    console.log(`Loading HTML: ${htmlFile} and JS: ${jsFile} for container: ${containerId}`);
     fetch(htmlFile)
         .then(response => response.text())
         .then(html => {
             document.getElementById(containerId).innerHTML = html;
 
-            // Remove any previously loaded script to prevent duplicates
             let oldScript = document.getElementById("dynamic-script");
             if (oldScript) {
                 oldScript.remove();
             }
 
-            // Dynamically load the corresponding JavaScript file
-            if (jsFile) {
+            // Avoid re-declaring by checking if script already exists
+            if (jsFile && !document.getElementById("dynamic-script")) {
                 const script = document.createElement('script');
-                script.src = jsFile;
+                script.src = jsFile + '?v=' + new Date().getTime(); // Adding timestamp to avoid caching
                 script.id = "dynamic-script";
                 script.defer = true;
+                script.onload = function () {
+                    console.log(`${jsFile} loaded successfully`);
+                };
                 document.body.appendChild(script);
             }
         })
