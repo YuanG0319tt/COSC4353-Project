@@ -146,13 +146,14 @@
                     cell.className = "date-picker";
                     cell.innerHTML = `<span>${date}</span>`;
 
-                    if (date === today.getDate() && year === today.getFullYear() && month === today.getMonth()) {
-                        cell.classList.add("selected");
-                    }
-
-                    if (hasEventOnDate(date, month, year)) {
-                        cell.classList.add("event-marker");
-                        cell.appendChild(createEventTooltip(date, month, year));
+                    // Add event banner if there's an event on this date
+                    let eventsOnDate = getEventsOnDate(date, month, year);
+                    if (eventsOnDate.length > 0) {
+                        let eventBanner = document.createElement("div");
+                        eventBanner.className = "event-banner";
+                        eventBanner.title = eventsOnDate.map(event => event.title).join(", "); // Tooltip with all event titles
+                        eventBanner.textContent = eventsOnDate.map(event => event.title).join(", ");
+                        cell.appendChild(eventBanner);
                     }
 
                     row.appendChild(cell);
@@ -165,31 +166,12 @@
         displayReminders();
     }
 
-    // Function to create an event tooltip
-    function createEventTooltip(date, month, year) {
-        let tooltip = document.createElement("div");
-        tooltip.className = "event-tooltip";
-        let eventsOnDate = getEventsOnDate(date, month, year);
-        eventsOnDate.forEach(event => {
-            let eventDate = new Date(event.date + "T00:00:00");
-            let eventElement = document.createElement("p");
-            eventElement.innerHTML = `<strong>${event.title}</strong> - ${event.description} on ${eventDate.toLocaleDateString()}`;
-            tooltip.appendChild(eventElement);
-        });
-        return tooltip;
-    }
-
     // Function to get events on a specific date
     function getEventsOnDate(date, month, year) {
         return events.filter(event => {
             let eventDate = new Date(event.date + "T00:00:00");
             return eventDate.getDate() === date && eventDate.getMonth() === month && eventDate.getFullYear() === year;
         });
-    }
-
-    // Function to check if there are events on a specific date
-    function hasEventOnDate(date, month, year) {
-        return getEventsOnDate(date, month, year).length > 0;
     }
 
     // Function to get the number of days in a month
