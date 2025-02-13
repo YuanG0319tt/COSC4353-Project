@@ -1,4 +1,4 @@
-function loadContent(tabId, htmlFile, jsFile, containerId) {
+function loadContent(_tabId, htmlFile, jsFile, containerId) {
     fetch(htmlFile)
         .then(response => response.text())
         .then(html => {
@@ -22,6 +22,23 @@ function loadContent(tabId, htmlFile, jsFile, containerId) {
         .catch(error => console.error(`Error loading ${htmlFile}:`, error));
 }
 
+function showTab(tabId) {
+    switch (tabId) {
+        case 'event':
+            loadContent('event', 'events.html', 'events.js', 'event-management-container');
+            break;
+        case 'profile':
+            loadContent('profile', 'profile.html', 'profile.js', 'profile');
+            break;
+        case 'matching':
+            loadContent('matching', 'matching.html', 'matching.js', 'matching-form');
+            break;
+    }
+
+    // Show the tab
+    $('.nav-tabs a[href="#' + tabId + '"]').tab('show');
+}
+
 $(document).ready(function () {
     // When a tab is clicked, update the URL
     $('.nav-link').on('click', function (e) {
@@ -30,26 +47,29 @@ $(document).ready(function () {
         let tabId = $(this).attr('href').substring(1); // Get the tab ID (without #)
         history.pushState(null, null, `#${tabId}`); // Update the URL
 
-        // Load dynamic content for the tab if needed
-        switch (tabId) {
-            case 'event':
-                loadContent('event', 'events.html', 'events.js', 'event-management-container');
-                break;
-            case 'profile':
-                loadContent('profile', 'profile.html', 'profile.js', 'profile');
-                break;
-            case 'matching':
-                loadContent('matching', 'matching.html', 'matching.js', 'matching-form');
-                break;
-        }
-
-        // Show the tab
-        $('.nav-tabs a[href="#' + tabId + '"]').tab('show');
+        // Load dynamic content for the tab
+        showTab(tabId);
     });
 
     // On page load, check the URL for a specific tab and open it
     let hash = window.location.hash;
     if (hash) {
-        $('.nav-tabs a[href="' + hash + '"]').tab('show');
+        showTab(hash.substring(1)); // Remove the # from the hash
+    } else {
+        // Load default tab if no hash is present
+        let defaultTabId = 'profile'; // Set your default tab ID here
+        showTab(defaultTabId);
     }
+
+    // Handle back/forward buttons
+    window.addEventListener('popstate', function () {
+        let hash = window.location.hash;
+        if (hash) {
+            showTab(hash.substring(1)); // Remove the # from the hash
+        } else {
+            // Load default tab if no hash is present
+            let defaultTabId = 'profile'; // Set your default tab ID here
+            showTab(defaultTabId);
+        }
+    });
 });
