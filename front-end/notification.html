@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notification History</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .form-container { max-width: 600px; margin: 50px auto; }
+        .notification { border: 1px solid #dee2e6; border-radius: 0.25rem; padding: 1rem; margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+    <header class="bg-primary text-white text-center py-3">
+        <h1>Notification History</h1>
+    </header>
+    <div class="container mt-4" id="notificationContainer">
+        <!-- Notifications will be appended here -->
+    </div>
+    <script>
+        const notifications = [
+            { id: 1, message: 'Notification 1', timestamp: '2023-10-01 10:00:00' },
+            { id: 2, message: 'Notification 2', timestamp: '2023-10-02 11:00:00' },
+            { id: 3, message: 'Notification 3', timestamp: '2023-10-03 12:00:00' }
+        ];
+
+        const notificationContainer = document.getElementById('notificationContainer');
+
+        notifications.forEach(notification => {
+            const notificationElement = document.createElement('div');
+            notificationElement.classList.add('notification', 'bg-light');
+            notificationElement.innerHTML = `
+                <p class="font-weight-bold">${notification.message}</p>
+                <p class="text-muted">${notification.timestamp}</p>
+            `;
+            notificationContainer.appendChild(notificationElement);
+        });
+    </script>
+</body>
+</html>
