@@ -28,7 +28,7 @@ function loadContent(_tabId, htmlFile, jsFile, containerId) {
 function showTab(tabId) {
     switch (tabId) {
         case 'event':
-            loadContent('event', 'eventTest.html', 'eventTest.js', 'event-management-container');
+            loadContent('event', 'event.html', 'event.js', 'event-management-container');
             break;
         case 'profile':
             loadContent('profile', 'profile.html', 'profile.js', 'profile');

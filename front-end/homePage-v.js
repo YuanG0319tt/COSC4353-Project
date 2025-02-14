@@ -34,7 +34,7 @@ function showTab(tabId) {
             loadContent('notifications', 'notifications.html', 'notifications.js', 'notification-container');
             break;
         case 'event':
-            loadContent('event', 'eventTest.html', 'eventTest.js', 'event-management-container');
+            loadContent('event', 'event.html', 'event.js', 'event-management-container');
             break;
         case 'history':
             loadContent('history', 'volHistory.html', 'volHistory.js', 'history');
