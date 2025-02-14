@@ -39,6 +39,9 @@ function showTab(tabId) {
         case 'history':
             loadContent('history', 'volHistory.html', 'volHistory.js', 'history');
             break;
+        case 'notification':
+            loadContent('notification', 'notifications.html', 'notifications.js', 'notification');
+            break;
         default:
             console.error(`Invalid tab ID: ${tabId}`);
     }
