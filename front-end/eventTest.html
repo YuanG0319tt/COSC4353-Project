@@ -23,10 +23,9 @@
             justify-content: space-between;
             margin-bottom: 10px;
         }
-        
-        .calendar-subheader h4 {
-            flex-grow: 1;
-            text-align: center;
+
+        #add-event-button {
+            margin-left: auto; /* Pushes the button to the right */
         }
         
         .calendar-grid {
@@ -126,11 +125,10 @@
 <div class="calendar-container">
     <div class="calendar-header">
         <button id="prev-month">❮</button>
-        <h3>Event Calendar</h3>
+        <h3 id="current-month-year"></h3>
         <button id="next-month">❯</button>
     </div>
     <div class="calendar-subheader">
-        <h4 id="current-month-year"></h4>
         <button id="add-event-button" class="btn btn-primary">Add Event</button>
     </div>
     <div class="calendar-grid">
