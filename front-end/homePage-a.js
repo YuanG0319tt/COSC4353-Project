@@ -36,6 +36,11 @@ function showTab(tabId) {
         case 'matching':
             loadContent('matching', 'matching.html', 'matching.js', 'matching-form');
             break;
+        case 'history':
+            loadContent('history', 'volHistory.html', 'volHistory.js', 'history');
+            break;
+        default:
+            console.error(`Invalid tab ID: ${tabId}`);
     }
 
     // Show the tab
