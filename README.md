@@ -13,6 +13,8 @@ Welcome to the Volunteer Management System! This system is designed to help orga
 - **Event Creation**: Create and manage events with details like event name, description, location, required skills, urgency, event date, and participation status.
 - **Volunteer Matching**: Match volunteers to events based on filters like location and availability.
 - **Volunteer History**: Track volunteer participation and completion status.
+- **Display Notifications**: Provides updates log of all events on users account and upcoming events. Admin can also make their own "announcement" notifications.
+- **User Profiles**: Enables users to control, view, and edit their personal details, availability, and skill sets.
 
 ## Getting Started
 To get a local copy up and running, follow these simple steps.
@@ -24,4 +26,4 @@ To get a local copy up and running, follow these simple steps.
 ### Installation
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/volunteer-management-system.git
+   git clone https://github.com/YuanG0319tt/COSC4353-Project.git
