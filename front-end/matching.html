@@ -1,298 +1,65 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Volunteer Matching with Filter Panel</title>
-    <!-- Bootstrap 5 CSS -->
-    <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-            rel="stylesheet"
-    >
-    <style>
-        /* Optional: Offcanvas width override for a narrower panel */
-        .offcanvas-end {
-          width: 300px !important;
-        }
-        /* Style for applied filter “chips” */
-        .filter-chip {
-          display: inline-block;
-          background-color: #f1f1f1;
-          border-radius: 15px;
-          padding: 0.25rem 0.75rem;
-          margin: 0.25rem;
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Volunteer Matching Form</title>
+  <!-- Include Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .form-container {
+      max-width: 600px;
+      margin: 50px auto;
+    }
+  </style>
 </head>
 <body>
 
-<div class="container my-4">
-    <h1>Volunteer Matching</h1>
-    <button
-            class="btn btn-primary"
-            type="button"
-            data-bs-toggle="offcanvas"
-            data-bs-target="#filterOffcanvas"
-            aria-controls="filterOffcanvas"
-    >
-        Open Filters
-    </button>
+<div class="container">
+  <!-- Volunteer Matching Form -->
+  <div class="form-container">
+    <div class="card shadow-sm">
+      <div class="card-header bg-primary text-white">
+        <h4 class="mb-0">Volunteer Matching Form</h4>
+      </div>
+      <div class="card-body">
+        <form id="volunteer-matching-form">
+          <div class="form-group">
+            <label for="matchingName">Select a Volunteer</label>
+            <select class="form-control" name="matchingName" id="matchingName" onchange="showVolunteerInfo()" required>
+              <option value="">Select a Volunteer</option>
+              <option value="johnDoe">John Doe</option>
+              <option value="janeDoe">Jane Doe</option>
+            </select>
+          </div>
 
-    <!-- Example area to display matched volunteers -->
-    <div class="mt-4" id="resultsSection">
-        <!-- Your volunteer matching results or table would go here -->
-        <p>Matched Volunteers Will Appear Here</p>
+          <div class="mb-3">
+            <p id="volunteerSkills" class="font-weight-bold text-muted"></p>
+            <p id="volunteerPreferences" class="font-weight-bold text-muted"></p>
+          </div>
+
+          <div class="form-group">
+            <label for="matchingEvent">Select an Event</label>
+            <select class="form-control" name="matchingEvent" id="matchingEvent" required>
+              <option value="">Select an Event</option>
+              <optgroup label="Events">
+                <option value="donation">General Donation (Skills: Packing, Assisting)</option>
+                <option value="bloodDrive">Blood Drive (Skills: Packing, Assisting)</option>
+              </optgroup>
+            </select>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block">Assign to Event</button>
+        </form>
+      </div>
     </div>
+  </div>
 </div>
 
-<!-- Offcanvas Filter Panel -->
-<div
-        class="offcanvas offcanvas-end"
-        tabindex="-1"
-        id="filterOffcanvas"
-        aria-labelledby="filterOffcanvasLabel"
->
-    <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="filterOffcanvasLabel">Filters</h5>
-        <button
-                type="button"
-                class="btn-close text-reset"
-                data-bs-dismiss="offcanvas"
-                aria-label="Close"
-        ></button>
-    </div>
-
-    <div class="offcanvas-body">
-        <!-- Applied Filters Section -->
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <h6 class="m-0">Applied Filters</h6>
-            <a href="#" id="resetFilters" class="small text-decoration-none">Reset Filters</a>
-        </div>
-
-        <div id="appliedFiltersContainer" class="mb-3">
-            <!-- Dynamically populated filter chips -->
-            <!-- Example:
-            <span class="filter-chip">Location: New York <button class="btn-close btn-close-white"></button></span>
-            -->
-        </div>
-
-        <hr>
-
-        <!-- Filter Category Example 1 -->
-        <h6 class="mb-2">Location</h6>
-        <div class="form-check">
-            <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value="New York"
-                    id="locationNewYork"
-            >
-            <label class="form-check-label" for="locationNewYork">
-                New York
-            </label>
-        </div>
-        <div class="form-check">
-            <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value="San Francisco"
-                    id="locationSanFrancisco"
-            >
-            <label class="form-check-label" for="locationSanFrancisco">
-                San Francisco
-            </label>
-        </div>
-        <div class="form-check">
-            <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value="Chicago"
-                    id="locationChicago"
-            >
-            <label class="form-check-label" for="locationChicago">
-                Chicago
-            </label>
-        </div>
-
-        <hr>
-
-        <!-- Filter Category Example 2 -->
-        <h6 class="mb-2">Availability</h6>
-        <div class="form-check">
-            <input
-                    class="form-check-input"
-                    type="radio"
-                    name="availability"
-                    value="Weekdays"
-                    id="availWeekdays"
-            >
-            <label class="form-check-label" for="availWeekdays">
-                Weekdays
-            </label>
-        </div>
-        <div class="form-check">
-            <input
-                    class="form-check-input"
-                    type="radio"
-                    name="availability"
-                    value="Weekends"
-                    id="availWeekends"
-            >
-            <label class="form-check-label" for="availWeekends">
-                Weekends
-            </label>
-        </div>
-        <div class="form-check">
-            <input
-                    class="form-check-input"
-                    type="radio"
-                    name="availability"
-                    value="Flexible"
-                    id="availFlexible"
-            >
-            <label class="form-check-label" for="availFlexible">
-                Flexible
-            </label>
-        </div>
-    </div>
-
-    <!-- Offcanvas Footer Buttons -->
-    <div class="offcanvas-footer p-3 border-top">
-        <button type="button" class="btn btn-primary w-100 mb-2" id="saveFilters">
-            Save
-        </button>
-        <button type="button" class="btn btn-secondary w-100" id="clearAllFilters">
-            Clear All
-        </button>
-    </div>
-</div>
-
-<!-- Bootstrap 5 JS Bundle -->
-<script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
-></script>
-<script>
-    // JS for handling filter state
-    const appliedFiltersContainer = document.getElementById('appliedFiltersContainer');
-    const resetFiltersLink = document.getElementById('resetFilters');
-    const saveFiltersButton = document.getElementById('saveFilters');
-    const clearAllFiltersButton = document.getElementById('clearAllFilters');
-
-    // Track selected filters
-    // Example data structure: { location: ['New York', 'Chicago'], availability: ['Weekdays'] }
-    let selectedFilters = {
-      location: [],
-      availability: []
-    };
-
-    // 1. Update filter chips display
-    function renderFilterChips() {
-      appliedFiltersContainer.innerHTML = '';
-
-      // For each category in selectedFilters
-      for (const category in selectedFilters) {
-        selectedFilters[category].forEach(value => {
-          const chip = document.createElement('span');
-          chip.className = 'filter-chip';
-          chip.textContent = `${category}: ${value} `;
-
-          // Close (x) button for each chip
-          const closeBtn = document.createElement('button');
-          closeBtn.type = 'button';
-          closeBtn.className = 'btn-close btn-close-white btn-sm ms-1';
-          closeBtn.style.verticalAlign = 'middle';
-          closeBtn.addEventListener('click', () => {
-            removeFilter(category, value);
-          });
-
-          chip.appendChild(closeBtn);
-          appliedFiltersContainer.appendChild(chip);
-        });
-      }
-    }
-
-    // 2. Remove a filter from selectedFilters
-    function removeFilter(category, value) {
-      selectedFilters[category] = selectedFilters[category].filter(v => v !== value);
-      // Also uncheck the corresponding checkbox/radio
-      const input = document.querySelector(`input[value="${value}"]`);
-      if (input) input.checked = false;
-      renderFilterChips();
-    }
-
-    // 3. Clear all filters
-    function clearAll() {
-      selectedFilters = {
-        location: [],
-        availability: []
-      };
-      document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(input => {
-        input.checked = false;
-      });
-      renderFilterChips();
-    }
-
-    // Listen for changes on checkboxes (Location)
-    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-      checkbox.addEventListener('change', function() {
-        const category = 'location';
-        const value = this.value;
-
-        if (this.checked) {
-          // Add to selectedFilters if not already present
-          if (!selectedFilters[category].includes(value)) {
-            selectedFilters[category].push(value);
-          }
-        } else {
-          // Remove from selectedFilters
-          removeFilter(category, value);
-        }
-        renderFilterChips();
-      });
-    });
-
-    // Listen for changes on radio buttons (Availability)
-    document.querySelectorAll('input[name="availability"]').forEach(radio => {
-      radio.addEventListener('change', function() {
-        const category = 'availability';
-        const value = this.value;
-
-        // Overwrite the availability array since it's single-select
-        selectedFilters[category] = [value];
-
-        // Uncheck other radios in that category
-        document.querySelectorAll('input[name="availability"]').forEach(otherRadio => {
-          if (otherRadio.value !== value) {
-            otherRadio.checked = false;
-          }
-        });
-        renderFilterChips();
-      });
-    });
-
-    // "Reset Filters" link - removes all filters, but you might define it differently
-    resetFiltersLink.addEventListener('click', (e) => {
-      e.preventDefault();
-      clearAll();
-    });
-
-    // "Clear All" button
-    clearAllFiltersButton.addEventListener('click', () => {
-      clearAll();
-    });
-
-    // "Save" button
-    saveFiltersButton.addEventListener('click', () => {
-      // Here you’d typically fetch new volunteer matches from your backend
-      // using the filters in 'selectedFilters'
-      alert('Filters saved! Volunteers list will be updated.');
-
-      // Then close the offcanvas
-      const offcanvasEl = document.getElementById('filterOffcanvas');
-      const offcanvas = bootstrap.Offcanvas.getInstance(offcanvasEl);
-      offcanvas.hide();
-    });
-</script>
-
+<!-- Include jQuery and Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<script src="./matching.js"></script>
 </body>
 </html>
-
