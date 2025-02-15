@@ -1,29 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Volunteer Matching Form</title>
-  <!-- Include Bootstrap CSS -->
-  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    .form-container {
-      max-width: 600px;
-      margin: 50px auto;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>Volunteer Matching with Filter Panel</title>
+    <!-- Bootstrap 5 CSS -->
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+    >
+    <style>
+        /* Optional: Offcanvas width override for a narrower panel */
+        .offcanvas-end {
+          width: 300px !important;
+        }
+        /* Style for applied filter “chips” */
+        .filter-chip {
+          display: inline-block;
+          background-color: #f1f1f1;
+          border-radius: 15px;
+          padding: 0.25rem 0.75rem;
+          margin: 0.25rem;
+        }
+    </style>
 </head>
 <body>
 
-<div class="container">
-  <!-- Volunteer Matching Form -->
-  
-  <div class="form-container">
-    <div class="card shadow-sm">
-      <div class="card-header bg-primary text-white">
-        <h4 class="mb-0">Volunteer Matching Form</h4>
-      </div>
-      <button
+<div class="container my-4">
+    <h1>Volunteer Matching</h1>
+    <button
             class="btn btn-primary"
             type="button"
             data-bs-toggle="offcanvas"
@@ -32,41 +36,16 @@
     >
         Open Filters
     </button>
-      <div class="card-body">
-        <form id="volunteer-matching-form">
-          <div class="form-group">
-            <label for="matchingName">Select a Volunteer</label>
-            <select class="form-control" name="matchingName" onchange="showVolunteerInfo()" id="matchingName" required>
-              <option value="">Select a Volunteer</option>
-              <option value="johnDoe">John Doe</option>
-              <option value="janeDoe">Jane Doe</option>
-            </select>
-          </div>
 
-          <div class="mb-3">
-            <p id="volunteerSkills" class="font-weight-bold text-muted"></p>
-            <p id="volunteerPreferences" class="font-weight-bold text-muted"></p>
-          </div>
-
-          <div class="form-group">
-            <label for="matchingEvent">Select an Event</label>
-            <select class="form-control" name="matchingEvent" id="matchingEvent" required>
-              <option value="">Select an Event</option>
-              <optgroup label="Events">
-                <option value="donation">General Donation (Skills: Packing, Assisting)</option>
-                <option value="bloodDrive">Blood Drive (Skills: Packing, Assisting)</option>
-              </optgroup>
-            </select>
-          </div>
-
-          <button type="submit" class="btn btn-primary btn-block">Assign to Event</button>
-        </form>
-      </div>
+    <!-- Example area to display matched volunteers -->
+    <div class="mt-4" id="resultsSection">
+        <!-- Your volunteer matching results or table would go here -->
+        <p>Matched Volunteers Will Appear Here</p>
     </div>
-  </div>
 </div>
 
-  <div
+<!-- Offcanvas Filter Panel -->
+<div
         class="offcanvas offcanvas-end"
         tabindex="-1"
         id="filterOffcanvas"
@@ -187,9 +166,133 @@
     </div>
 </div>
 
-<!-- Include jQuery and Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-<script src="./matching.js"></script>
+<!-- Bootstrap 5 JS Bundle -->
+<script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+></script>
+<script>
+    // JS for handling filter state
+    const appliedFiltersContainer = document.getElementById('appliedFiltersContainer');
+    const resetFiltersLink = document.getElementById('resetFilters');
+    const saveFiltersButton = document.getElementById('saveFilters');
+    const clearAllFiltersButton = document.getElementById('clearAllFilters');
+
+    // Track selected filters
+    // Example data structure: { location: ['New York', 'Chicago'], availability: ['Weekdays'] }
+    let selectedFilters = {
+      location: [],
+      availability: []
+    };
+
+    // 1. Update filter chips display
+    function renderFilterChips() {
+      appliedFiltersContainer.innerHTML = '';
+
+      // For each category in selectedFilters
+      for (const category in selectedFilters) {
+        selectedFilters[category].forEach(value => {
+          const chip = document.createElement('span');
+          chip.className = 'filter-chip';
+          chip.textContent = `${category}: ${value} `;
+
+          // Close (x) button for each chip
+          const closeBtn = document.createElement('button');
+          closeBtn.type = 'button';
+          closeBtn.className = 'btn-close btn-close-white btn-sm ms-1';
+          closeBtn.style.verticalAlign = 'middle';
+          closeBtn.addEventListener('click', () => {
+            removeFilter(category, value);
+          });
+
+          chip.appendChild(closeBtn);
+          appliedFiltersContainer.appendChild(chip);
+        });
+      }
+    }
+
+    // 2. Remove a filter from selectedFilters
+    function removeFilter(category, value) {
+      selectedFilters[category] = selectedFilters[category].filter(v => v !== value);
+      // Also uncheck the corresponding checkbox/radio
+      const input = document.querySelector(`input[value="${value}"]`);
+      if (input) input.checked = false;
+      renderFilterChips();
+    }
+
+    // 3. Clear all filters
+    function clearAll() {
+      selectedFilters = {
+        location: [],
+        availability: []
+      };
+      document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(input => {
+        input.checked = false;
+      });
+      renderFilterChips();
+    }
+
+    // Listen for changes on checkboxes (Location)
+    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+      checkbox.addEventListener('change', function() {
+        const category = 'location';
+        const value = this.value;
+
+        if (this.checked) {
+          // Add to selectedFilters if not already present
+          if (!selectedFilters[category].includes(value)) {
+            selectedFilters[category].push(value);
+          }
+        } else {
+          // Remove from selectedFilters
+          removeFilter(category, value);
+        }
+        renderFilterChips();
+      });
+    });
+
+    // Listen for changes on radio buttons (Availability)
+    document.querySelectorAll('input[name="availability"]').forEach(radio => {
+      radio.addEventListener('change', function() {
+        const category = 'availability';
+        const value = this.value;
+
+        // Overwrite the availability array since it's single-select
+        selectedFilters[category] = [value];
+
+        // Uncheck other radios in that category
+        document.querySelectorAll('input[name="availability"]').forEach(otherRadio => {
+          if (otherRadio.value !== value) {
+            otherRadio.checked = false;
+          }
+        });
+        renderFilterChips();
+      });
+    });
+
+    // "Reset Filters" link - removes all filters, but you might define it differently
+    resetFiltersLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      clearAll();
+    });
+
+    // "Clear All" button
+    clearAllFiltersButton.addEventListener('click', () => {
+      clearAll();
+    });
+
+    // "Save" button
+    saveFiltersButton.addEventListener('click', () => {
+      // Here you’d typically fetch new volunteer matches from your backend
+      // using the filters in 'selectedFilters'
+      alert('Filters saved! Volunteers list will be updated.');
+
+      // Then close the offcanvas
+      const offcanvasEl = document.getElementById('filterOffcanvas');
+      const offcanvas = bootstrap.Offcanvas.getInstance(offcanvasEl);
+      offcanvas.hide();
+    });
+</script>
+
 </body>
 </html>
+
