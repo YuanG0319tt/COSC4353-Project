@@ -1,5 +1,6 @@
-function loadContent(_tabId, htmlFile, jsFile, containerId) {
+function loadContent(tabId, htmlFile, jsFile, containerId) {
     console.log(`Loading HTML: ${htmlFile} and JS: ${jsFile} for container: ${containerId}`);
+
     fetch(htmlFile)
         .then(response => response.text())
         .then(html => {
@@ -10,14 +11,22 @@ function loadContent(_tabId, htmlFile, jsFile, containerId) {
                 oldScript.remove();
             }
 
-            // Avoid re-declaring by checking if script already exists
-            if (jsFile && !document.getElementById("dynamic-script")) {
+            if (jsFile) {
                 const script = document.createElement('script');
-                script.src = jsFile + '?v=' + new Date().getTime(); // Adding timestamp to avoid caching
+                script.src = jsFile + '?v=' + new Date().getTime();
                 script.id = "dynamic-script";
                 script.defer = true;
                 script.onload = function () {
                     console.log(`${jsFile} loaded successfully`);
+                    
+                    // Call the initialize function after the script is loaded
+                    if (tabId === 'matching' && typeof initializeMatching === "function") {
+                        initializeMatching();
+                    }
+
+                    if (tabId === 'history' && typeof initializeMatching === "function") {
+                        initializeHistory();
+                    }
                 };
                 document.body.appendChild(script);
             }

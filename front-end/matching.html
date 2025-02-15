@@ -26,7 +26,7 @@
         <form id="volunteer-matching-form">
           <div class="form-group">
             <label for="matchingName">Select a Volunteer</label>
-            <select class="form-control" name="matchingName" id="matchingName" onchange="showVolunteerInfo()" required>
+            <select class="form-control" name="matchingName" onchange="showVolunteerInfo()" id="matchingName" required>
               <option value="">Select a Volunteer</option>
               <option value="johnDoe">John Doe</option>
               <option value="janeDoe">Jane Doe</option>
@@ -43,10 +43,8 @@
             <select class="form-control" name="matchingEvent" id="matchingEvent" required>
               <option value="">Select an Event</option>
               <optgroup label="Events">
-                <option value="donation">General Donation</option>
-                <option disabled>Skills: Packing, Assisting</option>
-                <option value="bloodDrive">Blood Drive</option>
-                <option disabled>Skills: Packing, Assisting</option>
+                <option value="donation">General Donation (Skills: Packing, Assisting)</option>
+                <option value="bloodDrive">Blood Drive (Skills: Packing, Assisting)</option>
               </optgroup>
             </select>
           </div>
@@ -57,18 +55,6 @@
     </div>
   </div>
 </div>
-
-<script>
-  function showVolunteerInfo() {
-    document.getElementById("volunteerSkills").textContent = "Skills: Deploy, Code";
-    document.getElementById("volunteerPreferences").textContent = "Preferences: Night";
-  }
-
-  document.getElementById('volunteer-matching-form').addEventListener('submit', function(event) {
-    event.preventDefault();
-    alert('Volunteer assigned to event!');
-  });
-</script>
 
 <!-- Include jQuery and Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
