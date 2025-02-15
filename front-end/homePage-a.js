@@ -77,7 +77,7 @@ $(document).ready(function () {
         showTab(hash.substring(1)); // Remove the # from the hash
     } else {
         // Load default tab if no hash is present
-        let defaultTabId = 'profile'; // Set your default tab ID here
+        let defaultTabId = 'event'; // Set your default tab ID here
         showTab(defaultTabId);
     }
 
@@ -88,7 +88,7 @@ $(document).ready(function () {
             showTab(hash.substring(1)); // Remove the # from the hash
         } else {
             // Load default tab if no hash is present
-            let defaultTabId = 'profile'; // Set your default tab ID here
+            let defaultTabId = 'event'; // Set your default tab ID here
             showTab(defaultTabId);
         }
     });

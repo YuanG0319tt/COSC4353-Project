@@ -1,5 +1,6 @@
-function loadContent(_tabId, htmlFile, jsFile, containerId) {
+function loadContent(tabId, htmlFile, jsFile, containerId) {
     console.log(`Loading HTML: ${htmlFile} and JS: ${jsFile} for container: ${containerId}`);
+
     fetch(htmlFile)
         .then(response => response.text())
         .then(html => {
@@ -10,14 +11,17 @@ function loadContent(_tabId, htmlFile, jsFile, containerId) {
                 oldScript.remove();
             }
 
-            // Avoid re-declaring by checking if script already exists
-            if (jsFile && !document.getElementById("dynamic-script")) {
+            if (jsFile) {
                 const script = document.createElement('script');
-                script.src = jsFile + '?v=' + new Date().getTime(); // Adding timestamp to avoid caching
+                script.src = jsFile + '?v=' + new Date().getTime();
                 script.id = "dynamic-script";
                 script.defer = true;
                 script.onload = function () {
                     console.log(`${jsFile} loaded successfully`);
+
+                    if (tabId === 'history' && typeof initializeHistory === "function") {
+                        initializeHistory();
+                    }
                 };
                 document.body.appendChild(script);
             }
@@ -65,7 +69,7 @@ $(document).ready(function () {
         showTab(hash.substring(1)); // Remove the # from the hash
     } else {
         // Load default tab if no hash is present
-        let defaultTabId = 'profile'; // Set your default tab ID here
+        let defaultTabId = 'notifications'; // Set your default tab ID here
         showTab(defaultTabId);
     }
 
@@ -76,7 +80,7 @@ $(document).ready(function () {
             showTab(hash.substring(1)); // Remove the # from the hash
         } else {
             // Load default tab if no hash is present
-            let defaultTabId = 'profile'; // Set your default tab ID here
+            let defaultTabId = 'notifications'; // Set your default tab ID here
             showTab(defaultTabId);
         }
     });
