@@ -10,10 +10,32 @@
       max-width: 600px;
       margin: 50px auto;
     }
+    /* Logo Positioning and Sizing */
+    .logo img {
+      height: 100px; /* Adjust the height as needed */
+    }
+    .header-container {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px; /* Space between header and tabs */
+    }
+    .header-container img {
+        height: 100px; /* Adjust the height as needed */
+        margin-right: 15px; /* Adjust the spacing as needed */
+    }
+    .header-container h1 {
+        margin: 0; /* Remove default margin */
+    }
   </style>
 </head>
 <body>
 <div class="container">
+  <div class = "header-container">
+    <a href="../home.html" class="logo">
+      <img src="../resources/naba-logo-transparent.png" alt="Logo">
+    </a>
+  </div>
+
   <!-- Registration Form -->
   <div id="registrationForm" class="form-container">
     <h2>User Registration</h2>
