@@ -20,19 +20,29 @@
             position: relative;
             padding: 20px;
             color: white;
-            background: linear-gradient(to top, rgba(193, 255, 114, 0.8), rgba(255, 255, 255, 0)), 
-                        url('./resources/volunteers.jpg') no-repeat center center/cover;
         }
         .hero::before {
             content: "";
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: linear-gradient(to top, rgba(193, 255, 114, 0.8), rgba(255, 255, 255, 0)),
+                        rgba(0, 0, 0, 0.5); /* Add the gradient and opacity */
+            z-index: 1; /* Ensure the gradient is above the video */
         }
         .hero .content {
             position: relative;
             z-index: 2;
+        }
+        /* Video Background Styling */
+        .video-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0; /* Ensure the video is at the bottom layer */
         }
         /* Banner Styling */
         .top-banner {
@@ -98,6 +108,10 @@
 
 <!-- Hero Section with Get Started Button -->
 <div class="hero">
+    <video class="video-background" autoplay loop muted>
+        <source src="./resources/tree.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
     <div class="content">
         <h1>Make a Difference Today</h1>
         <p>Join us in making a positive impact in your community.</p>
@@ -107,7 +121,7 @@
 
 <!-- Footer -->
 <footer class="text-center mt-5 py-3">
-    <p>&copy; 2025 Volunteer Registration System. All Rights Reserved.</p>
+    <p>&copy; 2025 Naba, Volunteer Management System. All Rights Reserved.</p>
 </footer>
 
 <!-- Redirect Script -->
