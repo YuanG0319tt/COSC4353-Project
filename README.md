@@ -1,4 +1,4 @@
-# Volunteer Management System
+# Kindness Krew - Volunteer Management System
 
 Welcome to the Volunteer Management System! This system is designed to help organizations manage volunteer activities efficiently. It includes features like event creation, volunteer matching, and tracking volunteer participation history.
 
