@@ -17,11 +17,21 @@
 
 <div class="container">
   <!-- Volunteer Matching Form -->
+  
   <div class="form-container">
     <div class="card shadow-sm">
       <div class="card-header bg-primary text-white">
         <h4 class="mb-0">Volunteer Matching Form</h4>
       </div>
+      <button
+            class="btn btn-primary"
+            type="button"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#filterOffcanvas"
+            aria-controls="filterOffcanvas"
+    >
+        Open Filters
+    </button>
       <div class="card-body">
         <form id="volunteer-matching-form">
           <div class="form-group">
@@ -54,6 +64,127 @@
       </div>
     </div>
   </div>
+</div>
+
+  <div
+        class="offcanvas offcanvas-end"
+        tabindex="-1"
+        id="filterOffcanvas"
+        aria-labelledby="filterOffcanvasLabel"
+>
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="filterOffcanvasLabel">Filters</h5>
+        <button
+                type="button"
+                class="btn-close text-reset"
+                data-bs-dismiss="offcanvas"
+                aria-label="Close"
+        ></button>
+    </div>
+
+    <div class="offcanvas-body">
+        <!-- Applied Filters Section -->
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="m-0">Applied Filters</h6>
+            <a href="#" id="resetFilters" class="small text-decoration-none">Reset Filters</a>
+        </div>
+
+        <div id="appliedFiltersContainer" class="mb-3">
+            <!-- Dynamically populated filter chips -->
+            <!-- Example:
+            <span class="filter-chip">Location: New York <button class="btn-close btn-close-white"></button></span>
+            -->
+        </div>
+
+        <hr>
+
+        <!-- Filter Category Example 1 -->
+        <h6 class="mb-2">Location</h6>
+        <div class="form-check">
+            <input
+                    class="form-check-input"
+                    type="checkbox"
+                    value="New York"
+                    id="locationNewYork"
+            >
+            <label class="form-check-label" for="locationNewYork">
+                New York
+            </label>
+        </div>
+        <div class="form-check">
+            <input
+                    class="form-check-input"
+                    type="checkbox"
+                    value="San Francisco"
+                    id="locationSanFrancisco"
+            >
+            <label class="form-check-label" for="locationSanFrancisco">
+                San Francisco
+            </label>
+        </div>
+        <div class="form-check">
+            <input
+                    class="form-check-input"
+                    type="checkbox"
+                    value="Chicago"
+                    id="locationChicago"
+            >
+            <label class="form-check-label" for="locationChicago">
+                Chicago
+            </label>
+        </div>
+
+        <hr>
+
+        <!-- Filter Category Example 2 -->
+        <h6 class="mb-2">Availability</h6>
+        <div class="form-check">
+            <input
+                    class="form-check-input"
+                    type="radio"
+                    name="availability"
+                    value="Weekdays"
+                    id="availWeekdays"
+            >
+            <label class="form-check-label" for="availWeekdays">
+                Weekdays
+            </label>
+        </div>
+        <div class="form-check">
+            <input
+                    class="form-check-input"
+                    type="radio"
+                    name="availability"
+                    value="Weekends"
+                    id="availWeekends"
+            >
+            <label class="form-check-label" for="availWeekends">
+                Weekends
+            </label>
+        </div>
+        <div class="form-check">
+            <input
+                    class="form-check-input"
+                    type="radio"
+                    name="availability"
+                    value="Flexible"
+                    id="availFlexible"
+            >
+            <label class="form-check-label" for="availFlexible">
+                Flexible
+            </label>
+        </div>
+    </div>
+
+    <!-- Offcanvas Footer Buttons -->
+    <div class="offcanvas-footer p-3 border-top">
+        <button type="button" class="btn btn-primary w-100 mb-2" id="saveFilters">
+            Save
+        </button>
+        <button type="button" class="btn btn-secondary w-100" id="clearAllFilters">
+            Clear All
+        </button>
+    </div>
 </div>
 
 <!-- Include jQuery and Bootstrap JS -->
