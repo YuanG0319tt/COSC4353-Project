@@ -17,14 +17,20 @@
     th {
       cursor: pointer;
     }
-
+    .truncate {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100px;
+      display: block;
+    }
   </style>
 </head>
 <body>
 <div class="container">
   <div class="history-container">
     <h2>Volunteer History</h2>
- 
+
     <!-- Search and Filter Section -->
     <div class="search-filter">
       <input type="text" id="searchInput" class="form-control" placeholder="Search by Event or Role" style="width: 60%;">
@@ -34,7 +40,7 @@
         <option value="Pending">Pending</option>
       </select>
     </div>
- 
+
     <!-- Table -->
     <table class="table table-striped">
       <thead>
@@ -43,38 +49,22 @@
           <th onclick="sortTable(1)">Date <span id="icon1">🔽</span></th>
           <th onclick="sortTable(2)">Role <span id="icon2">🔽</span></th>
           <th onclick="sortTable(3)">Hours <span id="icon3">🔽</span></th>
-          <th onclick="sortTable(4)">Status <span id="icon4">🔽</span></th>
+          <th onclick="sortTable(4)">Description <span id="icon4">🔽</span></th>
+          <th onclick="sortTable(5)">Location <span id="icon5">🔽</span></th>
+          <th onclick="sortTable(6)">Required Skills <span id="icon6">🔽</span></th>
+          <th onclick="sortTable(7)">Urgency <span id="icon7">🔽</span></th>
+          <th onclick="sortTable(8)">Participation Status <span id="icon8">🔽</span></th>
+          <th onclick="sortTable(9)">Completion Status <span id="icon9">🔽</span></th>
         </tr>
       </thead>
-        <tbody id="historyTableBody"></tbody>
-      
+      <tbody id="historyTableBody"></tbody>
     </table>
   </div>
 </div>
- 
+
 <!-- Include jQuery and Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
- <script>
-  function sortTable(columnIndex) {
-    sortOrder[columnIndex] = !sortOrder[columnIndex]; // Toggle order (true = asc, false = desc)
-    let isAscending = sortOrder[columnIndex];
-
-    volunteerHistory.sort((a, b) => {
-        let valA = Object.values(a)[columnIndex];
-        let valB = Object.values(b)[columnIndex];
-
-        if (!isNaN(valA) && !isNaN(valB)) {
-            return isAscending ? valA - valB : valB - valA;
-        } else {
-            return isAscending ? valA.localeCompare(valB) : valB.localeCompare(valA);
-        }
-    });
-
-    updateSortIcons(columnIndex, isAscending);
-    loadVolunteerHistory();
-}
- </script>
 <script src="./volHistory.js" defer></script>
 </body>
 </html>

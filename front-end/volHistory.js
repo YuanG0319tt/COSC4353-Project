@@ -2,10 +2,54 @@ function initializeHistory() {
     console.log("Initializing Volunteer History...");
 
     let volunteerHistory = [
-        { event: "Food Pantry", date: "2024-12-10", role: "Helper", hours: 5, status: "Completed" },
-        { event: "Blood Drive", date: "2024-12-15", role: "Donor", hours: 2, status: "Completed" },
-        { event: "Community Cleanup", date: "2025-01-05", role: "Organizer", hours: 8, status: "Pending" },
-        { event: "Soup Kitchen", date: "2025-01-20", role: "Cook", hours: 6, status: "Completed" }
+        {
+            event: "Food Pantry",
+            date: "2024-12-10",
+            role: "Helper",
+            hours: 5,
+            description: "Distribute food to those in need.",
+            location: "Community Center",
+            skills: ["Organization", "Communication"],
+            urgency: "High",
+            participationStatus: "Registered",
+            status: "Completed"
+        },
+        {
+            event: "Blood Drive",
+            date: "2024-12-15",
+            role: "Donor",
+            hours: 2,
+            description: "Donate blood to save lives.",
+            location: "Local Hospital",
+            skills: ["Donor"],
+            urgency: "Medium",
+            participationStatus: "Registered",
+            status: "Completed"
+        },
+        {
+            event: "Community Cleanup",
+            date: "2025-01-05",
+            role: "Organizer",
+            hours: 8,
+            description: "Organize a community cleanup event.",
+            location: "City Park",
+            skills: ["Leadership", "Teamwork"],
+            urgency: "Low",
+            participationStatus: "Pending",
+            status: "Pending"
+        },
+        {
+            event: "Soup Kitchen",
+            date: "2025-01-20",
+            role: "Cook",
+            hours: 6,
+            description: "Prepare and serve meals.",
+            location: "Soup Kitchen",
+            skills: ["Cooking", "Teamwork"],
+            urgency: "High",
+            participationStatus: "Registered",
+            status: "Completed"
+        }
     ];
 
     let sortOrder = {}; // Track sort order for each column
@@ -19,6 +63,11 @@ function initializeHistory() {
                         <td>${record.date}</td>
                         <td>${record.role}</td>
                         <td>${record.hours}</td>
+                        <td>${record.description}</td>
+                        <td>${record.location}</td>
+                        <td>${record.skills.join(", ")}</td>
+                        <td>${record.urgency}</td>
+                        <td>${record.participationStatus}</td>
                         <td>${record.status}</td>
                     </tr>`;
             tableBody.innerHTML += row;
@@ -45,7 +94,7 @@ function initializeHistory() {
     }
 
     function updateSortIcons(columnIndex, isAscending) {
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 10; i++) {
             let icon = document.getElementById(`icon${i}`);
             if (icon) icon.innerHTML = "🔽"; // Reset all to down arrow
         }
@@ -62,6 +111,11 @@ function initializeHistory() {
                         <td>${record.date}</td>
                         <td>${record.role}</td>
                         <td>${record.hours}</td>
+                        <td>${record.description}</td>
+                        <td>${record.location}</td>
+                        <td>${record.skills.join(", ")}</td>
+                        <td>${record.urgency}</td>
+                        <td>${record.participationStatus}</td>
                         <td>${record.status}</td>
                     </tr>`;
             tableBody.innerHTML += row;
@@ -85,7 +139,13 @@ function initializeHistory() {
         let searchText = searchInput.value.toLowerCase();
         let filteredData = volunteerHistory.filter(record =>
             record.event.toLowerCase().includes(searchText) ||
-            record.role.toLowerCase().includes(searchText)
+            record.role.toLowerCase().includes(searchText) ||
+            record.description.toLowerCase().includes(searchText) ||
+            record.location.toLowerCase().includes(searchText) ||
+            record.skills.join(", ").toLowerCase().includes(searchText) ||
+            record.urgency.toLowerCase().includes(searchText) ||
+            record.participationStatus.toLowerCase().includes(searchText) ||
+            record.status.toLowerCase().includes(searchText)
         );
         displayFilteredData(filteredData);
     }
