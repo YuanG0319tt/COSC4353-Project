@@ -34,22 +34,56 @@ function loadContent(tabId, htmlFile, jsFile, containerId) {
         .catch(error => console.error(`Error loading ${htmlFile}:`, error));
 }
 
+function loadUserProfile() {
+    console.log("Loading user profile...");
+
+    fetch('./pages/profile.html')
+      .then(response => response.text())
+      .then(html => {
+        document.getElementById('profile-content').innerHTML = html;
+
+        let oldScript = document.getElementById("profile-script");
+        if (oldScript) {
+          oldScript.remove();
+        }
+
+        const script = document.createElement('script');
+        script.src = 'profile.js?v=' + new Date().getTime();
+        script.id = "profile-script";
+        script.defer = true;
+        script.onload = function () {
+          console.log("Profile.js loaded successfully");
+        };
+        document.body.appendChild(script);
+      })
+      .catch(error => console.error("Error loading profile.html:", error));
+
+    // Hide Tabs and Show Profile Section
+    document.getElementById('tab-container').style.display = 'none';
+    document.getElementById('profile-section').style.display = 'block';
+  }
+
+  function showDashboard() {
+    document.getElementById('tab-container').style.display = 'block';
+    document.getElementById('profile-section').style.display = 'none';
+  }
+
 function showTab(tabId) {
     switch (tabId) {
         case 'event':
-            loadContent('event', 'event.html', 'event.js', 'event-management-container');
+            loadContent('event', './pages/event.html', './components/event.js', 'event-management-container');
             break;
         case 'profile':
-            loadContent('profile', 'profile.html', 'profile.js', 'profile');
+            loadContent('profile', './pages/profile.html', './components/profile.js', 'profile');
             break;
         case 'matching':
-            loadContent('matching', 'matching.html', 'matching.js', 'matching-form');
+            loadContent('matching', './pages/matching.html', './components/matching.js', 'matching-form');
             break;
         case 'history':
-            loadContent('history', 'volHistory.html', 'volHistory.js', 'history');
+            loadContent('history', './pages/volHistory.html', './components/volHistory.js', 'history');
             break;
         case 'notification':
-            loadContent('notification', 'notifications.html', 'notifications.js', 'notification');
+            loadContent('notification', './pages/notifications.html', './components/notifications.js', 'notification');
             break;
         default:
             console.error(`Invalid tab ID: ${tabId}`);
@@ -93,31 +127,6 @@ $(document).ready(function () {
         }
     });
 });
-
-function showTab(tabId) {
-    switch (tabId) {
-        case 'event':
-            loadContent('event', 'event.html', 'event.js', 'event-management-container');
-            break;
-        case 'profile':
-            loadContent('profile', 'profile.html', 'profile.js', 'profile');
-            break;
-        case 'matching':
-            loadContent('matching', 'matching.html', 'matching.js', 'matching-form');
-            break;
-        case 'history':
-            loadContent('history', 'volHistory.html', 'volHistory.js', 'history');
-            break;
-        case 'notification':
-            loadContent('notification', 'notifications.html', 'notifications.js', 'notification');
-            break;
-        default:
-            console.error(`Invalid tab ID: ${tabId}`);
-    }
-
-    // Show the tab
-    $('.nav-tabs a[href="#' + tabId + '"]').tab('show');
-}
 
 $(document).ready(function () {
     // When a tab is clicked, update the URL

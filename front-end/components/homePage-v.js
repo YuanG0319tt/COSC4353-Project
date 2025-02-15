@@ -29,19 +29,53 @@ function loadContent(tabId, htmlFile, jsFile, containerId) {
         .catch(error => console.error(`Error loading ${htmlFile}:`, error));
 }
 
+function loadUserProfile() {
+    console.log("Loading user profile...");
+
+    fetch('./pages/profile.html')
+      .then(response => response.text())
+      .then(html => {
+        document.getElementById('profile-content').innerHTML = html;
+
+        let oldScript = document.getElementById("profile-script");
+        if (oldScript) {
+          oldScript.remove();
+        }
+
+        const script = document.createElement('script');
+        script.src = 'profile.js?v=' + new Date().getTime();
+        script.id = "profile-script";
+        script.defer = true;
+        script.onload = function () {
+          console.log("Profile.js loaded successfully");
+        };
+        document.body.appendChild(script);
+      })
+      .catch(error => console.error("Error loading profile.html:", error));
+
+    // Hide Tabs and Show Profile Section
+    document.getElementById('tab-container').style.display = 'none';
+    document.getElementById('profile-section').style.display = 'block';
+  }
+
+  function showDashboard() {
+    document.getElementById('tab-container').style.display = 'block';
+    document.getElementById('profile-section').style.display = 'none';
+  }
+
 function showTab(tabId) {
     switch (tabId) {
         case 'profile':
-            loadContent('profile', 'profile.html', 'profile.js', 'profile');
+            loadContent('profile', './pages/profile.html', './components/profile.js', 'profile');
             break;
         case 'notifications':
-            loadContent('notifications', 'notifications.html', 'notifications.js', 'notification-container');
+            loadContent('notifications', './pages/notifications.html', './components/notifications.js', 'notification-container');
             break;
         case 'event':
-            loadContent('event', 'event.html', 'event.js', 'event-management-container');
+            loadContent('event', './pages/event.html', './components/event.js', 'event-management-container');
             break;
         case 'history':
-            loadContent('history', 'volHistory.html', 'volHistory.js', 'history');
+            loadContent('history', './pages/volHistory.html', './components/volHistory.js', 'history');
             break;
         default:
             console.error(`Invalid tab ID: ${tabId}`);
