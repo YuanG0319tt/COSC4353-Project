@@ -27,7 +27,7 @@ To get a local copy up and running, follow these simple steps.
 
 ### Prerequisites
 
-- Node.js and npm installed
+- HTML, CSS, JavaScript
 - Bootstrap 5 CSS for styling
 
 ### Installation
