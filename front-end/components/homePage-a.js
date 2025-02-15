@@ -48,7 +48,7 @@ function loadUserProfile() {
         }
 
         const script = document.createElement('script');
-        script.src = 'profile.js?v=' + new Date().getTime();
+        script.src = './components/profile.js?v=' + new Date().getTime();
         script.id = "profile-script";
         script.defer = true;
         script.onload = function () {
