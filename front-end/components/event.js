@@ -96,3 +96,74 @@ $(document).ready(function() {
         
                 renderCalendar();
             });
+
+            const API_URL = "http://localhost:8080/events"; // Adjust if using a different port
+
+            // Fetch events from backend
+            async function fetchEvents() {
+                try {
+                    const response = await fetch(API_URL);
+                    const events = await response.json();
+                    console.log(events);
+                    populateCalendar(events);
+                } catch (error) {
+                    console.error("Error fetching events:", error);
+                }
+            }
+            
+            // Submit event data to backend
+            async function submitEvent(eventData) {
+                try {
+                    const response = await fetch(API_URL, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(eventData),
+                    });
+            
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        alert("Error: " + JSON.stringify(errorData));
+                        return;
+                    }
+            
+                    alert("Event added successfully!");
+                    fetchEvents(); // Refresh events on the calendar
+                } catch (error) {
+                    console.error("Error submitting event:", error);
+                }
+            }
+            
+            // Populate calendar with events
+            function populateCalendar(events) {
+                const calendarDays = document.getElementById("calendar-days");
+                calendarDays.innerHTML = ""; // Clear existing days
+            
+                events.forEach(event => {
+                    const eventElement = document.createElement("div");
+                    eventElement.classList.add("event-item");
+                    eventElement.innerText = event.name;
+                    calendarDays.appendChild(eventElement);
+                });
+            }
+            
+            // Handle form submission
+            document.getElementById("add-event-form").addEventListener("submit", function (e) {
+                e.preventDefault();
+            
+                const eventData = {
+                    name: document.getElementById("new-event-name").value,
+                    description: document.getElementById("new-event-description").value,
+                    location: document.getElementById("new-location").value,
+                    requiredSkills: Array.from(document.getElementById("new-required-skills").selectedOptions).map(opt => opt.value),
+                    urgency: document.getElementById("new-urgency").value,
+                    date: document.getElementById("new-event-date").value,
+                };
+            
+                submitEvent(eventData);
+            });
+            
+            // Load events when page loads
+            document.addEventListener("DOMContentLoaded", fetchEvents);
+            
