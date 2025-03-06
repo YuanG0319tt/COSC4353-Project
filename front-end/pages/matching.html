@@ -29,8 +29,6 @@
             <label for="matchingName">Select a Volunteer</label>
             <select class="form-control" name="matchingName" id="matchingName" onchange="showVolunteerInfo()" required>
               <option value="">Select a Volunteer</option>
-              <option value="johnDoe">John Doe</option>
-              <option value="janeDoe">Jane Doe</option>
             </select>
           </div>
 
@@ -43,10 +41,6 @@
             <label for="matchingEvent">Select an Event</label>
             <select class="form-control" name="matchingEvent" id="matchingEvent" required>
               <option value="">Select an Event</option>
-              <optgroup label="Events">
-                <option value="donation">General Donation (Skills: Packing, Assisting)</option>
-                <option value="bloodDrive">Blood Drive (Skills: Packing, Assisting)</option>
-              </optgroup>
             </select>
           </div>
 
@@ -59,14 +53,85 @@
 
 <script>
   function showVolunteerInfo() {
-    document.getElementById("volunteerSkills").textContent = "Skills: Deploy, Code";
-    document.getElementById("volunteerPreferences").textContent = "Preferences: Night";
+    let selectedVolunteer = document.getElementById("matchingName").value;
+    if (!selectedVolunteer) return;
+
+    fetch("/volunteers")
+      .then(response => response.json())
+      .then(data => {
+        let volunteer = data.find(v => v.name === selectedVolunteer);
+        if (volunteer) {
+          document.getElementById("volunteerSkills").textContent = "Skills: " + volunteer.skills.join(", ");
+          document.getElementById("volunteerPreferences").textContent = "Preferences: " + volunteer.preferences.join(", ");
+        }
+      })
+      .catch(error => console.error("Error fetching volunteer details:", error));
   }
   
   document.getElementById('volunteer-matching-form').addEventListener('submit', function(event) {
     event.preventDefault();
-    alert('Volunteer assigned to event!');
+
+    let volunteerName = document.getElementById("matchingName").value;
+    let eventName = document.getElementById("matchingEvent").value;
+
+    if (!volunteerName || !eventName) {
+        alert("Please select a volunteer and an event.");
+        return;
+    }
+
+    fetch("/match", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ volunteerName, eventName })
+    })
+    .then(response => response.json())
+    .then(data => alert("Match Successful: " + data.message))
+    .catch(error => console.error("Error assigning volunteer:", error));
   });
+
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    fetchVolunteers();
+    fetchEvents();
+  });
+
+  function fetchVolunteers() {
+    fetch("/volunteers")
+      .then(response => response.json())
+      .then(data => {
+        let volunteerDropdown = document.getElementById("matchingName");
+        volunteerDropdown.innerHTML = '<option value="">Select a Volunteer</option>'; // Reset dropdown
+
+        data.forEach(volunteer => {
+          let option = document.createElement("option");
+          option.value = volunteer.name; // Set the value to volunteer's name
+          option.textContent = volunteer.name; // Display name in dropdown
+          volunteerDropdown.appendChild(option);
+        });
+      })
+      .catch(error => console.error("Error fetching volunteers:", error));
+  }
+
+
+  function fetchEvents() {
+    fetch("/events")
+      .then(response => response.json())
+      .then(data => {
+        let eventDropdown = document.getElementById("matchingEvent");
+        eventDropdown.innerHTML = '<option value="">Select an Event</option>'; // Reset dropdown
+
+        data.forEach(event => {
+          let option = document.createElement("option");
+          option.value = event.name; // Set the value to event's name
+          option.textContent = `${event.name} (Skills: ${event.requirements.join(", ")})`; // Show skills needed
+          eventDropdown.appendChild(option);
+        });
+      })
+      .catch(error => console.error("Error fetching events:", error));
+  }
+
 </script>
   
 <!-- Include jQuery and Bootstrap JS -->
