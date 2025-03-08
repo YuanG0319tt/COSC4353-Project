@@ -1,6 +1,10 @@
 package com.example.volunteerMatching.models;
 
 import java.util.List;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 public class Volunteer {
     @NotBlank(message="Location is required.")
@@ -24,7 +28,7 @@ public class Volunteer {
         this.preferences = preferences;
     }
 
-    public Long getLocation() { return location; }
+    public String getLocation() { return location; }
     public void setLocation(String location) { this.location = location; }
 
     public String getName() { return name; }
