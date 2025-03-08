@@ -1,4 +1,4 @@
-package com.example.volunteerregistration.model;
+package com.example.volunteerregistration.models;
 
 
 public class LoginRequest {

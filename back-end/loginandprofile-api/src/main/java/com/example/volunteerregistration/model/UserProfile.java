@@ -1,4 +1,4 @@
-package com.example.volunteerregistration.model;
+package com.example.volunteerregistration.models;
 
 import java.time.LocalDate;
 import java.util.List;
