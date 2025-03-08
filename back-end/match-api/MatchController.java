@@ -4,6 +4,9 @@ import com.example.volunteerMatching.services.MatchService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import org.springframework.http.ResponseEntity;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/match")
@@ -23,11 +26,12 @@ public class MatchController {
     public ResponseEntity<Map<String, String>> matchVolunteer(@RequestBody Map<String, String> matchRequest) {
         String volunteerName = matchRequest.get("volunteerName");
         String eventName = matchRequest.get("eventName");
-
+    
+        if (volunteerName == null || eventName == null || volunteerName.isBlank() || eventName.isBlank()) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Missing required fields: volunteerName and eventName"));
+        }
+    
         String result = matchService.assignVolunteer(volunteerName, eventName);
-
-        Map<String, String> response = new HashMap<>();
-        response.put("message", result);
-        return ResponseEntity.ok(response);
-    }
+        return ResponseEntity.ok(Map.of("message", result));
+    }    
 }
