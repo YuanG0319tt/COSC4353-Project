@@ -117,9 +117,9 @@ $(document).ready(function() {
                     const response = await fetch(API_URL, {
                         method: "POST",
                         headers: {
+                },
                             "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify(eventData),
+                                body: JSON.stringify(eventData),
                     });
             
                     if (!response.ok) {
