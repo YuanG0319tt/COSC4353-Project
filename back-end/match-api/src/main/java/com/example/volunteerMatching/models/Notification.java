@@ -1,5 +1,6 @@
 package com.example.volunteerMatching.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -21,15 +22,18 @@ public class Notification {
     private String type; // "announcement" or "notification"
 
     @Column(nullable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime timestamp;
 
-    public Notification() {}
+    public Notification() {
+        this.timestamp = LocalDateTime.now(); // Default to current time
+    }
 
     public Notification(String title, String message, String type, LocalDateTime timestamp) {
         this.title = title;
         this.message = message;
         this.type = type;
-        this.timestamp = timestamp;
+        this.timestamp = timestamp != null ? timestamp : LocalDateTime.now();
     }
 
     public Long getId() { return id; }

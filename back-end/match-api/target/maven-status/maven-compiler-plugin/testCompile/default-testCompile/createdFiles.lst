@@ -1,7 +1,9 @@
+com/example/volunteerMatching/controllers/NotificationControllerTest.class
 com/example/volunteerMatching/controllers/MatchControllerTest.class
 com/example/volunteerMatching/ApplicationTests.class
 com/example/volunteerMatching/controllers/EventControllerTest.class
+com/example/volunteerMatching/controllers/VolunteerControllerTest.class
 com/example/volunteerMatching/services/MatchServiceTest.class
 com/example/volunteerMatching/services/VolunteerServiceTest.class
-com/example/volunteerMatching/controllers/VolunteerControllerTest.class
+com/example/volunteerMatching/services/NotificationServiceTest.class
 com/example/volunteerMatching/services/EventServiceTest.class

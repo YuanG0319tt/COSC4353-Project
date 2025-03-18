@@ -31,8 +31,7 @@ public class NotificationController {
     // Add a new notification
     @PostMapping
     public ResponseEntity<Notification> addNotification(@RequestBody Notification notification) {
-        Notification savedNotification = notificationService.addNotification(
-                notification.getTitle(), notification.getMessage(), notification.getType());
+        Notification savedNotification = notificationService.addNotification(notification.getTitle(), notification.getMessage(), notification.getType());
         return ResponseEntity.ok(savedNotification);
     }
 }

@@ -23,6 +23,7 @@ public class NotificationService {
 
     public Notification addNotification(String title, String message, String type) {
         Notification notification = new Notification(title, message, type, LocalDateTime.now());
-        return notificationRepository.save(notification);
+        notificationRepository.save(notification);
+        return notification;
     }
 }
