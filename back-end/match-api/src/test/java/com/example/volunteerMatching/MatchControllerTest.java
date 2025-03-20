@@ -66,4 +66,13 @@ class MatchControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("John Doe assigned to Charity Run"));
     }
+
+    @Test
+    void testGetMatches_NoVolunteers_ShouldReturnEmptyList() throws Exception {
+        when(matchService.matchVolunteers()).thenReturn(List.of());
+
+        mockMvc.perform(get("/match"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(0));
+    }
 }
