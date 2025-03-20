@@ -1,0 +1,64 @@
+CREATE TABLE volunteers (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    location VARCHAR(255),
+    name VARCHAR(255),
+    availability VARCHAR(255)
+);
+
+CREATE TABLE volunteers_skills (
+    volunteer_id BIGINT,
+    skills VARCHAR(255),
+    FOREIGN KEY (volunteer_id) REFERENCES volunteers(id)
+);
+
+CREATE TABLE volunteers_preferences (
+    volunteer_id BIGINT,
+    preferences VARCHAR(255),
+    FOREIGN KEY (volunteer_id) REFERENCES volunteers(id)
+);
+
+CREATE TABLE events (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    location VARCHAR(255),
+    name VARCHAR(255),
+    date VARCHAR(255),
+    urgency VARCHAR(50),
+    description VARCHAR(500)
+);
+
+CREATE TABLE events_requirements (
+    event_id BIGINT,
+    requirements VARCHAR(255),
+    FOREIGN KEY (event_id) REFERENCES events(id)
+);
+
+CREATE TABLE notifications (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    message VARCHAR(500) NOT NULL,
+    type VARCHAR(50) NOT NULL,
+    timestamp TIMESTAMP NOT NULL
+);
+
+CREATE TABLE user_profiles (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(255),
+    address1 VARCHAR(255),
+    address2 VARCHAR(255),
+    city VARCHAR(255),
+    state VARCHAR(255),
+    zip VARCHAR(20),
+    preferences VARCHAR(500)
+);
+
+CREATE TABLE user_profiles_skills (
+    user_id BIGINT,
+    skills VARCHAR(255),
+    FOREIGN KEY (user_id) REFERENCES user_profiles(id)
+);
+
+CREATE TABLE user_profiles_availability (
+    user_id BIGINT,
+    availability DATE,
+    FOREIGN KEY (user_id) REFERENCES user_profiles(id)
+);
