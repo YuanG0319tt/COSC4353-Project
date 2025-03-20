@@ -20,27 +20,49 @@ public class MatchService {
         List<Event> events = eventService.getAllEvents();
         List<Volunteer> volunteers = volunteerService.getAllVolunteers();
         List<String> matches = new ArrayList<>();
-
+    
         for (Event event : events) {
             Volunteer bestMatch = null;
             int highestMatchScore = 0;
-
+    
             for (Volunteer volunteer : volunteers) {
-                int matchScore = (int) volunteer.getSkills().stream()
-                    .filter(event.getRequirements()::contains).count();
-                
+                int matchScore = 0;
+    
+                boolean hasSkillMatch = volunteer.getSkills().stream()
+                    .anyMatch(event.getRequirements()::contains);
+    
+                if (!hasSkillMatch) {
+                    continue;
+                }
+    
+                if (volunteer.getLocation().equalsIgnoreCase(event.getLocation())) {
+                    matchScore += 3;
+                }
+    
+                if (volunteer.getAvailability().equals(event.getDate())) {
+                    matchScore += 2;
+                }
+    
+                matchScore += (int) volunteer.getSkills().stream()
+                    .filter(event.getRequirements()::contains)
+                    .count() * 2;
+    
+                if (volunteer.getPreferences().stream().anyMatch(event.getRequirements()::contains)) {
+                    matchScore += 1;
+                }
+    
                 if (matchScore > highestMatchScore) {
                     highestMatchScore = matchScore;
                     bestMatch = volunteer;
                 }
             }
-
+    
             if (bestMatch != null) {
                 matches.add(event.getName() + " -> " + bestMatch.getName());
             }
         }
         return matches;
-    }
+    }    
 
     public String assignVolunteer(String volunteerName, String eventName) {
         List<Volunteer> volunteers = volunteerService.getAllVolunteers();
@@ -61,4 +83,3 @@ public class MatchService {
     }
 
 }
-
