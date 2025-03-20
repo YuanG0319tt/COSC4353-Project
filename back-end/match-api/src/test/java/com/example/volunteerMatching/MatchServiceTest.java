@@ -46,4 +46,17 @@ class MatchServiceTest {
         String result = matchService.assignVolunteer("Nonexistent Volunteer", "Food Drive");
         assertEquals("Assignment failed. Please try again.", result);
     }
+
+    @Test
+    void testMatchVolunteers_NoMatchingSkills() {
+        Event event = new Event("Houston", "Cleanup", "2025-04-10", List.of("Medical Aid"), "High", "Helping in hospitals.");
+        Volunteer volunteer = new Volunteer("Houston", "John Doe", "2025-04-10", List.of("Cooking"), List.of("Food Services"));
+
+        when(eventService.getAllEvents()).thenReturn(List.of(event));
+        when(volunteerService.getAllVolunteers()).thenReturn(List.of(volunteer));
+
+        List<String> matches = matchService.matchVolunteers();
+        
+        assertTrue(matches.isEmpty()); // No match expected
+    }
 }
