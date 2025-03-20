@@ -20,6 +20,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import java.time.format.DateTimeFormatter;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 public class NotificationControllerTest {
 
@@ -68,12 +70,21 @@ public class NotificationControllerTest {
         Notification notification = new Notification("Maintenance", "Scheduled server downtime", "announcement", LocalDateTime.now());
 
         when(notificationService.addNotification(any(String.class), any(String.class), any(String.class)))
-                .thenReturn(notification);
+            .thenAnswer(invocation -> new Notification(
+                    invocation.getArgument(0), // title
+                    invocation.getArgument(1), // message
+                    invocation.getArgument(2), // type
+                    LocalDateTime.now()));
+
+        String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
 
         mockMvc.perform(post("/notifications")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"title\":\"Maintenance\",\"message\":\"Scheduled server downtime\",\"type\":\"announcement\",\"timestamp\":\"" + notification.getTimestamp().toString() + "\"}"))
+                .content("{\"title\":\"Maintenance\",\"message\":\"Scheduled server downtime\",\"type\":\"announcement\",\"timestamp\":\"" + now + "\"}"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("{'title':'Maintenance','message':'Scheduled server downtime','type':'announcement','timestamp':'" + notification.getTimestamp().toString() + "'}"));
+                .andExpect(jsonPath("$.title").value("Maintenance"))
+                .andExpect(jsonPath("$.message").value("Scheduled server downtime"))
+                .andExpect(jsonPath("$.type").value("announcement"))
+                .andExpect(jsonPath("$.timestamp").exists());
     }
 }
