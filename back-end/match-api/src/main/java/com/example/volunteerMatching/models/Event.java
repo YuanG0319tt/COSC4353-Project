@@ -12,6 +12,7 @@ public class Event {
     @NotBlank(message = "Name is required.")
     @Size(max=100, message="Name must be 100 characters or less.")
     private String name;
+    @Pattern(regexp="\\d{4}-\\d{2}-\\d{2}", message="Invalid date format. Use YYYY-MM-DD")
     @NotBlank(message="Date is required.")
     private String date;
     @NotNull(message="Requirements are required.")
@@ -20,7 +21,6 @@ public class Event {
     @Pattern(regexp="High|Medium|Low", message="Urgency must be High, Medium, or Low.")
     private String urgency;
     @NotBlank(message="Description is required.")
-    @Pattern(regexp="\\d{4}-\\d{2}-\\d{2}", message="Invalid date format. Use YYYY-MM-DD")
     private String description;
     
 
