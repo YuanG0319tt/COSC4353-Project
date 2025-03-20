@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class NotificationService {
@@ -21,9 +22,9 @@ public class NotificationService {
         return notificationRepository.findByType(type);
     }
 
+    @Transactional
     public Notification addNotification(String title, String message, String type) {
         Notification notification = new Notification(title, message, type, LocalDateTime.now());
-        notificationRepository.save(notification);
-        return notification;
+        return notificationRepository.save(notification);
     }
 }
