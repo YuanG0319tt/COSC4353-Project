@@ -26,7 +26,7 @@ class MatchServiceTest {
     @Test
     void matchVolunteers_shouldReturnMatches() {
         Event event = new Event("Houston", "Cleaning Litter", "2025-03-07", List.of("Cleaning"), "Medium", "Cleaning litter on the streets of Houston.");
-        Volunteer volunteer = new Volunteer("Houston", "Jasmine", "2025-063-07", List.of("Cleaning"), List.of("Cleaning"));
+        Volunteer volunteer = new Volunteer("Houston", "Jasmine", "2025-03-07", List.of("Cleaning"), List.of("Cleaning"));
 
         when(eventService.getAllEvents()).thenReturn(List.of(event));
         when(volunteerService.getAllVolunteers()).thenReturn(List.of(volunteer));
@@ -56,7 +56,7 @@ class MatchServiceTest {
         when(volunteerService.getAllVolunteers()).thenReturn(List.of(volunteer));
 
         List<String> matches = matchService.matchVolunteers();
-        
-        assertTrue(matches.isEmpty()); // No match expected
+
+        assertTrue(matches.isEmpty());
     }
 }
