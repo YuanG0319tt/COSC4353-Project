@@ -64,17 +64,19 @@ public class NotificationServiceTest {
         String message = "Message1";
         String type = "Type1";
         LocalDateTime now = LocalDateTime.now();
-        Notification notification = new Notification(title, message, type, now);
-
-        when(notificationRepository.save(any(Notification.class))).thenReturn(notification);
-
+    
+        Notification mockNotification = new Notification(title, message, type, now);
+    
+        when(notificationRepository.save(any(Notification.class))).thenReturn(mockNotification);
+    
         Notification result = notificationService.addNotification(title, message, type);
-
-        assertEquals(title, notification.getTitle());
-        assertEquals(message, notification.getMessage());
-        assertEquals(type, notification.getType());
-        assertEquals(now.withNano(0), result.getTimestamp().withNano(0)); // Ensure a timestamp is set
-
+    
+        assertEquals(title, result.getTitle());
+        assertEquals(message, result.getMessage());
+        assertEquals(type, result.getType());
+        
+        assertEquals(now.withNano(0), result.getTimestamp().withNano(0));
+    
         verify(notificationRepository, times(1)).save(any(Notification.class));
-    }
+    }    
 }
