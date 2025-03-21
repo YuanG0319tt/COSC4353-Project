@@ -36,9 +36,9 @@ public class LoginResponse {
         this.success = success;
     }
 
-    @RestController
-    @RequestMapping("/api")
-    public static class AuthController {
+    // @RestController
+    // @RequestMapping("/api")
+    // public static class AuthController {
 
         @PostMapping("/login")
         public ResponseEntity<LoginResponse> login(@RequestBody com.example.volunteerMatching.models.LoginRequest loginRequest) {
@@ -50,5 +50,5 @@ public class LoginResponse {
                         .body(new LoginResponse("Invalid email or password", false));
             }
         }
-    }
+    // }
 }
