@@ -41,7 +41,7 @@ public class LoginResponse {
     public static class AuthController {
 
         @PostMapping("/login")
-        public ResponseEntity<LoginResponse> login(@RequestBody com.example.volunteerregistration.model.LoginRequest loginRequest) {
+        public ResponseEntity<LoginResponse> login(@RequestBody com.example.volunteerMatching.models.LoginRequest loginRequest) {
             // Simulated authentication logic (replace with actual authentication)
             if("user@example.com".equals(loginRequest.getEmail()) && "password".equals(loginRequest.getPassword())){
                 return ResponseEntity.ok(new LoginResponse("Login successful", true));

@@ -1,6 +1,6 @@
 package com.example.volunteerMatching.controller;
 
-import com.example.volunteerregistration.model.UserProfile;
+import com.example.volunteerMatching.models.UserProfile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

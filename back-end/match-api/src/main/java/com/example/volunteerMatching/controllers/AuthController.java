@@ -1,7 +1,7 @@
 package com.example.volunteerMatching.controller;
 
-import com.example.volunteerregistration.model.LoginRequest;
-import com.example.volunteerregistration.model.LoginResponse;
+import com.example.volunteerMatching.models.LoginRequest;
+import com.example.volunteerMatching.models.LoginResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
