@@ -1,6 +1,6 @@
 
-CREATE DATABASE IF NOT EXISTS VolunteerSystem;
-USE VolunteerSystem;
+CREATE DATABASE IF NOT EXISTS nabaDatabase;
+USE nabaDatabase;
 
 
 CREATE TABLE UserCredentials (
