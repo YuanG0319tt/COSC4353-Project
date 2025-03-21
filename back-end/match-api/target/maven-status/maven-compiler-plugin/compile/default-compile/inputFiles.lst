@@ -4,6 +4,8 @@
 /home/zballard/school/software/COSC4353-Project/back-end/match-api/src/main/java/com/example/volunteerMatching/NotificationService.java
 /home/zballard/school/software/COSC4353-Project/back-end/match-api/src/main/java/com/example/volunteerMatching/VolHistoryService.java
 /home/zballard/school/software/COSC4353-Project/back-end/match-api/src/main/java/com/example/volunteerMatching/VolunteerService.java
+/home/zballard/school/software/COSC4353-Project/back-end/match-api/src/main/java/com/example/volunteerMatching/config/DatabaseConnection.java
+/home/zballard/school/software/COSC4353-Project/back-end/match-api/src/main/java/com/example/volunteerMatching/config/DotenvConfig.java
 /home/zballard/school/software/COSC4353-Project/back-end/match-api/src/main/java/com/example/volunteerMatching/controllers/EventController.java
 /home/zballard/school/software/COSC4353-Project/back-end/match-api/src/main/java/com/example/volunteerMatching/controllers/MatchController.java
 /home/zballard/school/software/COSC4353-Project/back-end/match-api/src/main/java/com/example/volunteerMatching/controllers/NotificationController.java
