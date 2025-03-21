@@ -8,7 +8,7 @@ import javax.annotation.PostConstruct;
 public class DotenvConfig {
     @PostConstruct
     public void loadEnvVariables() {
-        Map<String, String> dotenv = System.getenv();
+        Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
         System.setProperty("DB_HOST", dotenv.get("DB_HOST"));
         System.setProperty("DB_USER", dotenv.get("DB_USER"));
         System.setProperty("DB_PASSWORD", dotenv.get("DB_PASSWORD"));
