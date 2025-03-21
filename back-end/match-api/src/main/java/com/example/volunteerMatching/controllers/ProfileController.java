@@ -1,4 +1,4 @@
-package com.example.volunteerregistration.controller;
+package com.example.volunteerMatching.controller;
 
 import com.example.volunteerregistration.model.UserProfile;
 import org.springframework.http.ResponseEntity;

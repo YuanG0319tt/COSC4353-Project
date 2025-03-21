@@ -1,4 +1,4 @@
-package com.example.volunteerregistration.models;
+package com.example.volunteerMatching.models;
 
 
 public class LoginRequest {
