@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>VolHistory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">demo</a> &gt; <a href="index.source.html" class="el_package">com.example.volunteerMatching.models</a> &gt; <span class="el_source">VolHistory.java</span></div><h1>VolHistory.java</h1><pre class="source lang-java linenums">package com.example.volunteerMatching.models;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import lombok.NoArgsConstructor;
+import java.time.LocalDate;
+
+@Entity
+@Table(name = &quot;volunteer_history&quot;)
+public class VolHistory {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotBlank(message = &quot;Name is required.&quot;)
+    private String name;
+
+    @NotBlank(message = &quot;Email is required.&quot;)
+    @Email(message = &quot;Invalid email format.&quot;)
+    private String email;
+
+    @Pattern(regexp = &quot;\\d{10}&quot;, message = &quot;Phone number must be 10 digits.&quot;)
+    private String phoneNumber;
+
+    @NotBlank(message = &quot;Event name is required.&quot;)
+    private String eventName;
+
+    @Pattern(regexp = &quot;\\d{4}-\\d{2}-\\d{2}&quot;, message = &quot;Date must be in YYYY-MM-DD format.&quot;)
+    private String eventDate;
+
+    @Min(value = 1, message = &quot;Hours must be at least 1.&quot;)
+    private int hoursVolunteered;
+
+    @Pattern(regexp = &quot;Completed|Pending&quot;, message = &quot;Status must be 'Completed' or 'Pending'.&quot;)
+    private String status;  // Completed or Pending
+
+<span class="fc" id="L37">    public VolHistory(String name, String email, String phoneNumber, String eventName, String eventDate, int hoursVolunteered, String status) {</span>
+<span class="fc" id="L38">        this.name = name;</span>
+<span class="fc" id="L39">        this.email = email;</span>
+<span class="fc" id="L40">        this.phoneNumber = phoneNumber;</span>
+<span class="fc" id="L41">        this.eventName = eventName;</span>
+<span class="fc" id="L42">        this.eventDate = eventDate;</span>
+<span class="fc" id="L43">        this.hoursVolunteered = hoursVolunteered;</span>
+<span class="fc" id="L44">        this.status = status;</span>
+<span class="fc" id="L45">    }</span>
+
+    // Getters and Setters
+<span class="nc" id="L48">    public Long getId() { return id; }</span>
+
+<span class="fc" id="L50">    public String getName() { return name; }</span>
+<span class="nc" id="L51">    public void setName(String name) { this.name = name; }</span>
+
+<span class="fc" id="L53">    public String getEmail() { return email; }</span>
+<span class="nc" id="L54">    public void setEmail(String email) { this.email = email; }</span>
+
+<span class="fc" id="L56">    public String getPhoneNumber() { return phoneNumber; }</span>
+<span class="nc" id="L57">    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }</span>
+
+<span class="fc" id="L59">    public String getEventName() { return eventName; }</span>
+<span class="nc" id="L60">    public void setEventName(String eventName) { this.eventName = eventName; }</span>
+
+<span class="fc" id="L62">    public String getEventDate() { return eventDate; }</span>
+<span class="nc" id="L63">    public void setEventDate(String eventDate) { this.eventDate = eventDate; }</span>
+
+<span class="fc" id="L65">    public int getHoursVolunteered() { return hoursVolunteered; }</span>
+<span class="nc" id="L66">    public void setHoursVolunteered(int hoursVolunteered) { this.hoursVolunteered = hoursVolunteered; }</span>
+
+<span class="fc" id="L68">    public String getStatus() { return status; }</span>
+<span class="nc" id="L69">    public void setStatus(String status) { this.status = status; }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

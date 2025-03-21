@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserProfile.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">demo</a> &gt; <a href="index.source.html" class="el_package">com.example.volunteerMatching.models</a> &gt; <span class="el_source">UserProfile.java</span></div><h1>UserProfile.java</h1><pre class="source lang-java linenums">package com.example.volunteerMatching.models;
+
+import java.time.LocalDate;
+import java.util.List;
+
+public class UserProfile {
+    private String fullName;
+    private String address1;
+    private String address2;
+    private String city;
+    private String state;
+    private String zip;
+    private List&lt;String&gt; skills;     // Multiple skills
+    private String preferences;      // Optional text area
+    private List&lt;LocalDate&gt; availability; // Multiple date selection
+
+    // Constructors
+<span class="nc" id="L18">    public UserProfile() {</span>
+<span class="nc" id="L19">    }</span>
+
+    public UserProfile(String fullName, String address1, String address2,
+                       String city, String state, String zip,
+                       List&lt;String&gt; skills, String preferences,
+<span class="fc" id="L24">                       List&lt;LocalDate&gt; availability) {</span>
+<span class="fc" id="L25">        this.fullName = fullName;</span>
+<span class="fc" id="L26">        this.address1 = address1;</span>
+<span class="fc" id="L27">        this.address2 = address2;</span>
+<span class="fc" id="L28">        this.city = city;</span>
+<span class="fc" id="L29">        this.state = state;</span>
+<span class="fc" id="L30">        this.zip = zip;</span>
+<span class="fc" id="L31">        this.skills = skills;</span>
+<span class="fc" id="L32">        this.preferences = preferences;</span>
+<span class="fc" id="L33">        this.availability = availability;</span>
+<span class="fc" id="L34">    }</span>
+
+    // Getters and setters
+    public String getFullName() {
+<span class="fc" id="L38">        return fullName;</span>
+    }
+    public void setFullName(String fullName) {
+<span class="nc" id="L41">        this.fullName = fullName;</span>
+<span class="nc" id="L42">    }</span>
+    public String getAddress1() {
+<span class="fc" id="L44">        return address1;</span>
+    }
+    public void setAddress1(String address1) {
+<span class="nc" id="L47">        this.address1 = address1;</span>
+<span class="nc" id="L48">    }</span>
+    public String getAddress2() {
+<span class="fc" id="L50">        return address2;</span>
+    }
+    public void setAddress2(String address2) {
+<span class="nc" id="L53">        this.address2 = address2;</span>
+<span class="nc" id="L54">    }</span>
+    public String getCity() {
+<span class="fc" id="L56">        return city;</span>
+    }
+    public void setCity(String city) {
+<span class="nc" id="L59">        this.city = city;</span>
+<span class="nc" id="L60">    }</span>
+    public String getState() {
+<span class="fc" id="L62">        return state;</span>
+    }
+    public void setState(String state) {
+<span class="nc" id="L65">        this.state = state;</span>
+<span class="nc" id="L66">    }</span>
+    public String getZip() {
+<span class="fc" id="L68">        return zip;</span>
+    }
+    public void setZip(String zip) {
+<span class="nc" id="L71">        this.zip = zip;</span>
+<span class="nc" id="L72">    }</span>
+    public List&lt;String&gt; getSkills() {
+<span class="fc" id="L74">        return skills;</span>
+    }
+    public void setSkills(List&lt;String&gt; skills) {
+<span class="nc" id="L77">        this.skills = skills;</span>
+<span class="nc" id="L78">    }</span>
+    public String getPreferences() {
+<span class="fc" id="L80">        return preferences;</span>
+    }
+    public void setPreferences(String preferences) {
+<span class="nc" id="L83">        this.preferences = preferences;</span>
+<span class="nc" id="L84">    }</span>
+    public List&lt;LocalDate&gt; getAvailability() {
+<span class="fc" id="L86">        return availability;</span>
+    }
+    public void setAvailability(List&lt;LocalDate&gt; availability) {
+<span class="nc" id="L89">        this.availability = availability;</span>
+<span class="nc" id="L90">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

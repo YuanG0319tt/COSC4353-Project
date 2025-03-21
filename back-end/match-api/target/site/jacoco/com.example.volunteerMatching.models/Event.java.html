@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Event.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">demo</a> &gt; <a href="index.source.html" class="el_package">com.example.volunteerMatching.models</a> &gt; <span class="el_source">Event.java</span></div><h1>Event.java</h1><pre class="source lang-java linenums">package com.example.volunteerMatching.models;
+
+import java.util.List;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+
+public class Event {
+    @NotBlank(message = &quot;Location is required.&quot;)
+    private String location;
+    @NotBlank(message = &quot;Name is required.&quot;)
+    @Size(max=100, message=&quot;Name must be 100 characters or less.&quot;)
+    private String name;
+    @Pattern(regexp=&quot;\\d{4}-\\d{2}-\\d{2}&quot;, message=&quot;Invalid date format. Use YYYY-MM-DD&quot;)
+    @NotBlank(message=&quot;Date is required.&quot;)
+    private String date;
+    @NotNull(message=&quot;Requirements are required.&quot;)
+    private List&lt;String&gt; requirements;
+    @NotBlank(message=&quot;Urgency is required.&quot;)
+    @Pattern(regexp=&quot;High|Medium|Low&quot;, message=&quot;Urgency must be High, Medium, or Low.&quot;)
+    private String urgency;
+    @NotBlank(message=&quot;Description is required.&quot;)
+    private String description;
+    
+
+<span class="fc" id="L27">    public Event(String location, String name, String date, List&lt;String&gt; requirements, String urgency, String description) {</span>
+<span class="fc" id="L28">        this.location = location;</span>
+<span class="fc" id="L29">        this.name = name;</span>
+<span class="fc" id="L30">        this.date = date;</span>
+<span class="fc" id="L31">        this.requirements = requirements;</span>
+<span class="fc" id="L32">        this.urgency = urgency;</span>
+<span class="fc" id="L33">        this.description = description;</span>
+<span class="fc" id="L34">    }</span>
+
+<span class="fc" id="L36">    public String getLocation() {return location;}</span>
+<span class="nc" id="L37">    public void setLocation(String location) {this.location = location;}</span>
+
+<span class="fc" id="L39">    public String getName() { return name; }</span>
+<span class="nc" id="L40">    public void setName(String name) { this.name = name; }</span>
+
+<span class="fc" id="L42">    public String getDate() { return date; }</span>
+<span class="nc" id="L43">    public void setDate(String date) { this.date = date; }</span>
+
+<span class="fc" id="L45">    public List&lt;String&gt; getRequirements() { return requirements; }</span>
+<span class="nc" id="L46">    public void setRequirements(List&lt;String&gt; requirements) { this.requirements = requirements; }</span>
+
+<span class="fc" id="L48">    public String getUrgency() { return urgency; }</span>
+<span class="nc" id="L49">    public void setUrgency(String urgency) { this.urgency = urgency; }</span>
+
+<span class="fc" id="L51">    public String getDescription() { return description; }</span>
+<span class="nc" id="L52">    public void setDescription(String description) { this.description = description; }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
