@@ -9,8 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/volunteer-history")
-@CrossOrigin(origins = "*")  // Allow frontend to access the backend
+@RequestMapping("/volunteer-history")
 public class VolHistoryController {
     private final VolHistoryService volHistoryService;
 
