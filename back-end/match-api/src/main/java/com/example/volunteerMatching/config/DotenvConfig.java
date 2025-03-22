@@ -1,3 +1,5 @@
+package com.example.volunteerMatching.config;
+
 import io.github.cdimascio.dotenv.Dotenv;
 import java.util.Map;
 import org.springframework.context.annotation.Configuration;
