@@ -31,7 +31,7 @@ public class VolHistoryService {
 
     // Get all volunteer history records
     public List<VolHistory> getAllVolHistory() {
-        List<VolunteerHistory> histories = volunteerHistoryRepository.findAllWithUserAndEventDetails();
+        List<VolunteerHistory> histories = volunteerHistoryRepository.findAll();
         System.out.println("Volunteer History List: " + histories);
         return histories.stream()
                 .map(this::convertToDto)

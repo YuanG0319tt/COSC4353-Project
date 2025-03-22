@@ -22,7 +22,7 @@ public class VolHistoryController {
         return volHistoryService.addVolHistory(volHistory);
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public List<VolHistory> getAllVolunteerHistory() {
         return volHistoryService.getAllVolHistory();
     }
