@@ -70,7 +70,7 @@ async function initializeHistory() {
     console.log("Fetching Volunteer History from Backend...");
 
     try {
-        let response = await fetch("http://localhost:8080/api/volunteer-history"); // Adjust if needed
+        let response = await fetch("http://localhost:8080/volunteer-history"); // Adjust if needed
         if (!response.ok) {
             throw new Error("Failed to fetch volunteer history");
         }

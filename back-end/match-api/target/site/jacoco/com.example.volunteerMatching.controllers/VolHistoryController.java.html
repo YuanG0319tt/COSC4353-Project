@@ -19,28 +19,28 @@ public class VolHistoryController {
 
     @PostMapping
     public VolHistory addVolunteerHistory(@RequestBody VolHistory volHistory) {
-<span class="nc" id="L22">        return volHistoryService.addVolHistory(volHistory);</span>
+<span class="fc" id="L22">        return volHistoryService.addVolHistory(volHistory);</span>
     }
 
     @GetMapping
     public List&lt;VolHistory&gt; getAllVolunteerHistory() {
-<span class="nc" id="L27">        return volHistoryService.getAllVolHistory();</span>
+<span class="fc" id="L27">        return volHistoryService.getAllVolHistory();</span>
     }
 
     @GetMapping(&quot;/{id}&quot;)
     public ResponseEntity&lt;VolHistory&gt; getVolunteerHistoryById(@PathVariable Long id) {
-<span class="nc" id="L32">        Optional&lt;VolHistory&gt; volHistory = volHistoryService.getVolHistoryById(id);</span>
-<span class="nc" id="L33">        return volHistory.map(ResponseEntity::ok)</span>
-<span class="nc" id="L34">                .orElseGet(() -&gt; ResponseEntity.notFound().build());</span>
+<span class="fc" id="L32">        Optional&lt;VolHistory&gt; volHistory = volHistoryService.getVolHistoryById(id);</span>
+<span class="fc" id="L33">        return volHistory.map(ResponseEntity::ok)</span>
+<span class="fc" id="L34">                .orElseGet(() -&gt; ResponseEntity.notFound().build());</span>
     }
 
     @DeleteMapping(&quot;/{id}&quot;)
     public ResponseEntity&lt;Void&gt; deleteVolunteerHistory(@PathVariable Long id) {
-<span class="nc bnc" id="L39" title="All 2 branches missed.">        if (volHistoryService.getVolHistoryById(id).isPresent()) {</span>
-<span class="nc" id="L40">            volHistoryService.deleteVolHistory(id);</span>
-<span class="nc" id="L41">            return ResponseEntity.noContent().build();</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">        if (volHistoryService.getVolHistoryById(id).isPresent()) {</span>
+<span class="fc" id="L40">            volHistoryService.deleteVolHistory(id);</span>
+<span class="fc" id="L41">            return ResponseEntity.noContent().build();</span>
         }
-<span class="nc" id="L43">        return ResponseEntity.notFound().build();</span>
+<span class="fc" id="L43">        return ResponseEntity.notFound().build();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
