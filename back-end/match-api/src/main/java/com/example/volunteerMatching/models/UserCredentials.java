@@ -22,7 +22,7 @@ public class UserCredentials {
     @OneToOne(mappedBy = "userCredentials", cascade = CascadeType.ALL)
     private UserInfo userInfo;
     
-    // Relationship with VolunteerHistory
-    @OneToMany(mappedBy = "userCredentials")
-    private List<VolunteerHistory> volunteerHistories;
+    // // Relationship with VolunteerHistory
+    // @OneToMany(mappedBy = "userCredentials")
+    // private List<VolunteerHistory> volunteerHistories;
 }
