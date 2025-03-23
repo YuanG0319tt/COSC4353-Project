@@ -1,5 +1,6 @@
-package com.example.volunteerMatching.services;
+package com.example.volunteerMatching;
 
+import com.example.volunteerMatching.services.VolunteerService;
 import com.example.volunteerMatching.models.Volunteer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
