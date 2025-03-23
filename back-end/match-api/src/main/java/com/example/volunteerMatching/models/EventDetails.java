@@ -1,40 +1,55 @@
 package com.example.volunteerMatching.models;
 
 import jakarta.persistence.*;
-import lombok.*;
 import java.time.LocalDate;
-import java.util.List;
 
 @Entity
-@Table(name = "EventDetails")
-@NoArgsConstructor
-@Getter
-@Setter
+@Table(name = "EventDetails") // Make sure it matches exactly, including case
 public class EventDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "EventID")
-    private Long eventId;
-    
+    @Column(name = "EventID") // Must match MySQL column
+    private int eventID;
+
     @Column(name = "EventName")
     private String eventName;
-    
-    @Column(name = "EventDate")
-    private LocalDate eventDate;
-    
-    @Column(name = "Location")
-    private String location;
 
     @Column(name = "Description")
     private String description;
 
+    @Column(name = "Location")
+    private String location;
+
     @Column(name = "RequiredSkills")
-    private String requirements;
+    private String requiredSkills;
 
     @Column(name = "Urgency")
-    private String urgency;
+    private int urgency;
 
-    // Relationship with VolunteerHistory
-    @OneToMany(mappedBy = "eventDetails")
-    private List<VolunteerHistory> volunteerHistories;
+    @Column(name = "EventDate")
+    private LocalDate eventDate;
+
+    public EventDetails() {}
+
+    // Getters and Setters
+    public int getEventID() { return eventID; }
+    public void setEventID(int eventID) { this.eventID = eventID; }
+
+    public String getEventName() { return eventName; }
+    public void setEventName(String eventName) { this.eventName = eventName; }
+
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+
+    public String getLocation() { return location; }
+    public void setLocation(String location) { this.location = location; }
+
+    public String getRequiredSkills() { return requiredSkills; }
+    public void setRequiredSkills(String requiredSkills) { this.requiredSkills = requiredSkills; }
+
+    public int getUrgency() { return urgency; }
+    public void setUrgency(int urgency) { this.urgency = urgency; }
+
+    public LocalDate getEventDate() { return eventDate; }
+    public void setEventDate(LocalDate eventDate) { this.eventDate = eventDate; }
 }
