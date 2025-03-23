@@ -1,24 +1,41 @@
 package com.example.volunteerMatching.models;
 
 import java.util.List;
+
+import jakarta.persistence.*;
+import lombok.*;
+import java.time.LocalDate;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 public class Volunteer {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @NotBlank(message="Location is required.")
     private String location;
+
     @NotBlank(message="Name is required.")
     @Size(max=100, message="Name must be 100 characters or less.")
     private String name;
+
     @NotBlank(message="Availability is required.")
     @Pattern(regexp="\\d{4}-\\d{2}-\\d{2}", message="Invalid date format. Use YYYY-MM-DD")
     private String availability;
+
     @NotNull(message="Skills are required.")
     private List<String> skills;
+
     @NotBlank(message="Preferences are required.")
+    @Size(min = 1, message = "At least one preference must be provided.")
     private List<String> preferences;
+
+    public Volunteer(){
+         
+    };
 
     public Volunteer(String location, String name, String availability, List<String> skills, List<String> preferences) {
         this.location = location;
