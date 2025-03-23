@@ -1,4 +1,4 @@
-package com.example.volunteerMatching.controllers;
+package com.example.volunteerMatching;
 
 import com.example.volunteerMatching.controllers.NotificationController;
 import com.example.volunteerMatching.models.Notification;
@@ -11,17 +11,17 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import java.time.format.DateTimeFormatter;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class NotificationControllerTest {
 
@@ -33,6 +33,8 @@ public class NotificationControllerTest {
     @InjectMocks
     private NotificationController notificationController;
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -41,50 +43,61 @@ public class NotificationControllerTest {
 
     @Test
     public void testGetAllNotifications() throws Exception {
-        LocalDateTime now = LocalDateTime.now().withNano(0);
-        Notification notification1 = new Notification("Reminder", "Meeting at 3 PM", "notification", now);
-        Notification notification2 = new Notification("Alert", "System maintenance tonight", "announcement", now);
-        List<Notification> notifications = Arrays.asList(notification1, notification2);
+        LocalDateTime timestamp = LocalDateTime.of(2025, 3, 22, 15, 00, 00);
+        Notification n1 = new Notification("Reminder", "Meeting at 3 PM", "notification", timestamp);
+        Notification n2 = new Notification("Alert", "System maintenance tonight", "announcement", timestamp);
 
-        when(notificationService.getAllNotifications()).thenReturn(notifications);
+        when(notificationService.getAllNotifications()).thenReturn(List.of(n1, n2));
 
         mockMvc.perform(get("/notifications"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("[{'title':'Reminder','message':'Meeting at 3 PM','type':'notification','timestamp':'" + notification1.getTimestamp() + "'},{'title':'Alert','message':'System maintenance tonight','type':'announcement','timestamp':'" + notification2.getTimestamp() + "'}]"));
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].title").value("Reminder"))
+                .andExpect(jsonPath("$[0].message").value("Meeting at 3 PM"))
+                .andExpect(jsonPath("$[0].type").value("notification"))
+                .andExpect(jsonPath("$[1].title").value("Alert"))
+                .andExpect(jsonPath("$[1].message").value("System maintenance tonight"))
+                .andExpect(jsonPath("$[1].type").value("announcement"))
+                .andExpect(jsonPath("$[0].timestamp").value("2025-03-22T15:00:00"));
     }
 
     @Test
     public void testGetNotificationsByType() throws Exception {
-        Notification notification = new Notification("Reminder", "Meeting at 3 PM", "notification", LocalDateTime.now().withNano(0));
-        List<Notification> notifications = Arrays.asList(notification);
+        LocalDateTime timestamp = LocalDateTime.of(2025, 3, 22, 15, 00, 00);
+        Notification notification = new Notification("Reminder", "Meeting at 3 PM", "notification", timestamp);
 
-        when(notificationService.getNotificationsByType("notification")).thenReturn(notifications);
+        when(notificationService.getNotificationsByType("notification")).thenReturn(List.of(notification));
 
         mockMvc.perform(get("/notifications/notification"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("[{'title':'Reminder','message':'Meeting at 3 PM','type':'notification','timestamp':'" + notification.getTimestamp() + "'}]"));
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].title").value("Reminder"))
+                .andExpect(jsonPath("$[0].type").value("notification"));
     }
 
     @Test
     public void testAddNotification() throws Exception {
-        Notification notification = new Notification("Maintenance", "Scheduled server downtime", "announcement", LocalDateTime.now());
+        LocalDateTime fixedNow = LocalDateTime.of(2025, 3, 22, 15, 30, 00);
+        Notification expectedNotification = new Notification("Maintenance", "Scheduled server downtime", "announcement", fixedNow);
 
-        when(notificationService.addNotification(any(String.class), any(String.class), any(String.class)))
-            .thenAnswer(invocation -> new Notification(
-                    invocation.getArgument(0), // title
-                    invocation.getArgument(1), // message
-                    invocation.getArgument(2), // type
-                    LocalDateTime.now()));
+        when(notificationService.addNotification(any(), any(), any()))
+                .thenReturn(expectedNotification);
 
-        String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
+        String jsonRequest = """
+            {
+              "title": "Maintenance",
+              "message": "Scheduled server downtime",
+              "type": "announcement"
+            }
+        """;
 
         mockMvc.perform(post("/notifications")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"title\":\"Maintenance\",\"message\":\"Scheduled server downtime\",\"type\":\"announcement\",\"timestamp\":\"" + now + "\"}"))
+                .content(jsonRequest))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value("Maintenance"))
                 .andExpect(jsonPath("$.message").value("Scheduled server downtime"))
                 .andExpect(jsonPath("$.type").value("announcement"))
-                .andExpect(jsonPath("$.timestamp").exists());
+                .andExpect(jsonPath("$.timestamp").value("2025-03-22T15:30:00"));
     }
 }
