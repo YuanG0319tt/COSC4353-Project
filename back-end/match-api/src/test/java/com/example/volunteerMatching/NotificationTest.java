@@ -1,6 +1,7 @@
-package com.example.volunteerMatching.models;
+package com.example.volunteerMatching;
 
 import org.junit.jupiter.api.Test;
+import com.example.volunteerMatching.models.Notification;
 import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.*;
 
