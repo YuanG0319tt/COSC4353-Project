@@ -1,4 +1,4 @@
-package com.example.volunteerMatching.services;
+package com.example.volunteerMatching;
 
 import com.example.volunteerMatching.models.Notification;
 import com.example.volunteerMatching.repositories.NotificationRepository;
@@ -9,7 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import java.time.LocalDateTime;
-import java.util.Arrays;
+// import java.util.Arrays;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
