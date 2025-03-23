@@ -1,5 +1,6 @@
-package com.example.volunteerMatching.controllers;
+package com.example.volunteerMatching;
 
+import com.example.volunteerMatching.controllers.VolunteerController;
 import com.example.volunteerMatching.models.Volunteer;
 import com.example.volunteerMatching.services.VolunteerService;
 import org.junit.jupiter.api.BeforeEach;
