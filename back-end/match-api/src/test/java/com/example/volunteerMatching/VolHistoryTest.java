@@ -1,5 +1,7 @@
-package com.example.volunteerMatching.models;
+package com.example.volunteerMatching;
 
+import com.example.volunteerMatching.models.VolHistory;
+import com.example.volunteerMatching.models.Volunteer;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
