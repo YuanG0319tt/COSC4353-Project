@@ -1,5 +1,6 @@
-package com.example.volunteerMatching.controllers;
+package com.example.volunteerMatching;
 
+import com.example.volunteerMatching.controllers.VolHistoryController;
 import com.example.volunteerMatching.models.VolHistory;
 import com.example.volunteerMatching.services.VolHistoryService;
 import org.junit.jupiter.api.Test;
