@@ -1,3 +1,4 @@
+/home/zballard/school/software/COSC4353-Project/back-end/match-api/src/test/java/com/example/volunteerMatching/VolHistoryControllerTest.java
 /home/zballard/school/software/COSC4353-Project/back-end/match-api/src/test/java/com/example/volunteerMatching/ApplicationTests.java
 /home/zballard/school/software/COSC4353-Project/back-end/match-api/src/test/java/com/example/volunteerMatching/EventServiceTest.java
 /home/zballard/school/software/COSC4353-Project/back-end/match-api/src/test/java/com/example/volunteerMatching/EventControllerTest.java
@@ -8,7 +9,11 @@
 /home/zballard/school/software/COSC4353-Project/back-end/match-api/src/test/java/com/example/volunteerMatching/VolunteerControllerTest.java
 /home/zballard/school/software/COSC4353-Project/back-end/match-api/src/test/java/com/example/volunteerMatching/VolHistoryTest.java
 /home/zballard/school/software/COSC4353-Project/back-end/match-api/src/test/java/com/example/volunteerMatching/NotificationServiceTest.java
+/home/zballard/school/software/COSC4353-Project/back-end/match-api/src/test/java/com/example/volunteerMatching/DatabaseConnectionTest.java
+/home/zballard/school/software/COSC4353-Project/back-end/match-api/src/test/java/com/example/volunteerMatching/LoginRequestTest.java
 /home/zballard/school/software/COSC4353-Project/back-end/match-api/src/test/java/com/example/volunteerMatching/VolunteerServiceTest.java
 /home/zballard/school/software/COSC4353-Project/back-end/match-api/src/test/java/com/example/volunteerMatching/MatchControllerTest.java
 /home/zballard/school/software/COSC4353-Project/back-end/match-api/src/test/java/com/example/volunteerMatching/MatchServiceTest.java
 /home/zballard/school/software/COSC4353-Project/back-end/match-api/src/test/java/com/example/volunteerMatching/EventTest.java
+/home/zballard/school/software/COSC4353-Project/back-end/match-api/src/test/java/com/example/volunteerMatching/LoginResponseTest.java
+/home/zballard/school/software/COSC4353-Project/back-end/match-api/src/test/java/com/example/volunteerMatching/DotenvConfigTest.java

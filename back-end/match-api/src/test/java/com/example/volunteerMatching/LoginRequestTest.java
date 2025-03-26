@@ -1,5 +1,6 @@
-package com.example.volunteerMatching.models;
+package com.example.volunteerMatching;
 
+import com.example.volunteerMatching.models.LoginRequest;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

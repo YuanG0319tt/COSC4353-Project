@@ -1,6 +1,6 @@
 package com.example.volunteerMatching.services;
 
-import com.example.volunteerMatching.models.Event;
+import com.example.volunteerMatching.models.EventDetails;
 import com.example.volunteerMatching.models.Volunteer;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
@@ -17,11 +17,11 @@ public class MatchService {
     }
 
     public List<String> matchVolunteers() {
-        List<Event> events = eventService.getAllEvents();
+        List<EventDetails> events = eventService.getAllEvents();
         List<Volunteer> volunteers = volunteerService.getAllVolunteers();
         List<String> matches = new ArrayList<>();
     
-        for (Event event : events) {
+        for (EventDetails event : events) {
             Volunteer bestMatch = null;
             int highestMatchScore = 0;
     
@@ -29,7 +29,7 @@ public class MatchService {
                 int matchScore = 0;
     
                 boolean hasSkillMatch = volunteer.getSkills().stream()
-                    .anyMatch(event.getRequirements()::contains);
+                    .anyMatch(event.getRequiredSkills()::contains);
     
                 if (!hasSkillMatch) {
                     continue;
@@ -39,15 +39,15 @@ public class MatchService {
                     matchScore += 3;
                 }
     
-                if (volunteer.getAvailability().equals(event.getDate())) {
+                if (volunteer.getAvailability().equals(event.getEventDate())) {
                     matchScore += 2;
                 }
     
                 matchScore += (int) volunteer.getSkills().stream()
-                    .filter(event.getRequirements()::contains)
+                    .filter(event.getRequiredSkills()::contains)
                     .count() * 2;
     
-                if (volunteer.getPreferences().stream().anyMatch(event.getRequirements()::contains)) {
+                if (volunteer.getPreferences().stream().anyMatch(event.getRequiredSkills()::contains)) {
                     matchScore += 1;
                 }
     
@@ -58,7 +58,7 @@ public class MatchService {
             }
     
             if (bestMatch != null) {
-                matches.add(event.getName() + " -> " + bestMatch.getName());
+                matches.add(event.getEventName() + " -> " + bestMatch.getName());
             }
         }
         return matches;
@@ -66,18 +66,18 @@ public class MatchService {
 
     public String assignVolunteer(String volunteerName, String eventName) {
         List<Volunteer> volunteers = volunteerService.getAllVolunteers();
-        List<Event> events = eventService.getAllEvents();
+        List<EventDetails> events = eventService.getAllEvents();
 
         Volunteer selectedVolunteer = volunteers.stream()
             .filter(v -> v.getName().equals(volunteerName))
             .findFirst().orElse(null);
 
-        Event selectedEvent = events.stream()
-            .filter(e -> e.getName().equals(eventName))
+        EventDetails selectedEvent = events.stream()
+            .filter(e -> e.getEventName().equals(eventName))
             .findFirst().orElse(null);
 
         if (selectedVolunteer != null && selectedEvent != null) {
-            return selectedVolunteer.getName() + " assigned to " + selectedEvent.getName();
+            return selectedVolunteer.getName() + " assigned to " + selectedEvent.getEventName();
         }
         return "Assignment failed. Please try again.";
     }

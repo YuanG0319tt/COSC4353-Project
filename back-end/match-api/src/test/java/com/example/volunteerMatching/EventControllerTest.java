@@ -1,6 +1,7 @@
-package com.example.volunteerMatching.controllers;
+package com.example.volunteerMatching;
 
-import com.example.volunteerMatching.models.Event;
+import com.example.volunteerMatching.controllers.EventController;
+import com.example.volunteerMatching.models.EventDetails;
 import com.example.volunteerMatching.services.EventService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
@@ -35,27 +37,47 @@ class EventControllerTest {
 
     @Test
     void testAddEvent() throws Exception {
-        Event event = new Event("NYC", "Cleanup Drive", "2025-06-20", List.of("Gloves", "Trash Bags"), "High", "2025-06-20");
-        when(eventService.addEvent(any(Event.class))).thenReturn(event);
+        EventDetails event = new EventDetails();
+        event.setLocation("NYC");
+        event.setEventName("Cleanup Drive");
+        event.setEventDate(LocalDate.parse("2025-06-20"));
+        event.setRequiredSkills("Gloves,Trash Bags");
+        event.setUrgency(5);
+        event.setDescription("City-wide cleanup event");
+
+        when(eventService.addEvent(any(EventDetails.class))).thenReturn(event);
 
         mockMvc.perform(post("/events")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"location\":\"NYC\", \"name\":\"Cleanup Drive\", \"date\":\"2025-06-20\", \"requirements\":[\"Gloves\", \"Trash Bags\"], \"urgency\":\"High\", \"description\":\"2025-06-20\"}"))
+                .content("{\"location\":\"NYC\", \"eventName\":\"Cleanup Drive\", \"eventDate\":\"2025-06-20\", \"requirements\":\"Gloves,Trash Bags\", \"urgency\":5, \"description\":\"City-wide cleanup event\"}"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Cleanup Drive"));
+                .andExpect(jsonPath("$.eventName").value("Cleanup Drive"));
     }
 
     @Test
     void testGetAllEvents() throws Exception {
-        Event event1 = new Event("LA", "Tree Plantation", "2025-07-10", List.of("Shovel", "Saplings"), "Medium", "2025-07-10");
-        Event event2 = new Event("SF", "Beach Cleanup", "2025-08-05", List.of("Gloves", "Bags"), "Low", "2025-08-05");
+        EventDetails event1 = new EventDetails();
+        event1.setLocation("LA");
+        event1.setEventName("Tree Plantation");
+        event1.setEventDate(LocalDate.parse("2025-07-10"));
+        event1.setRequiredSkills("Shovel,Saplings");
+        event1.setUrgency(3);
+        event1.setDescription("Planting trees in local park");
+
+        EventDetails event2 = new EventDetails();
+        event2.setLocation("SF");
+        event2.setEventName("Beach Cleanup");
+        event2.setEventDate(LocalDate.parse("2025-08-05"));
+        event2.setRequiredSkills("Gloves,Bags");
+        event2.setUrgency(1);
+        event2.setDescription("Cleanup event at Ocean Beach");
 
         when(eventService.getAllEvents()).thenReturn(List.of(event1, event2));
 
         mockMvc.perform(get("/events"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].name").value("Tree Plantation"))
-                .andExpect(jsonPath("$[1].name").value("Beach Cleanup"));
+                .andExpect(jsonPath("$[0].eventName").value("Tree Plantation"))
+                .andExpect(jsonPath("$[1].eventName").value("Beach Cleanup"));
     }
 }
