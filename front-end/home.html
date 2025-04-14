@@ -115,7 +115,7 @@
     <div class="content">
         <h1>Make a Difference Today</h1>
         <p>Join us in making a positive impact in your community.</p>
-        <button class="btn btn-success btn-lg" onclick="redirectToRegister()">Get Started</button>
+        <button class="btn btn-success btn-lg" onclick="redirectToLogin()">Get Started</button>
     </div>
 </div>
 
@@ -126,6 +126,12 @@
 
 <!-- Redirect Script -->
 <script>
+    function redirectToLogin() {
+        window.location.href = './pages/login.html';
+    }
+</script>
+
+<script>
     function redirectToRegister() {
         window.location.href = './pages/registration.html';
     }
@@ -133,3 +139,4 @@
 
 </body>
 </html>
+
