@@ -1,4 +1,4 @@
-package com.example.demo.entity.DTO;
+package com.example.volunteerMatching.entity.DTO;
 
 import lombok.Data;
 
