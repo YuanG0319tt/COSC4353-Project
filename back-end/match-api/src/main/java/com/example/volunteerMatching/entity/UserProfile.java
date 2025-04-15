@@ -1,4 +1,4 @@
-package com.example.demo.entity;
+package com.example.volunteerMatching.entity;
 
 
 import com.baomidou.mybatisplus.annotation.TableId;
