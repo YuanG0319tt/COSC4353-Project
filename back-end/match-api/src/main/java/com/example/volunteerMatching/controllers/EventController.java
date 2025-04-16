@@ -3,8 +3,6 @@ package com.example.volunteerMatching.controllers;
 import com.example.volunteerMatching.models.EventDetails;
 import com.example.volunteerMatching.services.EventService;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
