@@ -2,7 +2,6 @@ package com.example.volunteerMatching.models;
 
 import jakarta.persistence.*;
 import lombok.*;
-import java.util.List;
 
 @Entity
 @Table(name = "UserCredentials")
