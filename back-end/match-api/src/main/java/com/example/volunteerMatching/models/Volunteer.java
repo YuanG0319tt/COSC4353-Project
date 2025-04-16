@@ -3,8 +3,6 @@ package com.example.volunteerMatching.models;
 import java.util.List;
 
 import jakarta.persistence.*;
-import lombok.*;
-import java.time.LocalDate;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.NotNull;
