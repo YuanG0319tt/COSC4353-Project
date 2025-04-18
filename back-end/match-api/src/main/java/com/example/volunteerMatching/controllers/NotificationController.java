@@ -10,7 +10,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/notifications")
-@CrossOrigin(origins = "*") // Allow frontend access
 public class NotificationController {
 
     @Autowired
