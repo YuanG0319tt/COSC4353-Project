@@ -5,23 +5,24 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "notifications")
+@Table(name = "Notifications")
 public class Notification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "NotificationID")
+    private Integer id;
 
-    @Column(nullable = false)
+    @Column(name = "Title", nullable = false)
     private String title;
 
-    @Column(nullable = false, length = 500)
+    @Column(name = "Message", nullable = false)
     private String message;
 
-    @Column(nullable = false)
+    @Column(name = "NotificationType", nullable = false)
     private String type; // "announcement" or "notification"
 
-    @Column(nullable = false)
+    @Column(name = "CreatedAt", nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime timestamp;
 
@@ -36,7 +37,7 @@ public class Notification {
         this.timestamp = timestamp != null ? timestamp : LocalDateTime.now();
     }
 
-    public Long getId() { return id; }
+    public Integer getId() { return id; }
     public String getTitle() { return title; }
     public String getMessage() { return message; }
     public String getType() { return type; }
