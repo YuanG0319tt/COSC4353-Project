@@ -1,6 +1,6 @@
 package com.example.volunteerMatching.models;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.*;
 
 @Entity
@@ -45,10 +45,4 @@ public class UserInfo {
 
     @Column(name = "Availability")
     private String availability;
-
-    // Define relationship with UserCredentials
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "UserID")
-    private UserCredentials userCredentials;
 }
