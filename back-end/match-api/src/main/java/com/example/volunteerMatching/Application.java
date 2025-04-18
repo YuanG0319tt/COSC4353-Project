@@ -9,7 +9,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import java.util.List;
+import org.mybatis.spring.annotation.MapperScan;
 
+import com.example.volunteerMatching.mappers.UserProfileMapper;
 import com.example.volunteerMatching.models.EventDetails;
 import com.example.volunteerMatching.repositories.EventDetailsRepository;
 
@@ -19,6 +21,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 @SpringBootApplication
+@MapperScan("com.example.volunteerMatching.mappers")
 @EntityScan(basePackages = "com.example.volunteerMatching.models")
 @EnableJpaRepositories(basePackages = "com.example.volunteerMatching.repositories")
 public class Application {
@@ -28,6 +31,14 @@ public class Application {
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
+    }
+
+    @Bean
+    CommandLineRunner testMyBatisMapper(UserProfileMapper mapper) {
+        return args -> {
+            long count = mapper.selectCount(null);
+            System.out.println("✔ UserProfile rows in DB: " + count);
+        };
     }
 
     @Bean
