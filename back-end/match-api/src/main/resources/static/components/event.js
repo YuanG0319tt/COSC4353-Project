@@ -1,11 +1,11 @@
 console.log("Event JS loaded ✅");
 
+let selectedEvent = null;
 $(document).ready(function () {
     console.log("🧠 jQuery DOM Ready: event.js is running");
     const API_URL = "http://localhost:8080/events";
     const events = {}; // Will be filled dynamically from DB
     let currentDate = new Date();
-    let selectedEvent = null;
 
     function daysInMonth(date) {
         return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
@@ -20,31 +20,26 @@ $(document).ready(function () {
         calendarDays.empty();
         const totalDays = daysInMonth(currentDate);
         const firstDay = firstDayOfMonth(currentDate);
-    
-        // Create empty slots at the start
+
         for (let i = 0; i < firstDay; i++) {
             calendarDays.append('<div class="calendar-day empty"></div>');
         }
-    
-        // Generate days
+
         for (let day = 1; day <= totalDays; day++) {
             const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
-    
-            // Get local YYYY-MM-DD
             const dateString = date.toISOString().split('T')[0];
-    
-            // DEBUG LINE
             console.log(`Calendar Day: ${dateString} →`, events[dateString]);
-    
+
             const dayEvents = events[dateString] || [];
-    
+
             const dayElement = $('<div class="calendar-day"></div>');
             dayElement.append(`<span class="day-number">${day}</span>`);
-    
-            // Add any matching events
+
             dayEvents.forEach(event => {
                 const eventItem = $('<div class="event-item"></div>').text(event.eventName);
                 eventItem.click(() => {
+                    selectedEvent = event;
+                
                     $("#event-name").text(event.eventName);
                     $("#event-time").text(event.eventDate);
                     $("#event-description").text(event.description);
@@ -53,15 +48,111 @@ $(document).ready(function () {
                     $("#event-urgency").text(event.urgency);
                     $("#event-modal").removeClass("hidden");
                     $("#modal-overlay").removeClass("hidden");
+                
+                    // Rebind delete handler each time modal opens
+                    $("#delete-event-button").off("click").on("click", async () => {
+                        if (!selectedEvent || !selectedEvent.eventID) {
+                            console.warn("Missing event or eventID:", selectedEvent);
+                            alert("No valid event selected.");
+                            return;
+                        }
+                
+                        if (!confirm("Are you sure you want to delete this event?")) return;
+                
+                        try {
+                            const res = await fetch(`${API_URL}/${selectedEvent.eventID}`, { method: "DELETE" });
+                            if (!res.ok) throw new Error("Failed to delete event");
+                
+                            alert("Event deleted.");
+                            $("#event-modal").addClass("hidden");
+                            $("#modal-overlay").addClass("hidden");
+                            fetchEvents();
+                        } catch (err) {
+                            console.error(err);
+                            alert("Error deleting event.");
+                        }
+                    });
+                    
+                    $("#edit-event-button").on("click", () => {
+                        if (!selectedEvent) return alert("No event selected.");
+                      
+                        // Pre-fill form fields
+                        $("#edit-event-name").val(selectedEvent.eventName);
+                        $("#edit-event-description").val(selectedEvent.description);
+                        $("#edit-location").val(selectedEvent.location);
+                        $("#edit-required-skills").val(selectedEvent.requiredSkills);
+                        $("#edit-urgency").val(selectedEvent.urgency);
+                        $("#edit-event-date").val(selectedEvent.eventDate);
+                      
+                        $("#edit-event-modal").removeClass("hidden");
+                        $("#modal-overlay").removeClass("hidden");
+                        $("#event-modal").addClass("hidden");
+                      });
+                      
+                      $("#close-edit-event-modal").on("click", () => {
+                        $("#edit-event-modal").addClass("hidden");
+                        $("#modal-overlay").addClass("hidden");
+                      });
+                      
+                      $("#edit-event-form").on("submit", async function (e) {
+                        e.preventDefault();
+                      
+                        const eventName = $("#edit-event-name").val().trim();
+                        const description = $("#edit-event-description").val().trim();
+                        const location = $("#edit-location").val().trim();
+                        const requiredSkills = $("#edit-required-skills").val().trim();
+                        const urgency = parseInt($("#edit-urgency").val());
+                        const eventDate = $("#edit-event-date").val();
+                      
+                        // 🧠 Frontend validation
+                        if (!eventName || eventName.length > 100) {
+                          return alert("Event name is required and must be less than 100 characters.");
+                        }
+                      
+                        if (!description) return alert("Description is required.");
+                        if (!location) return alert("Location is required.");
+                        if (!requiredSkills) return alert("Required skills cannot be empty.");
+                        if (![1, 2, 3].includes(urgency)) return alert("Urgency must be High, Medium, or Low.");
+                        if (!eventDate || isNaN(new Date(eventDate).getTime())) return alert("A valid event date is required.");
+                      
+                        const updatedEvent = {
+                          eventName,
+                          description,
+                          location,
+                          requiredSkills,
+                          urgency,
+                          eventDate
+                        };
+                      
+                        try {
+                          const response = await fetch(`http://localhost:8080/events/${selectedEvent.eventID}`, {
+                            method: "PUT",
+                            headers: {
+                              "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(updatedEvent)
+                          });
+                      
+                          if (!response.ok) throw new Error("Update failed.");
+                      
+                          alert("Event updated.");
+                          $("#edit-event-modal").addClass("hidden");
+                          $("#modal-overlay").addClass("hidden");
+                          fetchEvents();
+                        } catch (err) {
+                          console.error(err);
+                          alert("Error updating event.");
+                        }
+                      });                      
                 });
                 dayElement.append(eventItem);
             });
-    
+
             calendarDays.append(dayElement);
         }
-    
+
         $("#current-month-year").text(`${currentDate.toLocaleString('default', { month: 'long' })} ${currentDate.getFullYear()}`);
-    }    
+    }
 
     function changeMonth(increment) {
         currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + increment, 1);
@@ -88,24 +179,22 @@ $(document).ready(function () {
     function populateCalendar(backendEvents) {
         console.log("populateCalendar() called");
         console.log("Incoming backend events:", backendEvents);
-
         for (const key in events) delete events[key];
-    
+
         backendEvents.forEach(event => {
-            // Convert to local YYYY-MM-DD
             const localDate = new Date(event.eventDate);
             const yyyy = localDate.getFullYear();
             const mm = String(localDate.getMonth() + 1).padStart(2, '0');
             const dd = String(localDate.getDate()).padStart(2, '0');
-            const dateKey = `${yyyy}-${mm}-${dd}`; // e.g. "2025-04-22"
-    
+            const dateKey = `${yyyy}-${mm}-${dd}`;
+
             if (!events[dateKey]) events[dateKey] = [];
             events[dateKey].push(event);
         });
-    
+
         console.log("Mapped event keys:", Object.keys(events));
         renderCalendar();
-    }    
+    }
 
     async function fetchEvents() {
         try {
@@ -137,7 +226,7 @@ $(document).ready(function () {
             alert("Event added successfully!");
             $("#add-event-modal").addClass("hidden");
             $("#modal-overlay").addClass("hidden");
-            await fetchEvents(); // Reload events
+            await fetchEvents();
         } catch (error) {
             console.error("Error submitting event:", error);
         }
@@ -150,19 +239,54 @@ $(document).ready(function () {
             High: 1,
             Medium: 2,
             Low: 3
-          };
-          
-          const eventData = {
+        };
+
+        const eventData = {
             eventName: document.getElementById("new-event-name").value,
             description: document.getElementById("new-event-description").value,
             location: document.getElementById("new-location").value,
             requiredSkills: Array.from(document.getElementById("new-required-skills").selectedOptions)
-                                .map(opt => opt.value).join(', '),
+                .map(opt => opt.value).join(', '),
             urgency: urgencyMap[document.getElementById("new-urgency").value],
             eventDate: document.getElementById("new-event-date").value
-          };          
+        };
 
-        submitEvent(eventData);
+        document.getElementById("add-event-form").addEventListener("submit", function (e) {
+            e.preventDefault();
+          
+            const eventName = document.getElementById("new-event-name").value.trim();
+            const description = document.getElementById("new-event-description").value.trim();
+            const location = document.getElementById("new-location").value.trim();
+            const requiredSkills = Array.from(document.getElementById("new-required-skills").selectedOptions)
+              .map(opt => opt.value).join(', ');
+            const urgencyStr = document.getElementById("new-urgency").value;
+            const eventDate = document.getElementById("new-event-date").value;
+          
+            const urgencyMap = { High: 1, Medium: 2, Low: 3 };
+            const urgency = urgencyMap[urgencyStr];
+          
+            // Frontend validation
+            if (!eventName || eventName.length > 100) {
+              return alert("Event name is required and must be less than 100 characters.");
+            }
+          
+            if (!description) return alert("Description is required.");
+            if (!location) return alert("Location is required.");
+            if (!requiredSkills) return alert("Required skills must be selected.");
+            if (!urgency || ![1, 2, 3].includes(urgency)) return alert("Urgency must be selected.");
+            if (!eventDate || isNaN(new Date(eventDate).getTime())) return alert("Valid event date is required.");
+          
+            const eventData = {
+              eventName,
+              description,
+              location,
+              requiredSkills,
+              urgency,
+              eventDate
+            };
+          
+            submitEvent(eventData);
+          });          
     });
 
     console.log("Calling fetchEvents()");
