@@ -9,7 +9,7 @@ public class EventDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "EventID") // Must match MySQL column
-    private int eventID;
+    private Integer eventID;
 
     @Column(name = "EventName")
     private String eventName;
@@ -32,8 +32,8 @@ public class EventDetails {
     public EventDetails() {}
 
     // Getters and Setters
-    public int getEventID() { return eventID; }
-    public void setEventID(int eventID) { this.eventID = eventID; }
+    public Integer getEventID() { return eventID; }
+    public void setEventID(Integer eventID) { this.eventID = eventID; }
 
     public String getEventName() { return eventName; }
     public void setEventName(String eventName) { this.eventName = eventName; }
