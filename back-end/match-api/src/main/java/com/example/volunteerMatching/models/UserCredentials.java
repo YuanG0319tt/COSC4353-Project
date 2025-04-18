@@ -1,27 +1,30 @@
 package com.example.volunteerMatching.models;
 
-import jakarta.persistence.*;
-import lombok.*;
-
-@Entity
-@Table(name = "UserCredentials")
-@NoArgsConstructor
-@Getter
-@Setter
 public class UserCredentials {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "UserID")
-    private Long userId;
-    
-    @Column(name = "Password")
+
+    private String username;
     private String password;
-    
-    // Relationship with UserProfile
-    @OneToOne(mappedBy = "userCredentials", cascade = CascadeType.ALL)
-    private UserInfo userInfo;
-    
-    // // Relationship with VolunteerHistory
-    // @OneToMany(mappedBy = "userCredentials")
-    // private List<VolunteerHistory> volunteerHistories;
+
+    public UserCredentials() {}
+
+    public UserCredentials(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }
