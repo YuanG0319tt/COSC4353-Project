@@ -14,7 +14,7 @@ public class CorsConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // Apply to all API endpoints
                         .allowedOrigins("http://127.0.0.1:3000") // Replace with your frontend URL
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "*")
                         .allowedHeaders("*")
                         .allowCredentials(true);
             }
