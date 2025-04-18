@@ -25,7 +25,7 @@ function initializeHistory() {
         tableBody.innerHTML = "";
     
         volunteerHistory.forEach((record, index) => {
-            // Role 和 Hours 作为可编辑的文本框
+            
             const roleInput = `<textarea class="list-input" data-index="${index}" data-field="role">${record.role}</textarea>`;
             const hoursInput = `<textarea class="list-input" data-index="${index}" data-field="hours">${record.hours}</textarea>`;
     
@@ -62,7 +62,7 @@ function initializeHistory() {
             tableBody.innerHTML += row;
         });
     
-        // 添加事件监听器以处理输入框的更改
+        
         addEditableFieldListeners();
         bindRadioButtons();
     }
@@ -88,7 +88,7 @@ function initializeHistory() {
     }
     
     searchButton.addEventListener("click", function() {
-        // 调用getLsit函数重新获取数据
+        
         getLsit();
     });
 
@@ -232,7 +232,7 @@ function addEditableFieldListeners() {
             const row = this.closest("tr");
             const recordId = row.dataset.id;
 
-            // 显示加载状态
+            
             input.disabled = true;
             input.style.backgroundColor = "#f0f0f0";
 
@@ -256,7 +256,7 @@ function addEditableFieldListeners() {
                     console.log("Update successful:", data);
                     alert("Record updated successfully!");
 
-                    // 恢复输入框状态
+                    
                     input.disabled = false;
                     input.style.backgroundColor = "";
                 })
@@ -264,7 +264,7 @@ function addEditableFieldListeners() {
                     console.error("Error updating record:", error);
                     alert("Failed to update record. Please try again.");
 
-                    // 恢复输入框状态
+                    
                     input.disabled = false;
                     input.style.backgroundColor = "";
                 });
