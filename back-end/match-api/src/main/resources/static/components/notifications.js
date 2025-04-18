@@ -63,5 +63,3 @@ $(document).ready(function () {
         });
     }
 });
-
-//working on this rn
