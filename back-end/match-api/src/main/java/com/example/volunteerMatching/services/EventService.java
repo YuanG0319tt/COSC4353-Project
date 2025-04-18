@@ -23,5 +23,13 @@ public class EventService {
         System.out.println("=== Repository Test ===");
         System.out.println("Found " + events.size() + " events from DB");
         return events;
-    }    
+    }
+
+    public boolean existsById(Integer id) {
+        return repository.existsById(id);
+    }
+    
+    public void deleteById(Integer id) {
+        repository.deleteById(id);
+    }
 }
