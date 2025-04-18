@@ -156,7 +156,9 @@
         <p><strong>Location:</strong> <span id="event-location"></span></p>
         <p><strong>Required Skills:</strong> <span id="event-required-skills"></span></p>
         <p><strong>Urgency:</strong> <span id="event-urgency"></span></p>
-        <button id="close-event-modal" class="btn btn-secondary">Close</button>
+        <button id="close-event-modal" class="btn btn-secondary mt-3">Close</button>
+        <button id="delete-event-button" class="btn btn-danger mt-3">Delete Event</button>
+        <button id="edit-event-button" class="btn btn-warning mt-3">Edit Event</button>
     </div>
 
     <!-- Add Event Modal -->
@@ -215,6 +217,46 @@
             </div>
         </form>
     </div>
+
+    <!-- Edit Event Modal -->
+    <div class="add-event-modal hidden" id="edit-event-modal">
+        <h3>Edit Event</h3>
+        <form id="edit-event-form">
+        <div class="form-group">
+            <label for="edit-event-name">Event Name:</label>
+            <input type="text" id="edit-event-name" class="form-control" required maxlength="100" />
+        </div>
+        <div class="form-group">
+            <label for="edit-event-description">Description:</label>
+            <textarea id="edit-event-description" class="form-control" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="edit-location">Location:</label>
+            <textarea id="edit-location" class="form-control" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="edit-required-skills">Required Skills:</label>
+            <input type="text" id="edit-required-skills" class="form-control" required />
+        </div>
+        <div class="form-group">
+            <label for="edit-urgency">Urgency:</label>
+            <select id="edit-urgency" class="form-control" required>
+                <option value="">Select</option>
+                <option value="1">High</option>
+                <option value="2">Medium</option>
+                <option value="3">Low</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="edit-event-date">Event Date:</label>
+            <input type="date" id="edit-event-date" class="form-control" required />
+        </div>
+        <div class="form-buttons">
+            <button type="submit" class="btn btn-primary">Update</button>
+            <button type="button" id="close-edit-event-modal" class="btn btn-secondary">Cancel</button>
+        </div>
+        </form>
+    </div>  
 
     <div class="modal-overlay hidden" id="modal-overlay"></div>
 
