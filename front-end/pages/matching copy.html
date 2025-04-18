@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Volunteer Matching Form</title>
+  <!-- Include Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .form-container {
+      max-width: 600px;
+      margin: 50px auto;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Volunteer Matching Form -->
+  <div class="form-container">
+    <div class="card shadow-sm">
+      <div class="card-header bg-primary text-white">
+        <h4 class="mb-0">Volunteer Matching Form</h4>
+      </div>
+      <div class="card-body">
+        <form id="volunteer-matching-form">
+          <div class="form-group">
+            <label for="matchingName">Select a Volunteer</label>
+            <select class="form-control" name="matchingName" id="matchingName" required>
+              <option value="">Select a Volunteer</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <p id="volunteerSkills" class="font-weight-bold text-muted"></p>
+            <p id="volunteerPreferences" class="font-weight-bold text-muted"></p>
+          </div>
+
+          <div class="form-group">
+            <label for="matchingEvent">Select an Event</label>
+            <select class="form-control" name="matchingEvent" id="matchingEvent" required>
+              <option value="">Select an Event</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block">Assign to Event</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Include jQuery and Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+<script>
+$(document).ready(function() {
+    const API_BASE = "http://localhost:8080/api";
+
+    // 初始化函数
+    function init() {
+        fetchVolunteers();
+        fetchEvents();
+        setupEventListeners();
+    }
+
+    // 获取志愿者列表
+    function fetchVolunteers() {
+        $.ajax({
+            url: `${API_BASE}/volunteers`,
+            type: 'GET',
+           
+            success: function(response) {
+                if (response.code === 200) {
+                    const dropdown = $("#matchingName");
+                    dropdown.empty().append('<option value="">Select a Volunteer</option>');
+                    
+                    response.data.forEach(volunteer => {
+                        dropdown.append($('<option>', {
+                            value: volunteer.id,
+                            text: volunteer.fullName
+                        }));
+                    });
+                } else {
+                    console.error("Error fetching volunteers:", response.msg);
+                }
+            },
+            error: function(xhr) {
+                console.error("Error fetching volunteers:", xhr.responseText);
+            }
+        });
+    }
+
+    // 获取活动列表
+    function fetchEvents() {
+        $.ajax({
+            url: `${API_BASE}/events`,
+            type: 'GET',
+          
+            success: function(response) {
+                if (response.code === 200) {
+                    const dropdown = $("#matchingEvent");
+                    dropdown.empty().append('<option value="">Select an Event</option>');
+                    
+                    response.data.forEach(event => {
+                        dropdown.append($('<option>', {
+                            value: event.id,
+                            text: event.name
+                        }));
+                    });
+                } else {
+                    console.error("Error fetching events:", response.msg);
+                }
+            },
+            error: function(xhr) {
+                console.error("Error fetching events:", xhr.responseText);
+            }
+        });
+    }
+
+    // 显示志愿者信息
+    function showVolunteerInfo(volunteerId) {
+        if (!volunteerId) {
+            $("#volunteerSkills, #volunteerPreferences").text("");
+            return;
+        }
+
+        $.ajax({
+            url: `${API_BASE}/volunteers/${volunteerId}`,
+            type: 'GET',
+         
+            success: function(response) {
+                if (response.code === 200) {
+                    const volunteer = response.data;
+                    $("#volunteerSkills").text("Skills: " + (volunteer.skills || []).join(", "));
+                    $("#volunteerPreferences").text("Preferences: " + (volunteer.preferences || []).join(", "));
+                } else {
+                    console.error("Error fetching volunteer details:", response.msg);
+                }
+            },
+            error: function(xhr) {
+                console.error("Error fetching volunteer details:", xhr.responseText);
+            }
+        });
+    }
+
+    // 设置事件监听
+    function setupEventListeners() {
+        // 志愿者选择变化
+        $("#matchingName").change(function() {
+            showVolunteerInfo($(this).val());
+        });
+
+        // 表单提交
+        $("#volunteer-matching-form").submit(function(event) {
+            event.preventDefault();
+            
+            const volunteerId = $("#matchingName").val();
+            const eventId = $("#matchingEvent").val();
+            
+            if (!volunteerId || !eventId) {
+                alert("Please select both a volunteer and an event.");
+                return;
+            }
+            
+            $.ajax({
+                url: `${API_BASE}/matches`,
+                type: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: JSON.stringify({
+                    volunteerId: volunteerId,
+                    eventId: eventId
+                }),
+                success: function(response) {
+                    if (response.code === 200) {
+                        alert("Success: " + response.msg);
+                        // 重置表单
+                        $("#volunteer-matching-form")[0].reset();
+                        $("#volunteerSkills, #volunteerPreferences").text("");
+                        // 可选：刷新数据
+                        fetchVolunteers();
+                        fetchEvents();
+                    } else {
+                        alert("Error: " + (response.msg || "Failed to assign volunteer"));
+                    }
+                },
+                error: function(xhr) {
+                    alert("Error: " + (xhr.responseJSON?.msg || "Failed to assign volunteer"));
+                }
+            });
+        });
+    }
+
+    // 初始化应用
+    init();
+});
+</script>
+</body>
+</html>
