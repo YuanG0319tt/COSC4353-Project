@@ -100,7 +100,7 @@ function setupEventListeners() {
     event.preventDefault();
 
     const submitButton = document.querySelector("#volunteer-matching-form button[type='submit']");
-    if (submitButton.disabled) return; // 如果按钮已禁用，则直接返回
+    if (submitButton.disabled) return; 
 
     const userId = document.getElementById("matchingName").value;
     const eventId = document.getElementById("matchingEvent").value;
@@ -115,10 +115,10 @@ function setupEventListeners() {
         return;
     }
 
-    // 禁用提交按钮
+    
     submitButton.disabled = true;
 
-    // 模拟 API 调用 - 替换为实际实现
+    
     fetch("http://localhost:8080/api/volunteerHistory/add", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -133,7 +133,7 @@ function setupEventListeners() {
         alert("An error occurred. Please try again.");
     })
     .finally(() => {
-        // 重新启用提交按钮，无论成功还是失败
+        
         submitButton.disabled = false;
     });
 });
