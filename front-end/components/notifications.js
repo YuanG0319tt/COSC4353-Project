@@ -12,8 +12,8 @@ $(document).ready(function () {
     $("#announcement-form").submit(function (event) {
         event.preventDefault();
         const submitButton = document.querySelector("#announcement-form button[type='submit']");
-    if (submitButton.disabled) return; // 如果按钮已禁用，则直接返回
-    // 禁用提交按钮
+    if (submitButton.disabled) return; 
+    
     submitButton.disabled = true;
         const title = $("#announcement-title").val();
         const message = $("#announcement-message").val();
