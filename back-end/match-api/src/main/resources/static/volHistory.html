@@ -33,11 +33,12 @@
 
     <!-- Search and Filter Section -->
     <div class="search-filter">
-      <input type="text" id="searchInput" class="form-control" placeholder="Search by Event or Role" style="width: 60%;">
+      <input type="text" id="searchInput" class="form-control" placeholder="Search by Event or Volunteer Name" style="width: 60%;">
       <select id="statusFilter" class="form-control" style="width: 35%;">
         <option value="">Filter by Status</option>
-        <option value="Completed">Completed</option>
+        <option value="Attended">Attended</option>
         <option value="Pending">Pending</option>
+        <option value="Did Not Attend">Did Not Attend</option>
       </select>
     </div>
 
@@ -47,14 +48,13 @@
         <tr>
           <th onclick="sortTable(0)">Event Name <span id="icon0">🔽</span></th>
           <th onclick="sortTable(1)">Date <span id="icon1">🔽</span></th>
-          <th onclick="sortTable(2)">Role <span id="icon2">🔽</span></th>
+          <th onclick="sortTable(2)">Volunteer Name <span id="icon2">🔽</span></th>
           <th onclick="sortTable(3)">Hours <span id="icon3">🔽</span></th>
           <th onclick="sortTable(4)">Description <span id="icon4">🔽</span></th>
           <th onclick="sortTable(5)">Location <span id="icon5">🔽</span></th>
           <th onclick="sortTable(6)">Required Skills <span id="icon6">🔽</span></th>
           <th onclick="sortTable(7)">Urgency <span id="icon7">🔽</span></th>
           <th onclick="sortTable(8)">Participation Status <span id="icon8">🔽</span></th>
-          <th onclick="sortTable(9)">Completion Status <span id="icon9">🔽</span></th>
         </tr>
       </thead>
       <tbody id="historyTableBody"></tbody>
