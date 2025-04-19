@@ -18,6 +18,5 @@ public class VolHistory {
     private String skills;
     private int urgency;
     private double hoursVolunteered;
-    private String participationStatus;
     private String status;
 }
