@@ -24,14 +24,18 @@ public class VolunteerHistory {
     @Column(name = "HoursVolunteered")
     private Double hoursVolunteered;
 
+    @Column(name = "status")
+    private String participationStatus;
+
     // Constructors
     public VolunteerHistory() {}
 
-    public VolunteerHistory(Integer uid, Integer eventId, LocalDate participationDate, Double hoursVolunteered) {
+    public VolunteerHistory(Integer uid, Integer eventId, LocalDate participationDate, Double hoursVolunteered, String participationStatus) {
         this.uid = uid;
         this.eventId = eventId;
         this.participationDate = participationDate;
         this.hoursVolunteered = hoursVolunteered;
+        this.participationStatus = participationStatus;
     }
 
     // Getters and Setters
@@ -73,5 +77,13 @@ public class VolunteerHistory {
 
     public void setHoursVolunteered(Double hoursVolunteered) {
         this.hoursVolunteered = hoursVolunteered;
+    }
+
+    public String getParticipationStatus() {
+        return participationStatus;
+    }
+    
+    public void setParticipationStatus(String participationStatus) {
+        this.participationStatus = participationStatus;
     }
 }
