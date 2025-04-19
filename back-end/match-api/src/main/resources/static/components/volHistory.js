@@ -1,75 +1,38 @@
 function initializeHistory() {
     console.log("Initializing Volunteer History...");
 
-    let volunteerHistory = [
-        {
-            event: "Food Pantry",
-            date: "2024-12-10",
-            role: "Helper",
-            hours: 5,
-            description: "Distribute food to those in need.",
-            location: "Community Center",
-            skills: ["Organization", "Communication"],
-            urgency: "High",
-            participationStatus: "Registered",
-            status: "Completed"
-        },
-        {
-            event: "Blood Drive",
-            date: "2024-12-15",
-            role: "Donor",
-            hours: 2,
-            description: "Donate blood to save lives.",
-            location: "Local Hospital",
-            skills: ["Donor"],
-            urgency: "Medium",
-            participationStatus: "Registered",
-            status: "Completed"
-        },
-        {
-            event: "Community Cleanup",
-            date: "2025-01-05",
-            role: "Organizer",
-            hours: 8,
-            description: "Organize a community cleanup event.",
-            location: "City Park",
-            skills: ["Leadership", "Teamwork"],
-            urgency: "Low",
-            participationStatus: "Pending",
-            status: "Pending"
-        },
-        {
-            event: "Soup Kitchen",
-            date: "2025-01-20",
-            role: "Cook",
-            hours: 6,
-            description: "Prepare and serve meals.",
-            location: "Soup Kitchen",
-            skills: ["Cooking", "Teamwork"],
-            urgency: "High",
-            participationStatus: "Registered",
-            status: "Completed"
-        }
-    ];
+    let volunteerHistory = [];
 
     let sortOrder = {}; // Track sort order for each column
+
+    async function fetchVolunteerHistoryFromBackend() {
+        try {
+            const response = await fetch("http://localhost:8080/volunteer-history");
+            const data = await response.json();
+            console.log("Fetched history from backend:", data);
+            volunteerHistory = data;
+            loadVolunteerHistory(); // Render the table
+        } catch (error) {
+            console.error("Failed to fetch volunteer history:", error);
+        }
+    }    
 
     function loadVolunteerHistory() {
         const tableBody = document.getElementById("historyTableBody");
         tableBody.innerHTML = "";
         volunteerHistory.forEach(record => {
             const row = `<tr>
-                        <td title="${record.event}" class="truncate">${record.event}</td>
-                        <td>${record.date}</td>
-                        <td>${record.role}</td>
-                        <td>${record.hours}</td>
-                        <td>${record.description}</td>
-                        <td>${record.location}</td>
-                        <td>${record.skills.join(", ")}</td>
-                        <td>${record.urgency}</td>
-                        <td>${record.participationStatus}</td>
-                        <td>${record.status}</td>
-                    </tr>`;
+                <td>${record.eventName}</td>
+                <td>${record.eventDate}</td>
+                <td>${record.name}</td>
+                <td>${record.hoursVolunteered}</td>
+                <td>${record.description}</td>
+                <td>${record.location}</td>
+                <td>${record.skills ? record.skills.split(',').join(", ") : ""}</td>
+                <td>${record.urgency}</td>
+                <td>${record.participationStatus}</td>
+                <td>${record.status}</td>
+            </tr>`;
             tableBody.innerHTML += row;
         });
     }
@@ -164,7 +127,7 @@ function initializeHistory() {
     }
 
     // Load initial data
-    loadVolunteerHistory();
+    fetchVolunteerHistoryFromBackend();
 }
 
 // Ensure `initializeHistory()` is called when `volHistory.html` is dynamically loaded
