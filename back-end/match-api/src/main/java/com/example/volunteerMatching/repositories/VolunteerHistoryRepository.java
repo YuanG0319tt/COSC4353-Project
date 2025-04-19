@@ -27,8 +27,7 @@ public interface VolunteerHistoryRepository extends JpaRepository<VolunteerHisto
             e.RequiredSkills AS skills,
             e.Urgency AS urgency,
             vh.HoursVolunteered AS hoursVolunteered,
-            'Completed' AS status,
-            'Attended' AS participationStatus
+            vh.status AS status
         FROM VolunteerHistory vh
         JOIN UserInfo u ON vh.UserID = u.UserID
         JOIN EventDetails e ON vh.EventID = e.EventID
@@ -48,8 +47,7 @@ public interface VolunteerHistoryRepository extends JpaRepository<VolunteerHisto
             e.RequiredSkills AS skills,
             e.Urgency AS urgency,
             vh.HoursVolunteered AS hoursVolunteered,
-            'Completed' AS status,
-            'Attended' AS participationStatus
+            vh.status AS status
         FROM VolunteerHistory vh
         JOIN UserInfo u ON vh.UserID = u.UserID
         JOIN EventDetails e ON vh.EventID = e.EventID
