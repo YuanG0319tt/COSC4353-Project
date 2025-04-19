@@ -10,6 +10,7 @@ import lombok.*;
 @Setter
 public class UserInfo {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "UserID")
     private Long userId;
     
