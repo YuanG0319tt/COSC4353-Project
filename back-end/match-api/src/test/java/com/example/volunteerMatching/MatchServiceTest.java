@@ -4,92 +4,57 @@ import com.example.volunteerMatching.models.EventDetails;
 import com.example.volunteerMatching.models.Volunteer;
 import com.example.volunteerMatching.services.MatchService;
 import com.example.volunteerMatching.services.VolunteerService;
-import com.example.volunteerMatching.services.EventService;
+import com.example.volunteerMatching.repositories.EventDetailsRepository;
+import com.example.volunteerMatching.repositories.UserInfoRepository;
+import com.example.volunteerMatching.repositories.VolunteerHistoryRepository;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class MatchServiceTest {
+
     private MatchService matchService;
+
     private VolunteerService volunteerService;
-    private EventService eventService;
+    private EventDetailsRepository eventRepo;
+    private UserInfoRepository userRepo;
+    private VolunteerHistoryRepository volunteerHistoryRepo;
 
     @BeforeEach
     void setUp() {
         volunteerService = mock(VolunteerService.class);
-        eventService = mock(EventService.class);
-        matchService = new MatchService(volunteerService, eventService);
+        eventRepo = mock(EventDetailsRepository.class);
+        userRepo = mock(UserInfoRepository.class);
+        volunteerHistoryRepo = mock(VolunteerHistoryRepository.class);
+
+        matchService = new MatchService(eventRepo, userRepo, volunteerService, volunteerHistoryRepo);
     }
 
     @Test
-    void matchVolunteers_shouldReturnMatches() {
+    void findBestEventsForVolunteer_shouldReturnMatches() {
+        Volunteer volunteer = new Volunteer("Houston", "Jane", "2025-06-01", List.of("Cooking"), List.of("Food"));
         EventDetails event = new EventDetails();
+        event.setEventName("Food Drive");
+        event.setEventDate(LocalDate.of(2025, 6, 1));
+        event.setRequiredSkills("Cooking");
         event.setLocation("Houston");
-        event.setEventName("Cleaning Litter");
-        event.setEventDate(LocalDate.of(2025, 3, 7));
-        event.setRequiredSkills("Cleaning");
         event.setUrgency(3);
-        event.setDescription("Cleaning litter on the streets of Houston.");
+        event.setDescription("Helping with food packaging");
 
-        Volunteer volunteer = new Volunteer();
-        volunteer.setLocation("Houston");
-        volunteer.setName("Jasmine");
-        volunteer.setAvailability("2025-03-07");
-        volunteer.setSkills(List.of("Cleaning"));
-        volunteer.setPreferences(List.of("Cleaning"));
-
-        when(eventService.getAllEvents()).thenReturn(List.of(event));
         when(volunteerService.getAllVolunteers()).thenReturn(List.of(volunteer));
+        when(eventRepo.findAll()).thenReturn(List.of(event));
 
-        List<String> matches = matchService.matchVolunteers();
+        List<Map<String, String>> matches = matchService.findBestEventsForVolunteer("Jane");
 
         assertEquals(1, matches.size());
-        assertTrue(matches.get(0).contains("Jasmine"));
-    }
-
-    @Test
-    void assignVolunteer_shouldFailWhenVolunteerNotFound() {
-        EventDetails event = new EventDetails();
-        event.setLocation("Houston");
-        event.setEventName("Food Drive");
-        event.setEventDate(LocalDate.of(2025, 3, 7));
-        event.setRequiredSkills("Packing");
-        event.setUrgency(5);
-        event.setDescription("Helping food distribution.");
-
-        when(eventService.getAllEvents()).thenReturn(List.of(event));
-        when(volunteerService.getAllVolunteers()).thenReturn(List.of());
-
-        String result = matchService.assignVolunteer("Nonexistent Volunteer", "Food Drive");
-        assertEquals("Assignment failed. Please try again.", result);
-    }
-
-    @Test
-    void testMatchVolunteers_NoMatchingSkills() {
-        EventDetails event = new EventDetails();
-        event.setLocation("Houston");
-        event.setEventName("Cleanup");
-        event.setEventDate(LocalDate.of(2025, 4, 10));
-        event.setRequiredSkills("Medical Aid");
-        event.setUrgency(5);
-        event.setDescription("Helping in hospitals.");
-
-        Volunteer volunteer = new Volunteer();
-        volunteer.setLocation("Houston");
-        volunteer.setName("John Doe");
-        volunteer.setAvailability("2025-04-10");
-        volunteer.setSkills(List.of("Cooking"));
-        volunteer.setPreferences(List.of("Food Services"));
-
-        when(eventService.getAllEvents()).thenReturn(List.of(event));
-        when(volunteerService.getAllVolunteers()).thenReturn(List.of(volunteer));
-
-        List<String> matches = matchService.matchVolunteers();
-        assertTrue(matches.isEmpty());
+        assertEquals("Food Drive", matches.get(0).get("eventName"));
+        assertEquals("Jane", matches.get(0).get("volunteerName"));
     }
 }
