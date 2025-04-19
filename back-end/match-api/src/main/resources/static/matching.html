@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,54 +17,71 @@
 
 <div class="container">
   <!-- Volunteer Matching Form -->
-  <div class="form-container">
-    <div class="card shadow-sm">
-      <div class="card-header bg-primary text-white">
-        <h4 class="mb-0">Volunteer Matching Form</h4>
-      </div>
-      <div class="card-body">
-        <form id="volunteer-matching-form">
-          <div class="form-group">
-            <label for="matchingName">Select a Volunteer</label>
-            <select class="form-control" name="matchingName" id="matchingName" onchange="showVolunteerInfo()" required>
-              <option value="">Select a Volunteer</option>
-            </select>
-          </div>
+<div class="form-container">
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+      <h4 class="mb-0">Volunteer Matching Form</h4>
+    </div>
+    <div class="card-body">
+      <form id="volunteer-matching-form">
+        <div class="form-group">
+          <label for="matchingName">Select a Volunteer</label>
+          <select class="form-control" name="matchingName" id="matchingName">
+            <option value="">Select a Volunteer</option>
+          </select>
+          <button type="button" class="btn btn-info btn-block mt-2" onclick="showMatchesForVolunteer()">Show Matching Events</button>
+        </div>
 
-          <div class="mb-3">
-            <p id="volunteerSkills" class="font-weight-bold text-muted"></p>
-            <p id="volunteerPreferences" class="font-weight-bold text-muted"></p>
-          </div>
+        <div class="form-group">
+          <label for="matchingEvent">Select an Event</label>
+          <select class="form-control" name="matchingEvent" id="matchingEvent">
+            <option value="">Select an Event</option>
+          </select>
+          <button type="button" class="btn btn-info btn-block mt-2" onclick="showMatchesForEvent()">Show Matching Volunteers</button>
+        </div>
 
-          <div class="form-group">
-            <label for="matchingEvent">Select an Event</label>
-            <select class="form-control" name="matchingEvent" id="matchingEvent" required>
-              <option value="">Select an Event</option>
-            </select>
-          </div>
+        <div class="mb-3">
+          <p id="volunteerSkills" class="font-weight-bold text-muted"></p>
+          <p id="volunteerPreferences" class="font-weight-bold text-muted"></p>
+        </div>
 
-          <button type="submit" class="btn btn-primary btn-block">Assign to Event</button>
-        </form>
-      </div>
+        <button type="submit" class="btn btn-primary btn-block">Assign to Event</button>
+      </form>
+
+      <hr />
+      <h5>Top Matching Results</h5>
+      <table class="table table-striped" id="top-match-table">
+        <thead>
+          <tr>
+            <th>Volunteer</th>
+            <th>Event</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Results populated here -->
+        </tbody>
+      </table>
     </div>
   </div>
 </div>
 
+</div>
+
 <script>
   function showVolunteerInfo() {
-    let selectedVolunteer = document.getElementById("matchingName").value;
-    if (!selectedVolunteer) return;
+    const selected = document.getElementById("matchingName").value;
+    if (!selected) return;
 
     fetch("/volunteers")
-      .then(response => response.json())
+      .then(res => res.json())
       .then(data => {
-        let volunteer = data.find(v => v.name === selectedVolunteer);
+        const volunteer = data.find(v => v.name === selected);
         if (volunteer) {
-          document.getElementById("volunteerSkills").textContent = "Skills: " + volunteer.skills.join(", ");
-          document.getElementById("volunteerPreferences").textContent = "Preferences: " + volunteer.preferences.join(", ");
+          document.getElementById("volunteerSkills").textContent = "Skills: " + volunteer.skills;
+          document.getElementById("volunteerPreferences").textContent = "Preferences: " + volunteer.preferences;
+          fetchTopEventsForVolunteer(volunteer.name);  // ⬅️ new
         }
-      })
-      .catch(error => console.error("Error fetching volunteer details:", error));
+      });
   }
   
   document.getElementById('volunteer-matching-form').addEventListener('submit', function(event) {
@@ -88,7 +104,6 @@
     .then(data => alert("Match Successful: " + data.message))
     .catch(error => console.error("Error assigning volunteer:", error));
   });
-
 </script>
 
 <script>
@@ -138,5 +153,43 @@
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 <script src="components/matching.js"></script>
+
+<script>
+  function showMatchesForVolunteer() {
+    const name = document.getElementById("matchingName").value;
+    if (!name) return;
+
+    fetch(`/match/top-events?volunteer=${encodeURIComponent(name)}`)
+      .then(res => res.json())
+      .then(data => renderMatchTable(data))
+      .catch(err => console.error("Match error", err));
+  }
+
+  function showMatchesForEvent() {
+    const name = document.getElementById("matchingEvent").value;
+    if (!name) return;
+
+    fetch(`/match/top-volunteers?event=${encodeURIComponent(name)}`)
+      .then(res => res.json())
+      .then(data => renderMatchTable(data))
+      .catch(err => console.error("Match error", err));
+  }
+
+  function renderMatchTable(data) {
+    const tbody = document.getElementById("top-match-table").querySelector("tbody");
+    tbody.innerHTML = "";
+
+    data.forEach(match => {
+      const volunteer = match.volunteerName || "-";
+      const event = match.eventName || "-";
+      const score = match.score ? ` (Score: ${match.score})` : "";
+
+      const row = document.createElement("tr");
+      row.innerHTML = `<td>${volunteer}</td><td>${event}${score}</td>`;
+      tbody.appendChild(row);
+    });
+  }
+</script>
+
 </body>
 </html>
