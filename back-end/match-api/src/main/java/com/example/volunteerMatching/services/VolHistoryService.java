@@ -49,7 +49,7 @@ public class VolHistoryService {
 
         // Return a basic DTO if needed (or fetch again with full join if preferred)
         dto.setId((long) saved.getHistoryId());
-        dto.setStatus("Completed");
+        dto.setStatus((String) saved.getParticipationStatus());
         return dto;
     }
 
