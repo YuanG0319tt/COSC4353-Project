@@ -15,13 +15,13 @@ public class VolunteerController {
         this.volunteerService = volunteerService;
     }
 
-    @PostMapping
-    public Volunteer addVolunteer(@RequestBody Volunteer volunteer) {
-        return volunteerService.addVolunteer(volunteer);
-    }
-
     @GetMapping
     public List<Volunteer> getAllVolunteers() {
         return volunteerService.getAllVolunteers();
+    }
+
+    @PostMapping
+    public Volunteer addVolunteer(@RequestBody Volunteer volunteer) {
+        return volunteerService.addVolunteer(volunteer);
     }
 }
