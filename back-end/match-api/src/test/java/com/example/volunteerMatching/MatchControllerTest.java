@@ -16,7 +16,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.util.List;
+import java.util.*;
 
 class MatchControllerTest {
     private MockMvc mockMvc;
@@ -35,21 +35,21 @@ class MatchControllerTest {
 
     @Test
     void getAllEvents_shouldReturnEventList() throws Exception {
-        // Mock matchService response
-        when(matchService.matchVolunteers()).thenReturn(List.of("Charity Run -> John Doe"));
+        when(matchService.matchVolunteers()).thenReturn(List.of(Map.of("eventName", "Charity Run", "volunteerName", "John Doe")));
 
         mockMvc.perform(get("/match").contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(1))
-                .andExpect(jsonPath("$[0]").value("Charity Run -> John Doe"));
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.length()").value(1))
+            .andExpect(jsonPath("$[0].eventName").value("Charity Run"))
+            .andExpect(jsonPath("$[0].volunteerName").value("John Doe"));
     }
 
     @Test
     void matchVolunteer_shouldReturnBadRequestForInvalidRequest() throws Exception {
         mockMvc.perform(post("/match")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{}"))
-                .andExpect(status().isBadRequest());
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("{\"volunteerName\": \"\", \"eventName\": \"\"}"))
+            .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -57,10 +57,10 @@ class MatchControllerTest {
         when(matchService.assignVolunteer("John Doe", "Charity Run")).thenReturn("John Doe assigned to Charity Run");
 
         mockMvc.perform(post("/match")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"volunteerName\":\"John Doe\", \"eventName\":\"Charity Run\"}"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("John Doe assigned to Charity Run")); // ✅ FIXED LINE
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("{\"volunteerName\":\"John Doe\", \"eventName\":\"Charity Run\"}"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.message").value("John Doe assigned to Charity Run"));
     }
 
     @Test
