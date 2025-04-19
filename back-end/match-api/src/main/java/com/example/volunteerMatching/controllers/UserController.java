@@ -2,7 +2,6 @@ package com.example.volunteerMatching.controllers;
 
 import com.example.volunteerMatching.models.DTO.UserDTO;
 import com.example.volunteerMatching.models.DTO.UserUpdateRequest;
-//import com.example.volunteerMatching.models.UserCredentials;
 import com.example.volunteerMatching.models.UserProfile;
 import com.example.volunteerMatching.services.IUserService;
 import com.example.volunteerMatching.services.UserProfileService;
