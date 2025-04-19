@@ -4,11 +4,11 @@ import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "EventDetails") // Make sure it matches exactly, including case
+@Table(name = "EventDetails")
 public class EventDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "EventID") // Must match MySQL column
+    @Column(name = "EventID")
     private Integer eventID;
 
     @Column(name = "EventName")
