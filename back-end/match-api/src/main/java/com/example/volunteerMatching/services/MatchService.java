@@ -178,7 +178,7 @@ public class MatchService {
             history.setEventId(event.getEventID());
             history.setParticipationDate(LocalDate.now());
             history.setHoursVolunteered(0.0);
-            history.setParticipationStatus("attending");
+            history.setParticipationStatus("Pending");
     
             volunteerHistoryRepository.save(history);
     
