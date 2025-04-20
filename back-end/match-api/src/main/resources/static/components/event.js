@@ -1,5 +1,3 @@
-console.log("Event JS loaded ✅");
-
 let selectedEvent = null;
 $(document).ready(function () {
     console.log("🧠 jQuery DOM Ready: event.js is running");
@@ -104,7 +102,6 @@ $(document).ready(function () {
                         const urgency = parseInt($("#edit-urgency").val());
                         const eventDate = $("#edit-event-date").val();
                       
-                        // 🧠 Frontend validation
                         if (!eventName || eventName.length > 100) {
                           return alert("Event name is required and must be less than 100 characters.");
                         }
@@ -125,7 +122,7 @@ $(document).ready(function () {
                         };
                       
                         try {
-                          const response = await fetch(`http://localhost:8080/events/${selectedEvent.eventID}`, {
+                          const response = await fetch(`${API_URL}/${selectedEvent.eventID}`, {
                             method: "PUT",
                             headers: {
                               "Content-Type": "application/json"
@@ -232,62 +229,63 @@ $(document).ready(function () {
         }
     }
 
-    document.getElementById("add-event-form").addEventListener("submit", function (e) {
+    document.getElementById("add-event-form").addEventListener("submit", async function (e) {
         e.preventDefault();
-
-        const urgencyMap = {
-            High: 1,
-            Medium: 2,
-            Low: 3
-        };
-
+    
+        const eventName = document.getElementById("new-event-name").value.trim();
+        const description = document.getElementById("new-event-description").value.trim();
+        const location = document.getElementById("new-location").value.trim();
+        const requiredSkills = Array.from(document.getElementById("new-required-skills").selectedOptions)
+            .map(opt => opt.value).join(', ');
+        const urgencyStr = document.getElementById("new-urgency").value;
+        const eventDate = document.getElementById("new-event-date").value;
+    
+        const urgencyMap = { High: 1, Medium: 2, Low: 3 };
+        const urgency = urgencyMap[urgencyStr];
+    
+        // Frontend validation
+        if (!eventName || eventName.length > 100) {
+            return alert("Event name is required and must be less than 100 characters.");
+        }
+    
+        if (!description) return alert("Description is required.");
+        if (!location) return alert("Location is required.");
+        if (!requiredSkills) return alert("Required skills must be selected.");
+        if (!urgency || ![1, 2, 3].includes(urgency)) return alert("Urgency must be selected.");
+        if (!eventDate || isNaN(new Date(eventDate).getTime())) return alert("Valid event date is required.");
+    
         const eventData = {
-            eventName: document.getElementById("new-event-name").value,
-            description: document.getElementById("new-event-description").value,
-            location: document.getElementById("new-location").value,
-            requiredSkills: Array.from(document.getElementById("new-required-skills").selectedOptions)
-                .map(opt => opt.value).join(', '),
-            urgency: urgencyMap[document.getElementById("new-urgency").value],
-            eventDate: document.getElementById("new-event-date").value
+            eventName,
+            description,
+            location,
+            requiredSkills,
+            urgency,
+            eventDate
         };
-
-        document.getElementById("add-event-form").addEventListener("submit", function (e) {
-            e.preventDefault();
-          
-            const eventName = document.getElementById("new-event-name").value.trim();
-            const description = document.getElementById("new-event-description").value.trim();
-            const location = document.getElementById("new-location").value.trim();
-            const requiredSkills = Array.from(document.getElementById("new-required-skills").selectedOptions)
-              .map(opt => opt.value).join(', ');
-            const urgencyStr = document.getElementById("new-urgency").value;
-            const eventDate = document.getElementById("new-event-date").value;
-          
-            const urgencyMap = { High: 1, Medium: 2, Low: 3 };
-            const urgency = urgencyMap[urgencyStr];
-          
-            // Frontend validation
-            if (!eventName || eventName.length > 100) {
-              return alert("Event name is required and must be less than 100 characters.");
+    
+        try {
+            const response = await fetch(API_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(eventData)
+            });
+    
+            if (!response.ok) {
+                const errorData = await response.json();
+                alert("Error: " + JSON.stringify(errorData));
+                return;
             }
-          
-            if (!description) return alert("Description is required.");
-            if (!location) return alert("Location is required.");
-            if (!requiredSkills) return alert("Required skills must be selected.");
-            if (!urgency || ![1, 2, 3].includes(urgency)) return alert("Urgency must be selected.");
-            if (!eventDate || isNaN(new Date(eventDate).getTime())) return alert("Valid event date is required.");
-          
-            const eventData = {
-              eventName,
-              description,
-              location,
-              requiredSkills,
-              urgency,
-              eventDate
-            };
-          
-            submitEvent(eventData);
-          });          
-    });
+    
+            alert("Event added successfully!");
+            $("#add-event-modal").addClass("hidden");
+            $("#modal-overlay").addClass("hidden");
+            await fetchEvents();
+        } catch (error) {
+            console.error("Error submitting event:", error);
+        }
+    });    
 
     console.log("Calling fetchEvents()");
     fetchEvents();
