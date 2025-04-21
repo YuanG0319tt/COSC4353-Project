@@ -1,6 +1,6 @@
 let selectedEvent = null;
+const DateTime = luxon.DateTime;
 $(document).ready(function () {
-    console.log("🧠 jQuery DOM Ready: event.js is running");
     const API_URL = "http://localhost:8080/events";
     const events = {}; // Will be filled dynamically from DB
     let currentDate = new Date();
@@ -18,21 +18,23 @@ $(document).ready(function () {
         calendarDays.empty();
         const totalDays = daysInMonth(currentDate);
         const firstDay = firstDayOfMonth(currentDate);
-
+    
         for (let i = 0; i < firstDay; i++) {
             calendarDays.append('<div class="calendar-day empty"></div>');
         }
-
+    
         for (let day = 1; day <= totalDays; day++) {
-            const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
-            const dateString = date.toISOString().split('T')[0];
+            const yyyy = currentDate.getFullYear();
+            const mm = String(currentDate.getMonth() + 1).padStart(2, '0');
+            const dd = String(day).padStart(2, '0');
+            const dateString = `${yyyy}-${mm}-${dd}`;
             console.log(`Calendar Day: ${dateString} →`, events[dateString]);
-
+    
             const dayEvents = events[dateString] || [];
-
+    
             const dayElement = $('<div class="calendar-day"></div>');
             dayElement.append(`<span class="day-number">${day}</span>`);
-
+    
             dayEvents.forEach(event => {
                 const eventItem = $('<div class="event-item"></div>').text(event.eventName);
                 eventItem.click(() => {
@@ -177,21 +179,20 @@ $(document).ready(function () {
         console.log("populateCalendar() called");
         console.log("Incoming backend events:", backendEvents);
         for (const key in events) delete events[key];
-
+    
         backendEvents.forEach(event => {
-            const localDate = new Date(event.eventDate);
-            const yyyy = localDate.getFullYear();
-            const mm = String(localDate.getMonth() + 1).padStart(2, '0');
-            const dd = String(localDate.getDate()).padStart(2, '0');
-            const dateKey = `${yyyy}-${mm}-${dd}`;
+            const dateKey = DateTime.fromFormat(event.eventDate, 'yyyy-MM-dd')
+                        .toFormat('yyyy-MM-dd');
 
+            console.log(`Mapped "${event.eventDate}" to calendar key → ${dateKey}`);
+    
             if (!events[dateKey]) events[dateKey] = [];
             events[dateKey].push(event);
         });
-
+    
         console.log("Mapped event keys:", Object.keys(events));
         renderCalendar();
-    }
+    }    
 
     async function fetchEvents() {
         try {
@@ -213,13 +214,13 @@ $(document).ready(function () {
                 },
                 body: JSON.stringify(eventData)
             });
-
+    
             if (!response.ok) {
                 const errorData = await response.json();
                 alert("Error: " + JSON.stringify(errorData));
                 return;
             }
-
+    
             alert("Event added successfully!");
             $("#add-event-modal").addClass("hidden");
             $("#modal-overlay").addClass("hidden");
@@ -227,7 +228,7 @@ $(document).ready(function () {
         } catch (error) {
             console.error("Error submitting event:", error);
         }
-    }
+    }    
 
     document.getElementById("add-event-form").addEventListener("submit", async function (e) {
         e.preventDefault();
