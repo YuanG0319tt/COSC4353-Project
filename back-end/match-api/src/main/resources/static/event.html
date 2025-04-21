@@ -1,295 +1,268 @@
-let selectedEvent = null;
-const DateTime = luxon.DateTime;
-$(document).ready(function () {
-    const API_URL = "http://localhost:8080/events";
-    const events = {}; // Will be filled dynamically from DB
-    let currentDate = new Date();
-
-    function daysInMonth(date) {
-        return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
-    }
-
-    function firstDayOfMonth(date) {
-        return new Date(date.getFullYear(), date.getMonth(), 1).getDay();
-    }
-
-    function renderCalendar() {
-        const calendarDays = $("#calendar-days");
-        calendarDays.empty();
-        const totalDays = daysInMonth(currentDate);
-        const firstDay = firstDayOfMonth(currentDate);
-    
-        for (let i = 0; i < firstDay; i++) {
-            calendarDays.append('<div class="calendar-day empty"></div>');
-        }
-    
-        for (let day = 1; day <= totalDays; day++) {
-            const yyyy = currentDate.getFullYear();
-            const mm = String(currentDate.getMonth() + 1).padStart(2, '0');
-            const dd = String(day).padStart(2, '0');
-            const dateString = `${yyyy}-${mm}-${dd}`;
-            console.log(`Calendar Day: ${dateString} →`, events[dateString]);
-    
-            const dayEvents = events[dateString] || [];
-    
-            const dayElement = $('<div class="calendar-day"></div>');
-            dayElement.append(`<span class="day-number">${day}</span>`);
-    
-            dayEvents.forEach(event => {
-                const eventItem = $('<div class="event-item"></div>').text(event.eventName);
-                eventItem.click(() => {
-                    selectedEvent = event;
-                
-                    $("#event-name").text(event.eventName);
-                    $("#event-time").text(event.eventDate);
-                    $("#event-description").text(event.description);
-                    $("#event-location").text(event.location);
-                    $("#event-required-skills").text(event.requiredSkills);
-                    $("#event-urgency").text(event.urgency);
-                    $("#event-modal").removeClass("hidden");
-                    $("#modal-overlay").removeClass("hidden");
-                
-                    // Rebind delete handler each time modal opens
-                    $("#delete-event-button").off("click").on("click", async () => {
-                        if (!selectedEvent || !selectedEvent.eventID) {
-                            console.warn("Missing event or eventID:", selectedEvent);
-                            alert("No valid event selected.");
-                            return;
-                        }
-                
-                        if (!confirm("Are you sure you want to delete this event?")) return;
-                
-                        try {
-                            const res = await fetch(`${API_URL}/${selectedEvent.eventID}`, { method: "DELETE" });
-                            if (!res.ok) throw new Error("Failed to delete event");
-                
-                            alert("Event deleted.");
-                            $("#event-modal").addClass("hidden");
-                            $("#modal-overlay").addClass("hidden");
-                            fetchEvents();
-                        } catch (err) {
-                            console.error(err);
-                            alert("Error deleting event.");
-                        }
-                    });
-                    
-                    $("#edit-event-button").on("click", () => {
-                        if (!selectedEvent) return alert("No event selected.");
-                      
-                        // Pre-fill form fields
-                        $("#edit-event-name").val(selectedEvent.eventName);
-                        $("#edit-event-description").val(selectedEvent.description);
-                        $("#edit-location").val(selectedEvent.location);
-                        $("#edit-required-skills").val(selectedEvent.requiredSkills);
-                        $("#edit-urgency").val(selectedEvent.urgency);
-                        $("#edit-event-date").val(selectedEvent.eventDate);
-                      
-                        $("#edit-event-modal").removeClass("hidden");
-                        $("#modal-overlay").removeClass("hidden");
-                        $("#event-modal").addClass("hidden");
-                      });
-                      
-                      $("#close-edit-event-modal").on("click", () => {
-                        $("#edit-event-modal").addClass("hidden");
-                        $("#modal-overlay").addClass("hidden");
-                      });
-                      
-                      $("#edit-event-form").on("submit", async function (e) {
-                        e.preventDefault();
-                      
-                        const eventName = $("#edit-event-name").val().trim();
-                        const description = $("#edit-event-description").val().trim();
-                        const location = $("#edit-location").val().trim();
-                        const requiredSkills = $("#edit-required-skills").val().trim();
-                        const urgency = parseInt($("#edit-urgency").val());
-                        const eventDate = $("#edit-event-date").val();
-                      
-                        if (!eventName || eventName.length > 100) {
-                          return alert("Event name is required and must be less than 100 characters.");
-                        }
-                      
-                        if (!description) return alert("Description is required.");
-                        if (!location) return alert("Location is required.");
-                        if (!requiredSkills) return alert("Required skills cannot be empty.");
-                        if (![1, 2, 3].includes(urgency)) return alert("Urgency must be High, Medium, or Low.");
-                        if (!eventDate || isNaN(new Date(eventDate).getTime())) return alert("A valid event date is required.");
-                      
-                        const updatedEvent = {
-                          eventName,
-                          description,
-                          location,
-                          requiredSkills,
-                          urgency,
-                          eventDate
-                        };
-                      
-                        try {
-                          const response = await fetch(`${API_URL}/${selectedEvent.eventID}`, {
-                            method: "PUT",
-                            headers: {
-                              "Content-Type": "application/json"
-                            },
-                            body: JSON.stringify(updatedEvent)
-                          });
-                      
-                          if (!response.ok) throw new Error("Update failed.");
-                      
-                          alert("Event updated.");
-                          $("#edit-event-modal").addClass("hidden");
-                          $("#modal-overlay").addClass("hidden");
-                          fetchEvents();
-                        } catch (err) {
-                          console.error(err);
-                          alert("Error updating event.");
-                        }
-                      });                      
-                });
-                dayElement.append(eventItem);
-            });
-
-            calendarDays.append(dayElement);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Event Management</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        .calendar-container {
+            max-width: 1200px;
+            margin: auto;
         }
 
-        $("#current-month-year").text(`${currentDate.toLocaleString('default', { month: 'long' })} ${currentDate.getFullYear()}`);
-    }
-
-    function changeMonth(increment) {
-        currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + increment, 1);
-        renderCalendar();
-    }
-
-    $("#prev-month").click(() => changeMonth(-1));
-    $("#next-month").click(() => changeMonth(1));
-    $("#close-event-modal").click(() => {
-        $("#event-modal").addClass("hidden");
-        $("#modal-overlay").addClass("hidden");
-    });
-
-    $("#add-event-button").click(() => {
-        $("#add-event-modal").removeClass("hidden");
-        $("#modal-overlay").removeClass("hidden");
-    });
-
-    $("#close-add-event-modal").click(() => {
-        $("#add-event-modal").addClass("hidden");
-        $("#modal-overlay").addClass("hidden");
-    });
-
-    function populateCalendar(backendEvents) {
-        console.log("populateCalendar() called");
-        console.log("Incoming backend events:", backendEvents);
-        for (const key in events) delete events[key];
-    
-        backendEvents.forEach(event => {
-            const dateKey = DateTime.fromFormat(event.eventDate, 'yyyy-MM-dd')
-                        .toFormat('yyyy-MM-dd');
-
-            console.log(`Mapped "${event.eventDate}" to calendar key → ${dateKey}`);
-    
-            if (!events[dateKey]) events[dateKey] = [];
-            events[dateKey].push(event);
-        });
-    
-        console.log("Mapped event keys:", Object.keys(events));
-        renderCalendar();
-    }    
-
-    async function fetchEvents() {
-        try {
-            const response = await fetch(API_URL);
-            const data = await response.json();
-            console.log("Fetched from backend:", data);
-            populateCalendar(data);
-        } catch (error) {
-            console.error("Error fetching events:", error);
+        .calendar-header,
+        .calendar-subheader {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
         }
-    }
 
-    async function submitEvent(eventData) {
-        try {
-            const response = await fetch(API_URL, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(eventData)
-            });
-    
-            if (!response.ok) {
-                const errorData = await response.json();
-                alert("Error: " + JSON.stringify(errorData));
-                return;
+        #add-event-button {
+            margin-left: auto;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+        }
+
+        .calendar-day-header,
+        .calendar-day {
+            text-align: center;
+            padding: 10px;
+        }
+
+        .calendar-day-header {
+            font-weight: bold;
+            background-color: #f8f9fa;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .calendar-day {
+            position: relative;
+            min-height: 100px;
+            border: 1px solid #ddd;
+            padding: 5px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        .event-modal,
+        .add-event-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            border-radius: 10px;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .event-item {
+            background-color: #ffbd59;
+            color: white;
+            padding: 4px;
+            margin-top: 5px;
+            width: 100%;
+            text-align: center;
+            border-radius: 4px;
+            font-size: 12px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        @media (max-width: 768px) {
+            .calendar-grid {
+                grid-template-columns: repeat(7, minmax(40px, 1fr));
             }
-    
-            alert("Event added successfully!");
-            $("#add-event-modal").addClass("hidden");
-            $("#modal-overlay").addClass("hidden");
-            await fetchEvents();
-        } catch (error) {
-            console.error("Error submitting event:", error);
-        }
-    }    
 
-    document.getElementById("add-event-form").addEventListener("submit", async function (e) {
-        e.preventDefault();
-    
-        const eventName = document.getElementById("new-event-name").value.trim();
-        const description = document.getElementById("new-event-description").value.trim();
-        const location = document.getElementById("new-location").value.trim();
-        const requiredSkills = Array.from(document.getElementById("new-required-skills").selectedOptions)
-            .map(opt => opt.value).join(', ');
-        const urgencyStr = document.getElementById("new-urgency").value;
-        const eventDate = document.getElementById("new-event-date").value;
-    
-        const urgencyMap = { High: 1, Medium: 2, Low: 3 };
-        const urgency = urgencyMap[urgencyStr];
-    
-        // Frontend validation
-        if (!eventName || eventName.length > 100) {
-            return alert("Event name is required and must be less than 100 characters.");
-        }
-    
-        if (!description) return alert("Description is required.");
-        if (!location) return alert("Location is required.");
-        if (!requiredSkills) return alert("Required skills must be selected.");
-        if (!urgency || ![1, 2, 3].includes(urgency)) return alert("Urgency must be selected.");
-        if (!eventDate || isNaN(new Date(eventDate).getTime())) return alert("Valid event date is required.");
-    
-        const eventData = {
-            eventName,
-            description,
-            location,
-            requiredSkills,
-            urgency,
-            eventDate
-        };
-    
-        try {
-            const response = await fetch(API_URL, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(eventData)
-            });
-    
-            if (!response.ok) {
-                const errorData = await response.json();
-                alert("Error: " + JSON.stringify(errorData));
-                return;
+            .calendar-day {
+                min-height: 70px;
+                font-size: 12px;
             }
-    
-            alert("Event added successfully!");
-            $("#add-event-modal").addClass("hidden");
-            $("#modal-overlay").addClass("hidden");
-            await fetchEvents();
-        } catch (error) {
-            console.error("Error submitting event:", error);
         }
-    });    
 
-    console.log("Calling fetchEvents()");
-    fetchEvents();
-    window.fetchEvents = fetchEvents;
-    window.renderCalendar = renderCalendar;
-});
+        @media (max-width: 500px) {
+            .calendar-grid {
+                grid-template-columns: repeat(7, minmax(30px, 1fr));
+            }
+
+            .calendar-day {
+                min-height: 50px;
+                font-size: 10px;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h2>Event Management</h2>
+
+    <div class="calendar-container">
+        <div class="calendar-header">
+            <button id="prev-month" class="btn btn-secondary">❮</button>
+            <h3 id="current-month-year"></h3>
+            <button id="next-month" class="btn btn-secondary">❯</button>
+        </div>
+
+        <div class="calendar-subheader">
+            <button id="add-event-button" class="btn btn-primary">Add Event</button>
+        </div>
+
+        <div class="calendar-grid">
+            <div class="calendar-day-header">Sun</div>
+            <div class="calendar-day-header">Mon</div>
+            <div class="calendar-day-header">Tue</div>
+            <div class="calendar-day-header">Wed</div>
+            <div class="calendar-day-header">Thu</div>
+            <div class="calendar-day-header">Fri</div>
+            <div class="calendar-day-header">Sat</div>
+        </div>
+
+        <div class="calendar-grid" id="calendar-days">
+            <!-- Calendar days will be dynamically generated here -->
+        </div>
+    </div>
+
+    <!-- Event Modal -->
+    <div class="event-modal hidden" id="event-modal">
+        <h3 id="event-name"></h3>
+        <p><strong>Event Date:</strong> <span id="event-time"></span></p>
+        <p><strong>Event Description:</strong> <span id="event-description"></span></p>
+        <p><strong>Location:</strong> <span id="event-location"></span></p>
+        <p><strong>Required Skills:</strong> <span id="event-required-skills"></span></p>
+        <p><strong>Urgency:</strong> <span id="event-urgency"></span></p>
+        <button id="close-event-modal" class="btn btn-secondary mt-3">Close</button>
+        <button id="delete-event-button" class="btn btn-danger mt-3">Delete Event</button>
+        <button id="edit-event-button" class="btn btn-warning mt-3">Edit Event</button>
+    </div>
+
+    <!-- Add Event Modal -->
+    <div class="add-event-modal hidden" id="add-event-modal">
+        <h3>Add a New Event</h3>
+        <form id="add-event-form">
+            <div class="form-group">
+                <label for="new-event-name">Event Name:</label>
+                <input type="text" id="new-event-name" class="form-control" maxlength="100" required />
+            </div>
+            <div class="form-group">
+                <label for="new-event-description">Event Description:</label>
+                <textarea id="new-event-description" class="form-control" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="new-location">Location:</label>
+                <textarea id="new-location" class="form-control" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="new-required-skills">Required Skills:</label>
+                <select id="new-required-skills" class="form-control" multiple required>
+                    <option value="First Aid">First Aid</option>
+                    <option value="Registration Desk">Registration Desk</option>
+                    <option value="Logistics">Logistics</option>
+                    <option value="Food Service">Food Service</option>
+                    <option value="Photography">Photography</option>
+                    <option value="SocialMedia">Social Media</option>
+                    <option value="Bilingual">Bilingual</option>
+                    <option value="Event Setup">Event Setup</option>
+                    <option value="Carpentry">Carpentry</option>
+                    <option value="Childcare">Childcare</option>
+                    <option value="Public Speaking">Public Speaking</option>
+                    <option value="Coordination">Coordination</option>
+                    <option value="Fundraising">Fundraising</option>
+                    <option value="Graphic Design">Graphic Design</option>
+                    <option value="Teamwork">Teamwork</option>
+                    <option value="Endurance">Endurance</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="new-urgency">Urgency:</label>
+                <select id="new-urgency" class="form-control" required>
+                    <option value="">Select</option>
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="new-event-date">Event Date:</label>
+                <input type="date" id="new-event-date" class="form-control" required />
+            </div>
+            <div class="form-buttons">
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="button" id="close-add-event-modal" class="btn btn-secondary">Close</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Edit Event Modal -->
+    <div class="add-event-modal hidden" id="edit-event-modal">
+        <h3>Edit Event</h3>
+        <form id="edit-event-form">
+        <div class="form-group">
+            <label for="edit-event-name">Event Name:</label>
+            <input type="text" id="edit-event-name" class="form-control" required maxlength="100" />
+        </div>
+        <div class="form-group">
+            <label for="edit-event-description">Description:</label>
+            <textarea id="edit-event-description" class="form-control" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="edit-location">Location:</label>
+            <textarea id="edit-location" class="form-control" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="edit-required-skills">Required Skills:</label>
+            <input type="text" id="edit-required-skills" class="form-control" required />
+        </div>
+        <div class="form-group">
+            <label for="edit-urgency">Urgency:</label>
+            <select id="edit-urgency" class="form-control" required>
+                <option value="">Select</option>
+                <option value="1">High</option>
+                <option value="2">Medium</option>
+                <option value="3">Low</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="edit-event-date">Event Date:</label>
+            <input type="date" id="edit-event-date" class="form-control" required />
+        </div>
+        <div class="form-buttons">
+            <button type="submit" class="btn btn-primary">Update</button>
+            <button type="button" id="close-edit-event-modal" class="btn btn-secondary">Cancel</button>
+        </div>
+        </form>
+    </div>  
+
+    <div class="modal-overlay hidden" id="modal-overlay"></div>
+
+    <!-- Include jQuery and app script -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script type="module" src="./components/event.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js"></script>
+</body>
+</html>
