@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Event Management</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        .calendar-container {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .calendar-header,
+        .calendar-subheader {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        #add-event-button {
+            margin-left: auto;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+        }
+
+        .calendar-day-header,
+        .calendar-day {
+            text-align: center;
+            padding: 10px;
+        }
+
+        .calendar-day-header {
+            font-weight: bold;
+            background-color: #f8f9fa;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .calendar-day {
+            position: relative;
+            min-height: 100px;
+            border: 1px solid #ddd;
+            padding: 5px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        .event-modal,
+        .add-event-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            border-radius: 10px;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .event-item {
+            background-color: #ffbd59;
+            color: white;
+            padding: 4px;
+            margin-top: 5px;
+            width: 100%;
+            text-align: center;
+            border-radius: 4px;
+            font-size: 12px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        @media (max-width: 768px) {
+            .calendar-grid {
+                grid-template-columns: repeat(7, minmax(40px, 1fr));
+            }
+
+            .calendar-day {
+                min-height: 70px;
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .calendar-grid {
+                grid-template-columns: repeat(7, minmax(30px, 1fr));
+            }
+
+            .calendar-day {
+                min-height: 50px;
+                font-size: 10px;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<h2>Event Management</h2>
+
+<div class="calendar-container">
+    <div class="calendar-header">
+        <button id="prev-month" class="btn btn-secondary">❮</button>
+        <h3 id="current-month-year"></h3>
+        <button id="next-month" class="btn btn-secondary">❯</button>
+    </div>
+
+    <div class="calendar-subheader">
+<!--        <button id="add-event-button" class="btn btn-primary">Add Event</button>-->
+    </div>
+
+    <div class="calendar-grid">
+        <div class="calendar-day-header">Sun</div>
+        <div class="calendar-day-header">Mon</div>
+        <div class="calendar-day-header">Tue</div>
+        <div class="calendar-day-header">Wed</div>
+        <div class="calendar-day-header">Thu</div>
+        <div class="calendar-day-header">Fri</div>
+        <div class="calendar-day-header">Sat</div>
+    </div>
+
+    <div class="calendar-grid" id="calendar-days">
+        <!-- Calendar days will be dynamically generated here -->
+    </div>
+</div>
+
+<!-- Event Modal -->
+<div class="event-modal hidden" id="event-modal">
+    <h3 id="event-name"></h3>
+    <p><strong>Event Date:</strong> <span id="event-time"></span></p>
+    <p><strong>Event Description:</strong> <span id="event-description"></span></p>
+    <p><strong>Location:</strong> <span id="event-location"></span></p>
+    <p><strong>Required Skills:</strong> <span id="event-required-skills"></span></p>
+    <p><strong>Urgency:</strong> <span id="event-urgency"></span></p>
+    <button id="close-event-modal" class="btn btn-secondary mt-3">Close</button>
+<!--    <button id="delete-event-button" class="btn btn-danger mt-3">Delete Event</button>-->
+<!--    <button id="edit-event-button" class="btn btn-warning mt-3">Edit Event</button>-->
+</div>
+
+<!-- Add Event Modal -->
+<div class="add-event-modal hidden" id="add-event-modal">
+    <h3>Add a New Event</h3>
+    <form id="add-event-form">
+        <div class="form-group">
+            <label for="new-event-name">Event Name:</label>
+            <input type="text" id="new-event-name" class="form-control" maxlength="100" required />
+        </div>
+        <div class="form-group">
+            <label for="new-event-description">Event Description:</label>
+            <textarea id="new-event-description" class="form-control" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="new-location">Location:</label>
+            <textarea id="new-location" class="form-control" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="new-required-skills">Required Skills:</label>
+            <select id="new-required-skills" class="form-control" multiple required>
+                <option value="First Aid">First Aid</option>
+                <option value="Registration Desk">Registration Desk</option>
+                <option value="Logistics">Logistics</option>
+                <option value="Food Service">Food Service</option>
+                <option value="Photography">Photography</option>
+                <option value="SocialMedia">Social Media</option>
+                <option value="Bilingual">Bilingual</option>
+                <option value="Event Setup">Event Setup</option>
+                <option value="Carpentry">Carpentry</option>
+                <option value="Childcare">Childcare</option>
+                <option value="Public Speaking">Public Speaking</option>
+                <option value="Coordination">Coordination</option>
+                <option value="Fundraising">Fundraising</option>
+                <option value="Graphic Design">Graphic Design</option>
+                <option value="Teamwork">Teamwork</option>
+                <option value="Endurance">Endurance</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="new-urgency">Urgency:</label>
+            <select id="new-urgency" class="form-control" required>
+                <option value="">Select</option>
+                <option value="High">High</option>
+                <option value="Medium">Medium</option>
+                <option value="Low">Low</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="new-event-date">Event Date:</label>
+            <input type="date" id="new-event-date" class="form-control" required />
+        </div>
+        <div class="form-buttons">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="button" id="close-add-event-modal" class="btn btn-secondary">Close</button>
+        </div>
+    </form>
+</div>
+
+<!-- Edit Event Modal -->
+<div class="add-event-modal hidden" id="edit-event-modal">
+    <h3>Edit Event</h3>
+    <form id="edit-event-form">
+        <div class="form-group">
+            <label for="edit-event-name">Event Name:</label>
+            <input type="text" id="edit-event-name" class="form-control" required maxlength="100" />
+        </div>
+        <div class="form-group">
+            <label for="edit-event-description">Description:</label>
+            <textarea id="edit-event-description" class="form-control" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="edit-location">Location:</label>
+            <textarea id="edit-location" class="form-control" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="edit-required-skills">Required Skills:</label>
+            <input type="text" id="edit-required-skills" class="form-control" required />
+        </div>
+        <div class="form-group">
+            <label for="edit-urgency">Urgency:</label>
+            <select id="edit-urgency" class="form-control" required>
+                <option value="">Select</option>
+                <option value="1">High</option>
+                <option value="2">Medium</option>
+                <option value="3">Low</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="edit-event-date">Event Date:</label>
+            <input type="date" id="edit-event-date" class="form-control" required />
+        </div>
+        <div class="form-buttons">
+            <button type="submit" class="btn btn-primary">Update</button>
+            <button type="button" id="close-edit-event-modal" class="btn btn-secondary">Cancel</button>
+        </div>
+    </form>
+</div>
+
+<div class="modal-overlay hidden" id="modal-overlay"></div>
+
+<!-- Include jQuery and app script -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="components/event-v.js"></script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Volunteer History</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .history-container {
+      max-width: 900px;
+      margin: 50px auto;
+    }
+    .search-filter {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+    }
+    th {
+      cursor: pointer;
+    }
+    .truncate {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100px;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="history-container">
+    <h2>Volunteer History</h2>
+
+    <!-- Search and Filter Section -->
+    <div class="search-filter">
+      <input type="text" id="searchInput" class="form-control" placeholder="Search by Event or Volunteer Name" style="width: 60%;">
+      <select id="statusFilter" class="form-control" style="width: 35%;">
+        <option value="">Filter by Status</option>
+        <option value="Attended">Attended</option>
+        <option value="Pending">Pending</option>
+        <option value="Did Not Attend">Did Not Attend</option>
+      </select>
+    </div>
+
+    <!-- Table -->
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th onclick="sortTable(0)">Event Name <span id="icon0">🔽</span></th>
+          <th onclick="sortTable(1)">Date <span id="icon1">🔽</span></th>
+          <th onclick="sortTable(2)">Volunteer Name <span id="icon2">🔽</span></th>
+          <th onclick="sortTable(3)">Hours <span id="icon3">🔽</span></th>
+          <th onclick="sortTable(4)">Description <span id="icon4">🔽</span></th>
+          <th onclick="sortTable(5)">Location <span id="icon5">🔽</span></th>
+          <th onclick="sortTable(6)">Required Skills <span id="icon6">🔽</span></th>
+          <th onclick="sortTable(7)">Urgency <span id="icon7">🔽</span></th>
+          <th onclick="sortTable(8)">Participation Status <span id="icon8">🔽</span></th>
+        </tr>
+      </thead>
+      <tbody id="historyTableBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Include jQuery and Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<script src="../components/volHistory-j.js" defer></script>
+</body>
+</html>

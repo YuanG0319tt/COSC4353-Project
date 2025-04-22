@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Volunteer Matching Form</title>
+  <!-- Include Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .form-container {
+      max-width: 600px;
+      margin: 50px auto;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Volunteer Matching Form -->
+<div class="form-container">
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+      <h4 class="mb-0">Volunteer Matching Form</h4>
+    </div>
+    <div class="card-body">
+      <form id="volunteer-matching-form">
+        <div class="form-group">
+          <label for="matchingName">Select a Volunteer</label>
+          <select class="form-control" name="matchingName" id="matchingName">
+            <option value="">Select a Volunteer</option>
+          </select>
+          <button type="button" class="btn btn-info btn-block mt-2" id="showEventMatches">Show Matching Events</button>
+        </div>
+
+        <div class="form-group">
+          <label for="matchingEvent">Select an Event</label>
+          <select class="form-control" name="matchingEvent" id="matchingEvent">
+            <option value="">Select an Event</option>
+          </select>
+          <button type="button" class="btn btn-info btn-block mt-2" id="showVolunteerMatches">Show Matching Volunteers</button>
+        </div>
+
+        <div class="mb-3">
+          <p id="volunteerSkills" class="font-weight-bold text-muted"></p>
+          <p id="volunteerPreferences" class="font-weight-bold text-muted"></p>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Assign to Event</button>
+      </form>
+
+      <hr />
+      <h5>Top Matching Results</h5>
+      <table class="table table-striped" id="top-match-table">
+        <thead>
+          <tr>
+            <th>Volunteer</th>
+            <th>Event</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Results populated here -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+  function showVolunteerInfo() {
+    const selected = document.getElementById("matchingName").value;
+    if (!selected) return;
+
+    fetch("/volunteers")
+      .then(res => res.json())
+      .then(data => {
+        const volunteer = data.find(v => v.name === selected);
+        if (volunteer) {
+          document.getElementById("volunteerSkills").textContent = "Skills: " + volunteer.skills;
+          document.getElementById("volunteerPreferences").textContent = "Preferences: " + volunteer.preferences;
+          fetchTopEventsForVolunteer(volunteer.name);  // ⬅️ new
+        }
+      });
+  }
+  
+  document.getElementById('volunteer-matching-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    let volunteerName = document.getElementById("matchingName").value;
+    let eventName = document.getElementById("matchingEvent").value;
+
+    if (!volunteerName || !eventName) {
+        alert("Please select a volunteer and an event.");
+        return;
+    }
+
+    fetch("/match", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ volunteerName, eventName })
+    })
+    .then(response => response.json())
+    .then(data => alert("Match Successful: " + data.message))
+    .catch(error => console.error("Error assigning volunteer:", error));
+  });
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    fetchVolunteers();
+    fetchEvents();
+  });
+
+  function fetchVolunteers() {
+    fetch("/volunteers")
+      .then(response => response.json())
+      .then(data => {
+        let volunteerDropdown = document.getElementById("matchingName");
+        volunteerDropdown.innerHTML = '<option value="">Select a Volunteer</option>'; // Reset dropdown
+
+        data.forEach(volunteer => {
+          let option = document.createElement("option");
+          option.value = volunteer.name; // Set the value to volunteer's name
+          option.textContent = volunteer.name; // Display name in dropdown
+          volunteerDropdown.appendChild(option);
+        });
+      })
+      .catch(error => console.error("Error fetching volunteers:", error));
+  }
+
+
+  function fetchEvents() {
+    fetch("/events")
+      .then(response => response.json())
+      .then(data => {
+        let eventDropdown = document.getElementById("matchingEvent");
+        eventDropdown.innerHTML = '<option value="">Select an Event</option>'; // Reset dropdown
+
+        data.forEach(event => {
+          let option = document.createElement("option");
+          option.value = event.name; // Set the value to event's name
+          option.textContent = `${event.name} (Skills: ${event.requirements.join(", ")})`; // Show skills needed
+          eventDropdown.appendChild(option);
+        });
+      })
+      .catch(error => console.error("Error fetching events:", error));
+  }
+
+</script>
+  
+<!-- Include jQuery and Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<script src="components/matching-j.js"></script>
+
+<script>
+  function showMatchesForVolunteer() {
+    const name = document.getElementById("matchingName").value;
+    if (!name) return;
+
+    fetch(`/match/top-events?volunteer=${encodeURIComponent(name)}`)
+      .then(res => res.json())
+      .then(data => renderMatchTable(data))
+      .catch(err => console.error("Match error", err));
+  }
+
+  function showMatchesForEvent() {
+    const name = document.getElementById("matchingEvent").value;
+    if (!name) return;
+
+    fetch(`/match/top-volunteers?event=${encodeURIComponent(name)}`)
+      .then(res => res.json())
+      .then(data => renderMatchTable(data))
+      .catch(err => console.error("Match error", err));
+  }
+
+  function renderMatchTable(data) {
+    const tbody = document.getElementById("top-match-table").querySelector("tbody");
+    tbody.innerHTML = "";
+
+    data.forEach(match => {
+      const volunteer = match.volunteerName || "-";
+      const event = match.eventName || "-";
+      const score = match.score ? ` (Score: ${match.score})` : "";
+
+      const row = document.createElement("tr");
+      row.innerHTML = `<td>${volunteer}</td><td>${event}${score}</td>`;
+      tbody.appendChild(row);
+    });
+  }
+</script>
+
+</body>
+</html>
