@@ -12,4 +12,11 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins("http://localhost:63342")
                 .allowedMethods("GET","POST","PUT","DELETE");
     }
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        String externalPath = Paths.get("front-end").toAbsolutePath().toUri().toString();
+
+        registry.addResourceHandler("/**")
+                .addResourceLocations(externalPath);
+    }
 }
