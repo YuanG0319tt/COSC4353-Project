@@ -22,7 +22,7 @@ public class VolunteerHistoryJ {
     private LocalDate participationDate;
 
     @Column(name = "HoursVolunteered")
-    private Double hoursVolunteered;
+    private Integer hoursVolunteered;
 
     @Column(name = "status")
     private String participationStatus;
@@ -30,7 +30,7 @@ public class VolunteerHistoryJ {
     // Constructors
     public VolunteerHistoryJ() {}
 
-    public VolunteerHistoryJ(Integer uid, Integer eventId, LocalDate participationDate, Double hoursVolunteered, String participationStatus) {
+    public VolunteerHistoryJ(Integer uid, Integer eventId, LocalDate participationDate, Integer hoursVolunteered, String participationStatus) {
         this.uid = uid;
         this.eventId = eventId;
         this.participationDate = participationDate;
@@ -71,11 +71,11 @@ public class VolunteerHistoryJ {
         this.participationDate = participationDate;
     }
 
-    public Double getHoursVolunteered() {
+    public Integer getHoursVolunteered() {
         return hoursVolunteered;
     }
 
-    public void setHoursVolunteered(Double hoursVolunteered) {
+    public void setHoursVolunteered(Integer hoursVolunteered) {
         this.hoursVolunteered = hoursVolunteered;
     }
 
