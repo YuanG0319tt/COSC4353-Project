@@ -16,11 +16,11 @@ public interface VolunteerHistoryRepository extends JpaRepository<VolunteerHisto
     @Query(value = """
         SELECT 
             vh.HistoryID AS id,
-            u.full_name AS name,
-            u.email AS email,
-            u.phone_number AS phoneNumber,
-            e.event_name AS eventName,
-            e.event_date AS eventDate,
+            vh.name AS name,
+            vh.email AS email,
+            vh.phone_number AS phoneNumber,
+            vh.event_name AS eventName,
+            vh.event_date AS eventDate,
             e.description AS description,
             e.location AS location,
             e.required_skills AS skills,
@@ -28,7 +28,6 @@ public interface VolunteerHistoryRepository extends JpaRepository<VolunteerHisto
             vh.HoursVolunteered AS hoursVolunteered,
             vh.status AS status
         FROM volunteer_history vh
-        JOIN user_info u ON vh.UserID = u.userid
         JOIN event_details e ON vh.EventID = e.eventid
         """, nativeQuery = true)
     List<VolHistoryProjection> fetchVolunteerHistoryTable();
@@ -36,11 +35,11 @@ public interface VolunteerHistoryRepository extends JpaRepository<VolunteerHisto
     @Query(value = """
         SELECT 
             vh.HistoryID AS id,
-            u.full_name AS name,
-            u.email AS email,
-            u.phone_number AS phoneNumber,
-            e.event_name AS eventName,
-            e.event_date AS eventDate,
+            vh.name AS name,
+            vh.email AS email,
+            vh.phone_number AS phoneNumber,
+            vh.event_name AS eventName,
+            vh.event_date AS eventDate,
             e.description AS description,
             e.location AS location,
             e.required_skills AS skills,
@@ -48,8 +47,8 @@ public interface VolunteerHistoryRepository extends JpaRepository<VolunteerHisto
             vh.HoursVolunteered AS hoursVolunteered,
             vh.status AS status
         FROM volunteer_history vh
-        JOIN user_info u ON vh.UserID = u.userid
         JOIN event_details e ON vh.EventID = e.eventid
+        WHERE vh.HistoryID = :id
         """, nativeQuery = true)
     Optional<VolHistoryProjection> fetchVolunteerHistoryById(@Param("id") Long id);
 }
