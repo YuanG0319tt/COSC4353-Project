@@ -55,13 +55,13 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/volunteer?useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://nabadatabase.cliacqmekc7s.us-east-2.rds.amazonaws.com:3306/nabaDatabase
     username: root
-    password: 12345678
+    password: nabaTest76!
 
   jpa:
     hibernate:
-      ddl-auto: none   # 👈 change this to 'none', 'update', 'validate', or 'create'
+      ddl-auto: update   # 👈 change this to 'none', 'update', 'validate', or 'create'
     show-sql: true     # optional: log SQL to console
     properties:
       hibernate:
