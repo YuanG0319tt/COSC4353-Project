@@ -16,10 +16,6 @@ public class VolHistory {
     private String phoneNumber;
     private String eventName;
     private String eventDate;
-    private String description;
-    private String location;
-    private String skills;
-    private int urgency;
-    private double hoursVolunteered;
+    private int hoursVolunteered;
     private String status;
 }
