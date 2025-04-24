@@ -34,7 +34,7 @@ class VolHistoryServiceJTest {
         // prepare a DTO template
         dto = new VolHistory();
         dto.setEventDate("2025-04-22");
-        dto.setHoursVolunteered(2.5);
+        dto.setHoursVolunteered(2);
 
         // prepare a saved entity template
         savedEntity = new VolunteerHistoryJ();
@@ -94,7 +94,7 @@ class VolHistoryServiceJTest {
         // Because dto.getId() was null, ent.historyId should be null
         assertNull(ent.getHistoryId());
         assertEquals(LocalDate.parse("2025-04-22"), ent.getParticipationDate());
-        assertEquals(2.5, ent.getHoursVolunteered());
+        assertEquals(2, ent.getHoursVolunteered());
     }
 
     @Test
