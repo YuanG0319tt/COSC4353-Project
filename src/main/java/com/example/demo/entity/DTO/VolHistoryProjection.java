@@ -10,8 +10,7 @@ public interface VolHistoryProjection {
     String getDescription();
     String getLocation();
     String getSkills();
-    int getUrgency();
-    double getHoursVolunteered();
-    String getParticipationStatus();
+    Integer getUrgency();
+    Integer getHoursVolunteered();
     String getStatus();
 }
