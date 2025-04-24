@@ -18,7 +18,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(VolHistoryControllerJ.class)
+@WebMvcTest(VolunteerHistoryController.class)
 class VolHistoryControllerJTest {
 
     @Autowired
@@ -33,7 +33,7 @@ class VolHistoryControllerJTest {
     void addVolunteerHistoryReturnsDto() throws Exception {
         VolHistory in = new VolHistory();
         in.setEventDate("2025-04-22");
-        in.setHoursVolunteered(2.0);
+        in.setHoursVolunteered(2);
 
         VolHistory out = new VolHistory();
         out.setId(123L);
