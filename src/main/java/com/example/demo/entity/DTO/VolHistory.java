@@ -15,7 +15,7 @@ public class VolHistory {
     private String email;
     private String phoneNumber;
     private String eventName;
-    private String eventDate;
+    private String participationDate;
     private int hoursVolunteered;
     private String status;
 }
