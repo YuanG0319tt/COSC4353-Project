@@ -24,7 +24,10 @@ $(document).ready(function () {
 
         for (let day = 1; day <= totalDays; day++) {
             const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
-            const dateString = date.toISOString().split('T')[0];
+            const yyyy = date.getUTCFullYear();
+            const mm = String(date.getUTCMonth() + 1).padStart(2, '0');
+            const dd = String(date.getUTCDate()).padStart(2, '0');
+            const dateString = `${yyyy}-${mm}-${dd}`;
             console.log(`Calendar Day: ${dateString} →`, events[dateString]);
 
             const dayEvents = events[dateString] || [];
@@ -38,38 +41,15 @@ $(document).ready(function () {
                     selectedEvent = event;
                 
                     $("#event-name").text(event.eventName);
-                    $("#event-time").text(new Date(event.eventDate).toISOString().split('T')[0]);
+                    $("#event-time").text(event.eventDate);
                     $("#event-description").text(event.description);
                     $("#event-location").text(event.location);
                     $("#event-required-skills").text(event.requiredSkills);
                     $("#event-urgency").text(event.urgency);
                     $("#event-modal").removeClass("hidden");
                     $("#modal-overlay").removeClass("hidden");
-                
-                    // Rebind delete handler each time modal opens
-                    $("#delete-event-button").off("click").on("click", async () => {
-                        if (!selectedEvent || !selectedEvent.eventID) {
-                            console.warn("Missing event or eventID:", selectedEvent);
-                            alert("No valid event selected.");
-                            return;
-                        }
-                
-                        if (!confirm("Are you sure you want to delete this event?")) return;
-                
-                        try {
-                            const res = await fetch(`${API_URL}/${selectedEvent.eventID}`, { method: "DELETE" });
-                            if (!res.ok) throw new Error("Failed to delete event");
-                
-                            alert("Event deleted.");
-                            $("#event-modal").addClass("hidden");
-                            $("#modal-overlay").addClass("hidden");
-                            fetchEvents();
-                        } catch (err) {
-                            console.error(err);
-                            alert("Error deleting event.");
-                        }
-                    });
                     
+                    // Edit button handler
                     $("#edit-event-button").on("click", () => {
                         if (!selectedEvent) return alert("No event selected.");
                       
@@ -84,14 +64,14 @@ $(document).ready(function () {
                         $("#edit-event-modal").removeClass("hidden");
                         $("#modal-overlay").removeClass("hidden");
                         $("#event-modal").addClass("hidden");
-                      });
-                      
-                      $("#close-edit-event-modal").on("click", () => {
+                    });
+                    
+                    $("#close-edit-event-modal").on("click", () => {
                         $("#edit-event-modal").addClass("hidden");
                         $("#modal-overlay").addClass("hidden");
-                      });
-                      
-                      $("#edit-event-form").on("submit", async function (e) {
+                    });
+                    
+                    $("#edit-event-form").on("submit", async function (e) {
                         e.preventDefault();
                       
                         const eventName = $("#edit-event-name").val().trim();
@@ -102,7 +82,7 @@ $(document).ready(function () {
                         const eventDate = $("#edit-event-date").val();
                       
                         if (!eventName || eventName.length > 100) {
-                          return alert("Event name is required and must be less than 100 characters.");
+                            return alert("Event name is required and must be less than 100 characters.");
                         }
                       
                         if (!description) return alert("Description is required.");
@@ -112,34 +92,34 @@ $(document).ready(function () {
                         if (!eventDate || isNaN(new Date(eventDate).getTime())) return alert("A valid event date is required.");
                       
                         const updatedEvent = {
-                          eventName,
-                          description,
-                          location,
-                          requiredSkills,
-                          urgency,
-                          eventDate
+                            eventName,
+                            description,
+                            location,
+                            requiredSkills,
+                            urgency,
+                            eventDate
                         };
                       
                         try {
-                          const response = await fetch(`${API_URL}/${selectedEvent.eventID}`, {
-                            method: "PUT",
-                            headers: {
-                              "Content-Type": "application/json"
-                            },
-                            body: JSON.stringify(updatedEvent)
-                          });
-                      
-                          if (!response.ok) throw new Error("Update failed.");
-                      
-                          alert("Event updated.");
-                          $("#edit-event-modal").addClass("hidden");
-                          $("#modal-overlay").addClass("hidden");
-                          fetchEvents();
+                            const response = await fetch(`${API_URL}/${selectedEvent.eventID}`, {
+                                method: "PUT",
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                body: JSON.stringify(updatedEvent)
+                            });
+                        
+                            if (!response.ok) throw new Error("Update failed.");
+                        
+                            alert("Event updated.");
+                            $("#edit-event-modal").addClass("hidden");
+                            $("#modal-overlay").addClass("hidden");
+                            fetchEvents();
                         } catch (err) {
-                          console.error(err);
-                          alert("Error updating event.");
+                            console.error(err);
+                            alert("Error updating event.");
                         }
-                      });                      
+                    });
                 });
                 dayElement.append(eventItem);
             });
@@ -237,7 +217,7 @@ $(document).ready(function () {
         const requiredSkills = Array.from(document.getElementById("new-required-skills").selectedOptions)
             .map(opt => opt.value).join(', ');
         const urgencyStr = document.getElementById("new-urgency").value;
-        const eventDate = document.getElementById("new-event-date").value;
+        const eventDateInput = document.getElementById("new-event-date").value;
     
         const urgencyMap = { High: 1, Medium: 2, Low: 3 };
         const urgency = urgencyMap[urgencyStr];
@@ -251,7 +231,11 @@ $(document).ready(function () {
         if (!location) return alert("Location is required.");
         if (!requiredSkills) return alert("Required skills must be selected.");
         if (!urgency || ![1, 2, 3].includes(urgency)) return alert("Urgency must be selected.");
-        if (!eventDate || isNaN(new Date(eventDate).getTime())) return alert("Valid event date is required.");
+        if (!eventDateInput || isNaN(new Date(eventDateInput).getTime())) return alert("Valid event date is required.");
+    
+        // Format the date to ensure it's in YYYY-MM-DD format
+        const [year, month, day] = eventDateInput.split('-');
+        const eventDate = `${year}-${month}-${day}`;
     
         const eventData = {
             eventName,
@@ -285,6 +269,39 @@ $(document).ready(function () {
             console.error("Error submitting event:", error);
         }
     });    
+
+    // Delete button handler
+    $("#delete-event-button").on("click", async () => {
+        if (!selectedEvent || !selectedEvent.eventID) {
+            console.warn("Missing event or eventID:", selectedEvent);
+            alert("No valid event selected.");
+            return;
+        }
+
+        if (!confirm("Are you sure you want to delete this event?")) return;
+
+        try {
+            const res = await fetch(`${API_URL}/${selectedEvent.eventID}`, { 
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+            
+            if (!res.ok) {
+                const errorData = await res.json().catch(() => ({}));
+                throw new Error(errorData.message || "Failed to delete event");
+            }
+
+            alert("Event deleted successfully!");
+            $("#event-modal").addClass("hidden");
+            $("#modal-overlay").addClass("hidden");
+            await fetchEvents();
+        } catch (err) {
+            console.error("Delete error:", err);
+            alert(`Error deleting event: ${err.message}`);
+        }
+    });
 
     console.log("Calling fetchEvents()");
     fetchEvents();

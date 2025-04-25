@@ -17,6 +17,13 @@
         .notification-filters {
             margin: 10px 0;
         }
+        .notification-filters button {
+            margin-right: 10px;
+        }
+        .notification-filters button.active {
+            background-color: #007bff;
+            color: white;
+        }
         .notification-list {
             margin-top: 20px;
         }
@@ -35,11 +42,11 @@
             padding: 20px;
             box-shadow: 0 0 10px rgba(0,0,0,0.5);
             z-index: 1000;
-            width: 90%; /* Adjust width as needed */
-            max-width: 500px; /* Optional: Prevent it from being too wide */
-            max-height: 80vh; /* Set max height relative to viewport */
-            overflow-y: auto; /* Enable scrolling when content exceeds max height */
-            border-radius: 10px; /* Optional: Adds rounded corners */
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            border-radius: 10px;
         }
 
         .modal-overlay {

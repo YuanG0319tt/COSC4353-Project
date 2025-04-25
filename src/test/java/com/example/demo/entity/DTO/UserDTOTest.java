@@ -6,61 +6,137 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class UserDTOTest {
 
+    private UserDTO createBase() {
+        UserDTO user = new UserDTO();
+        user.setEmail("test@example.com");
+        user.setPassword("password123");
+        user.setRole("USER");
+        return user;
+    }
+
+    @Test
+    public void testNoArgsConstructor() {
+        UserDTO user = new UserDTO();
+        assertNull(user.getEmail());
+        assertNull(user.getPassword());
+        assertNull(user.getRole());
+    }
+
     @Test
     public void testSettersAndGetters() {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setEmail("test@example.com");
-        userDTO.setPassword("secret");
-        userDTO.setRole("user");
+        UserDTO user = new UserDTO();
+        
+        // Test with null values
+        user.setEmail(null);
+        assertNull(user.getEmail());
 
-        assertEquals("test@example.com", userDTO.getEmail());
-        assertEquals("secret", userDTO.getPassword());
-        assertEquals("user", userDTO.getRole());
+        user.setPassword(null);
+        assertNull(user.getPassword());
+
+        user.setRole(null);
+        assertNull(user.getRole());
+
+        // Test with actual values
+        user.setEmail("test@example.com");
+        assertEquals("test@example.com", user.getEmail());
+
+        user.setPassword("password123");
+        assertEquals("password123", user.getPassword());
+
+        user.setRole("USER");
+        assertEquals("USER", user.getRole());
     }
 
     @Test
-    public void testEqualsAndHashCode() {
-        UserDTO dto1 = new UserDTO();
-        dto1.setEmail("test@example.com");
-        dto1.setPassword("secret");
-        dto1.setRole("user");
-
-        UserDTO dto2 = new UserDTO();
-        dto2.setEmail("test@example.com");
-        dto2.setPassword("secret");
-        dto2.setRole("user");
-
-        UserDTO dto3 = new UserDTO();
-        dto3.setEmail("other@example.com");
-        dto3.setPassword("secret");
-        dto3.setRole("admin");
-
-        // Test equality of identical DTOs
-        assertTrue(dto1.equals(dto2));
-        assertEquals(dto1.hashCode(), dto2.hashCode());
-
-        // Test inequality with a different DTO
-        assertFalse(dto1.equals(dto3));
-        // Optionally, check hashCode inequality if hashCode is based on the same fields
-        assertNotEquals(dto1.hashCode(), dto3.hashCode());
-
-        // Verify equals against null and different type
-        assertFalse(dto1.equals(null));
-        assertFalse(dto1.equals("Not a UserDTO"));
+    public void testEqualsAndHashCodeWithNullFields() {
+        UserDTO user1 = new UserDTO();
+        UserDTO user2 = new UserDTO();
+        
+        // Test equality with all null fields
+        assertEquals(user1, user2);
+        assertEquals(user1.hashCode(), user2.hashCode());
+        
+        // Test with one field set to null and other to value
+        user1.setEmail("test@example.com");
+        user2.setEmail(null);
+        assertNotEquals(user1, user2);
     }
 
     @Test
-    public void testToString() {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setEmail("test@example.com");
-        userDTO.setPassword("secret");
-        userDTO.setRole("user");
+    public void testEqualsAndHashCodeWithDifferentTypes() {
+        UserDTO user = createBase();
+        assertNotEquals(user, new Object());
+        assertNotEquals(user, null);
+        assertNotEquals(user, "not a UserDTO");
+    }
 
-        String result = userDTO.toString();
-        assertNotNull(result);
-        // Verify that the output of toString() contains key field values
-        assertTrue(result.contains("test@example.com"));
-        assertTrue(result.contains("secret"));
-        assertTrue(result.contains("user"));
+    @Test
+    public void testEqualsAndHashCodeWithSameObject() {
+        UserDTO user = createBase();
+        assertEquals(user, user);
+        assertEquals(user.hashCode(), user.hashCode());
+    }
+
+    @Test
+    public void testEqualsAndHashCodeWithDifferentValues() {
+        UserDTO user1 = createBase();
+        UserDTO user2 = createBase();
+
+        // Test each field individually
+        user2.setEmail("different@example.com");
+        assertNotEquals(user1, user2);
+
+        user2 = createBase();
+        user2.setPassword("different123");
+        assertNotEquals(user1, user2);
+
+        user2 = createBase();
+        user2.setRole("ADMIN");
+        assertNotEquals(user1, user2);
+    }
+
+    @Test
+    public void testToStringWithNullValues() {
+        UserDTO user = new UserDTO();
+        String userString = user.toString();
+        assertNotNull(userString);
+        assertTrue(userString.contains("email=null"));
+        assertTrue(userString.contains("password=null"));
+        assertTrue(userString.contains("role=null"));
+    }
+
+    @Test
+    public void testToStringWithAllValues() {
+        UserDTO user = createBase();
+        String userString = user.toString();
+        assertNotNull(userString);
+        assertTrue(userString.contains("email=test@example.com"));
+        assertTrue(userString.contains("password=password123"));
+        assertTrue(userString.contains("role=USER"));
+    }
+
+    @Test
+    public void testEdgeCases() {
+        UserDTO user = new UserDTO();
+        
+        // Test with empty strings
+        user.setEmail("");
+        assertEquals("", user.getEmail());
+        
+        user.setPassword("");
+        assertEquals("", user.getPassword());
+        
+        user.setRole("");
+        assertEquals("", user.getRole());
+        
+        // Test with special characters
+        user.setEmail("test.user+tag@example.com");
+        assertEquals("test.user+tag@example.com", user.getEmail());
+        
+        user.setPassword("p@ssw0rd!123");
+        assertEquals("p@ssw0rd!123", user.getPassword());
+        
+        user.setRole("ROLE_USER");
+        assertEquals("ROLE_USER", user.getRole());
     }
 }

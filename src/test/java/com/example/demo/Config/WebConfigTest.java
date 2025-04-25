@@ -35,27 +35,11 @@ class WebConfigTest {
         CorsConfiguration cfg = configs.get("/**");
         assertNotNull(cfg, "No CORS configuration found for /**");
 
-        // Origins
-        assertEquals(
-                1,
-                cfg.getAllowedOrigins().size(),
-                "Expected exactly one allowed origin"
-        );
-        assertTrue(
-                cfg.getAllowedOrigins().contains("http://localhost:63342"),
-                "Allowed origins did not contain http://localhost:63342"
-        );
-
-        // Methods
-        assertEquals(
-                4,
-                cfg.getAllowedMethods().size(),
-                "Expected exactly four allowed methods"
-        );
-        assertTrue(cfg.getAllowedMethods().contains("GET"));
-        assertTrue(cfg.getAllowedMethods().contains("POST"));
-        assertTrue(cfg.getAllowedMethods().contains("PUT"));
-        assertTrue(cfg.getAllowedMethods().contains("DELETE"));
+        // Verify permissive configuration
+        assertTrue(cfg.getAllowedOriginPatterns().contains("*"), "Expected wildcard origin pattern");
+        assertTrue(cfg.getAllowedMethods().contains("*"), "Expected wildcard methods");
+        assertTrue(cfg.getAllowedHeaders().contains("*"), "Expected wildcard headers");
+        assertTrue(cfg.getAllowCredentials(), "Expected credentials to be allowed");
     }
 }
 

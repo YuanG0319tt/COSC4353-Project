@@ -52,9 +52,29 @@ $(document).ready(function () {
         });
     }      
 
-    $("#filter-all").click(() => loadNotifications());
-    $("#filter-announcements").click(() => filterNotifications("announcement"));
-    $("#filter-notifications").click(() => filterNotifications("notification"));
+    // Set "All" as active by default
+    $("#filter-all").addClass("active");
+
+    $("#filter-all").click(function() {
+        loadNotifications();
+        // Update active state
+        $(".notification-filters button").removeClass("active");
+        $(this).addClass("active");
+    });
+
+    $("#filter-announcements").click(function() {
+        filterNotifications("Announcements");
+        // Update active state
+        $(".notification-filters button").removeClass("active");
+        $(this).addClass("active");
+    });
+
+    $("#filter-notifications").click(function() {
+        filterNotifications("Notifications");
+        // Update active state
+        $(".notification-filters button").removeClass("active");
+        $(this).addClass("active");
+    });
 
     function filterNotifications(type) {
         $.get("http://localhost:8080/api/notifications/list", function (data) {
