@@ -40,7 +40,7 @@ $(document).ready(function () {
     function loadNotifications() {
         $.get("http://localhost:8080/api/notifications/list", function (data) {
             $("#notification-list").empty();
-            data.data.forEach(notification => {
+            data.data.reverse().forEach(notification => {
                 $("#notification-list").append(`
                     <div class="notification-item ${notification.type}">
                         <strong>${notification.title}</strong>: ${notification.message}
