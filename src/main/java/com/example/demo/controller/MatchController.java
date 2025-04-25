@@ -35,6 +35,7 @@ public class MatchController {
         String result = matchService.assignVolunteer(volunteerName, eventName);
         return ResponseEntity.ok(Map.of("message", result));
     }
+    
     @GetMapping("/match/volunteer")
     public List<Map<String, String>> getMatchesForVolunteer(@RequestParam String name) {
         return matchService.findBestEventsForVolunteer(name);
