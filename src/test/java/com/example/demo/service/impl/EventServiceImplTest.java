@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.sql.Timestamp;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -65,15 +66,12 @@ class EventServiceImplTest {
 
         VolunteerHistory h = historyCaptor.getValue();
         assertEquals(e.getId(), h.getEventId());
-        assertEquals(e.getId(), h.getUid());
-        assertEquals(e.getDate(), h.getParticipationDate());
-        assertEquals(e.getUrgency(), h.getUrgency());
+        assertEquals(e.getId(), h.getUserId());
+        assertEquals(e.getDate().toLocalDateTime().toLocalDate(), 
+             h.getParticipationDate().toLocalDate());
         assertEquals(e.getName(), h.getEventName());
-        assertEquals(e.getLocation(), h.getLocation());
-        assertEquals("",       h.getRole());
-        assertEquals(0,        h.getHours());
-        assertEquals("Pending",h.getParticipationStatus());
-        assertEquals("Pending",h.getCompletionStatus());
+        assertEquals(0,        h.getHoursVolunteered());
+        assertEquals("Pending",h.getStatus());
     }
 
     @Test
@@ -93,6 +91,5 @@ class EventServiceImplTest {
 
         verify(eventMapper).insert(e);
         verify(volunteerHistoryService).save(historyCaptor.capture());
-        // we could repeat the field‐by‐field assertions if desired...
     }
 }
