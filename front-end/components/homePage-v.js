@@ -83,7 +83,7 @@ function showTab(tabId) {
             loadContent('history', './pages/volHistory-j.html', './components/volHistory-j.js', 'history');
             break;
         case 'notification':
-            loadContent('notification', './pages/notifications.html', './components/notifications.js', 'notification');
+            loadContent('notification', './pages/notifications-v.html', './components/notifications-v.js', 'notification');
             break;
         default:
             console.error(`Invalid tab ID: ${tabId}`);
