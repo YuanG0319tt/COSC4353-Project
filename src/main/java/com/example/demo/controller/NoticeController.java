@@ -33,5 +33,13 @@ public class NoticeController {
         }
     }
 
-
+    @DeleteMapping("/{id}")
+    public Result delete(@PathVariable Long id) {
+        boolean deleted = noticeService.removeById(id);
+        if (deleted) {
+            return Result.response(HttpStatus.SUCCESS, HttpMessage.SUCCESS, null);
+        } else {
+            return Result.response(HttpStatus.FAILED, HttpMessage.DELETE_FAILED, null);
+        }
+    }
 }
