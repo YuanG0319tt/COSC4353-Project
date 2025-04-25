@@ -9,6 +9,9 @@ import com.example.demo.service.VolunteerHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.sql.Timestamp;
 
 @Service
 public class EventServiceImpl
@@ -36,19 +39,17 @@ public class EventServiceImpl
         VolunteerHistory h = new VolunteerHistory();
         h.setEventId(event.getId());
         // if you have a creator UID on Event, use that; otherwise pick whatever default
-        h.setUid(event.getId() != null
+        h.setUserId(event.getId() != null
                 ? event.getId()
                 : /* fallback UID */ 0);
         // seed defaults:
         //h.setVolunteerName();
-        h.setParticipationDate(event.getDate()); // or LocalDate.now()
-        h.setUrgency(event.getUrgency());
+        Timestamp ts = event.getDate();
+        LocalDate localDate = ts.toLocalDateTime().toLocalDate();
+        h.setParticipationDate(Date.valueOf(localDate));
         h.setEventName(event.getName());
-        h.setLocation(event.getLocation());
-        h.setRole("");
-        h.setHours(0);
-        h.setParticipationStatus("Pending");
-        h.setCompletionStatus("Pending");
+        h.setHoursVolunteered(0);
+        h.setStatus("Pending");
 
         // 3) insert into volunteer_history
         boolean histOk = volunteerHistoryService.save(h);
