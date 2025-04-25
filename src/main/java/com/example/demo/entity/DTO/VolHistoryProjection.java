@@ -6,7 +6,7 @@ public interface VolHistoryProjection {
     String getEmail();
     String getPhoneNumber();
     String getEventName();
-    String getEventDate();
+    String getParticipationDate();
     String getDescription();
     String getLocation();
     String getSkills();
