@@ -1,33 +1,33 @@
 package com.example.demo.entity;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.sql.Date;
 
 @Entity
 @Table(name = "event_details")
 public class EventDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "EventID")
+    @Column(name = "eventid")
     private Integer eventID;
 
-    @Column(name = "EventName")
+    @Column(name = "event_name")
     private String eventName;
 
-    @Column(name = "Description")
+    @Column(name = "description")
     private String description;
 
-    @Column(name = "Location")
+    @Column(name = "location")
     private String location;
 
-    @Column(name = "RequiredSkills")
+    @Column(name = "required_skills")
     private String requiredSkills;
 
-    @Column(name = "Urgency")
+    @Column(name = "urgency")
     private int urgency;
 
-    @Column(name = "EventDate")
-    private LocalDate eventDate;
+    @Column(name = "event_date")
+    private Date eventDate;
 
     public EventDetails() {}
 
@@ -50,6 +50,6 @@ public class EventDetails {
     public int getUrgency() { return urgency; }
     public void setUrgency(int urgency) { this.urgency = urgency; }
 
-    public LocalDate getEventDate() { return eventDate; }
-    public void setEventDate(LocalDate eventDate) { this.eventDate = eventDate; }
+    public Date getEventDate() { return eventDate; }
+    public void setEventDate(Date eventDate) { this.eventDate = eventDate; }
 }
