@@ -42,14 +42,15 @@ $(document).ready(function () {
             $("#notification-list").empty();
             data.data.reverse().forEach(notification => {
                 $("#notification-list").append(`
-                    <div class="notification-item ${notification.type}">
+                    <div class="notification-item ${notification.type}" data-id="${notification.id}">
                         <strong>${notification.title}</strong>: ${notification.message}
                         <br><small><em>${notification.createTime}</em></small>
+                        <button class="btn btn-sm btn-danger delete-btn float-right" style="float: right; margin-top: -15px;">Delete</button>
                     </div>
                 `);
-            });
+            });            
         });
-    }
+    }      
 
     $("#filter-all").click(() => loadNotifications());
     $("#filter-announcements").click(() => filterNotifications("announcement"));
@@ -60,12 +61,31 @@ $(document).ready(function () {
             $("#notification-list").empty();
             data.data.filter(n => n.type === type).forEach(notification => {
                 $("#notification-list").append(`
-                    <div class="notification-item ${notification.type}">
+                    <div class="notification-item ${notification.type}" data-id="${notification.id}">
                         <strong>${notification.title}</strong>: ${notification.message}
                         <br><small><em>${notification.createTime}</em></small>
+                        <button class="btn btn-sm btn-danger delete-btn" style="float: right; margin-top: -15px;">Delete</button>
                     </div>
                 `);
             });
         });
-    }
+    }    
+
+    $("#notification-list").on("click", ".delete-btn", function () {
+        const parent = $(this).closest(".notification-item");
+        const id = parent.data("id");
+    
+        if (confirm("Are you sure you want to delete this notification?")) {
+            $.ajax({
+                url: `http://localhost:8080/api/notifications/${id}`,
+                type: "DELETE",
+                success: function () {
+                    parent.remove();
+                },
+                error: function () {
+                    alert("Failed to delete notification.");
+                }
+            });
+        }
+    });    
 });
