@@ -1,11 +1,11 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.EventDetails;
-import com.example.demo.entity.UserInfo;
+import com.example.demo.entity.UserProfile;
 import com.example.demo.entity.Volunteer;
 import com.example.demo.entity.VolunteerHistoryJ;
 import com.example.demo.repositories.EventDetailsRepository;
-import com.example.demo.repositories.UserInfoRepository;
+import com.example.demo.mapper.UserProfileMapper;
 import com.example.demo.repositories.VolunteerHistoryRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,14 +20,14 @@ public class MatchService {
     private final EventDetailsRepository eventRepo;
     private final VolunteerService volunteerService;
     private final VolunteerHistoryRepository volunteerHistoryRepository;
-    private final UserInfoRepository userRepo;
+    private final UserProfileMapper userProfileMapper;
 
     public MatchService(EventDetailsRepository eventRepo,
-                        UserInfoRepository userRepo,
+                        UserProfileMapper userProfileMapper,
                         VolunteerService volunteerService,
                         VolunteerHistoryRepository volunteerHistoryRepository) {
         this.eventRepo = eventRepo;
-        this.userRepo = userRepo;
+        this.userProfileMapper = userProfileMapper;
         this.volunteerService = volunteerService;
         this.volunteerHistoryRepository = volunteerHistoryRepository;
     }
@@ -64,28 +64,35 @@ public class MatchService {
 
     public List<Map<String, String>> findBestEventsForVolunteer(String volunteerName) {
         List<Volunteer> volunteers = volunteerService.getAllVolunteers();
-        List<EventDetails> events = eventRepo.findAll();
-
+    
         Volunteer volunteer = volunteers.stream()
-                .filter(v -> v.getName().equalsIgnoreCase(volunteerName))
-                .findFirst()
-                .orElse(null);
-
-        if (volunteer == null) return List.of();
-
+            .filter(v -> v.getName().equalsIgnoreCase(volunteerName))
+            .findFirst()
+            .orElse(null);
+    
+        if (volunteer == null) {
+            System.err.println("⚠️ No volunteer found with name: " + volunteerName);
+            return List.of(); // ✅ return empty list instead of causing a crash
+        }
+    
+        List<EventDetails> events = eventRepo.findAll();
+    
         return events.stream()
-                .map(event -> Map.of(
-                        "volunteerName", volunteer.getName(),
-                        "eventName", event.getEventName(),
-                        "score", String.valueOf(scoreMatch(volunteer, event))
-                ))
-                .sorted((a, b) -> Double.compare(
-                        Double.parseDouble(b.get("score")),
-                        Double.parseDouble(a.get("score"))
-                ))
-                .limit(5)
-                .collect(Collectors.toList());
-    }
+            .map(event -> {
+                Map<String, String> result = new HashMap<>();
+                result.put("volunteerName", Objects.toString(volunteer.getName(), "-"));
+                result.put("eventName", Objects.toString(event.getEventName(), "-"));
+                result.put("score", String.valueOf(scoreMatch(volunteer, event)));
+                return result;
+            })
+            .sorted((a, b) -> Double.compare(
+                Double.parseDouble(b.get("score")),
+                Double.parseDouble(a.get("score"))
+            ))
+            .limit(5)
+            .collect(Collectors.toList());
+
+    }    
 
     public List<Map<String, String>> findBestVolunteersForEvent(String eventName) {
         List<Volunteer> volunteers = volunteerService.getAllVolunteers();
@@ -99,11 +106,13 @@ public class MatchService {
         if (event == null) return List.of();
 
         return volunteers.stream()
-                .map(vol -> Map.of(
-                        "volunteerName", vol.getName(),
-                        "eventName", event.getEventName(),
-                        "score", String.valueOf(scoreMatch(vol, event))
-                ))
+        .map(vol -> {
+            Map<String, String> result = new HashMap<>();
+            result.put("volunteerName", Objects.toString(vol.getName(), "-"));
+            result.put("eventName", Objects.toString(event.getEventName(), "-"));
+            result.put("score", String.valueOf(scoreMatch(vol, event)));
+            return result;
+        })        
                 .sorted((a, b) -> Double.compare(
                         Double.parseDouble(b.get("score")),
                         Double.parseDouble(a.get("score"))
@@ -159,29 +168,28 @@ public class MatchService {
     }
 
     public String assignVolunteer(String volunteerName, String eventName) {
-        Optional<UserInfo> userOpt = userRepo.findAll().stream()
-                .filter(v -> volunteerName.equalsIgnoreCase(v.getName()))
-                .findFirst();
+        UserProfile user = userProfileMapper.selectList(null).stream()
+            .filter(v -> volunteerName.equalsIgnoreCase(v.getFullName()))
+            .findFirst()
+            .orElse(null);
     
         Optional<EventDetails> eventOpt = eventRepo.findAll().stream()
                 .filter(e -> eventName.equalsIgnoreCase(e.getEventName()))
                 .findFirst();
     
-        if (userOpt.isPresent() && eventOpt.isPresent()) {
-            UserInfo user = userOpt.get();
+        if (user != null && eventOpt.isPresent()) {
             EventDetails event = eventOpt.get();
-    
-            // Save to VolunteerHistory
+        
             VolunteerHistoryJ history = new VolunteerHistoryJ();
-            history.setUid(user.getUserId().intValue());
+            history.setUid(user.getUid()); // or getUserId() if renamed
             history.setEventId(event.getEventID());
             history.setParticipationDate(LocalDate.now());
             history.setHoursVolunteered(0);
             history.setParticipationStatus("Pending");
-    
+        
             volunteerHistoryRepository.save(history);
-    
-            return user.getName() + " assigned to " + event.getEventName();
+        
+            return user.getFullName() + " assigned to " + event.getEventName();
         }
     
         return "Assignment failed. Please try again.";
