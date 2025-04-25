@@ -1,16 +1,25 @@
 function initializeMatching() {
   console.log("Initializing Matching...");
 
+  const BASE_URL = "http://localhost:8080";
+
+  // Remove any previous listeners by replacing the form
+  const oldForm = document.getElementById("volunteer-matching-form");
+  if (!oldForm) return;
+
+  const clonedForm = oldForm.cloneNode(true); // clone without listeners
+  oldForm.parentNode.replaceChild(clonedForm, oldForm);
+
+  // Re-select everything from the new DOM
+  const form = document.getElementById("volunteer-matching-form");
   const volunteerDropdown = document.getElementById("matchingName");
   const eventDropdown = document.getElementById("matchingEvent");
   const volunteerSkills = document.getElementById("volunteerSkills");
   const volunteerPreferences = document.getElementById("volunteerPreferences");
-  const form = document.getElementById("volunteer-matching-form");
-  const BASE_URL = "http://localhost:8080";
 
-  // Reset match table and suggestion section
   const matchTableBody = document.getElementById("top-match-table")?.querySelector("tbody");
   if (matchTableBody) matchTableBody.innerHTML = "";
+
   const suggestions = document.getElementById("match-suggestions");
   if (suggestions) suggestions.innerHTML = "";
 
@@ -42,7 +51,7 @@ function initializeMatching() {
     })
     .catch(err => console.error("Error fetching events:", err));
 
-  // Handle dropdown change to show volunteer info
+  // Update volunteer info on dropdown change
   volunteerDropdown.addEventListener("change", () => {
     const selected = volunteerDropdown.value;
     if (!selected) return;
@@ -58,36 +67,36 @@ function initializeMatching() {
       });
   });
 
-  // Form submission: assign volunteer
-  if (form) {
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-      const volunteerName = volunteerDropdown.value;
-      const eventName = eventDropdown.value;
+  // Add submit handler
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    console.log("Submit triggered");
 
-      if (!volunteerName || !eventName) {
-        alert("Please select a volunteer and an event.");
-        return;
-      }
+    const volunteerName = volunteerDropdown.value;
+    const eventName = eventDropdown.value;
 
-      fetch(`${BASE_URL}/match`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ volunteerName, eventName }),
+    if (!volunteerName || !eventName) {
+      alert("Please select a volunteer and an event.");
+      return;
+    }
+
+    fetch(`${BASE_URL}/match`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ volunteerName, eventName }),
+    })
+      .then(res => res.json())
+      .then(data => {
+        alert("Match Successful: " + data.message);
       })
-        .then(res => res.json())
-        .then(data => {
-          alert("Match Successful: " + data.message);
-        })
-        .catch(err => console.error("Match failed", err));
-    }, { once: true }); // ✅ ensure it only runs once per load
-  }
+      .catch(err => console.error("Match failed", err));
+  });
 
-  // Match button listeners — assigned only once
+  // Match buttons
   document.getElementById("showEventMatches")?.addEventListener("click", showMatchesForVolunteer);
   document.getElementById("showVolunteerMatches")?.addEventListener("click", showMatchesForEvent);
 
-  // Render match results in table
+  // Render match table
   function renderMatchTable(data) {
     const tbody = document.getElementById("top-match-table")?.querySelector("tbody");
     if (!tbody) return;
@@ -104,7 +113,6 @@ function initializeMatching() {
     });
   }
 
-  // Show top matching events for selected volunteer
   function showMatchesForVolunteer() {
     const name = volunteerDropdown.value;
     if (!name) return;
@@ -115,7 +123,6 @@ function initializeMatching() {
       .catch(err => console.error("Match error", err));
   }
 
-  // Show top matching volunteers for selected event
   function showMatchesForEvent() {
     const name = eventDropdown.value;
     if (!name) return;
