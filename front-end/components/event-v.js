@@ -1,6 +1,5 @@
 let selectedEvent = null;
 $(document).ready(function () {
-    console.log("🧠 jQuery DOM Ready: event.js is running");
     const API_URL = "http://localhost:8080/events";
     const events = {}; // Will be filled dynamically from DB
     let currentDate = new Date();
@@ -39,7 +38,7 @@ $(document).ready(function () {
                     selectedEvent = event;
 
                     $("#event-name").text(event.eventName);
-                    $("#event-time").text(event.eventDate);
+                    $("#event-time").text(new Date(event.eventDate).toISOString().split('T')[0]);
                     $("#event-description").text(event.description);
                     $("#event-location").text(event.location);
                     $("#event-required-skills").text(event.requiredSkills);
