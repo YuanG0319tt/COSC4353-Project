@@ -93,6 +93,9 @@ function showTab(tabId) {
         case 'notification':
             loadContent('notification', './pages/notifications.html', './components/notifications.js', 'notification');
             break;
+        case 'reports':
+            // Reports tab content is already in the HTML, no need to load external content
+            break;
         default:
             console.error(`Invalid tab ID: ${tabId}`);
     }
