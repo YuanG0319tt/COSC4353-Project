@@ -26,15 +26,13 @@ public class VolunteerHistoryServiceImpl extends ServiceImpl<VolunteerHistoryMap
     public List<VolunteerHistory> selectList(String eventOrRole, String status, Integer uid) {
         LambdaQueryWrapper<VolunteerHistory> lqw = Wrappers.<VolunteerHistory>lambdaQuery();
         if (uid != 0) {
-            lqw.eq(VolunteerHistory::getId,uid);
+            lqw.eq(VolunteerHistory::getUserId,uid);
         }
         if (!(status == null || "".equals(status))) {
-            lqw.eq(VolunteerHistory::getCompletionStatus,status);
+            lqw.eq(VolunteerHistory::getStatus,status);
         }
         if (!(eventOrRole == null || "".equals(eventOrRole))) {
-            lqw.like(VolunteerHistory::getEventName,eventOrRole)
-                    .or()
-                    .like(VolunteerHistory::getRole,eventOrRole);
+            lqw.like(VolunteerHistory::getEventName,eventOrRole);
         }
 
         return volunteerHistoryMapper.selectList(lqw);
@@ -44,10 +42,6 @@ public class VolunteerHistoryServiceImpl extends ServiceImpl<VolunteerHistoryMap
     public boolean add(VolunteerHistory volunteerHistory) {
         Event event = eventMapper.selectById(volunteerHistory.getEventId());
         volunteerHistory.setEventName(event.getName());
-        volunteerHistory.setDescription(event.getDescription());
-        volunteerHistory.setLocation(event.getLocation());
-        volunteerHistory.setRequiredSkills(event.getRequiredSkills());
-        volunteerHistory.setUrgency(event.getUrgency());
         return volunteerHistoryMapper.insert(volunteerHistory) > 0;
     }
 }
