@@ -3,11 +3,14 @@ package com.example.demo.service;
 import com.example.demo.entity.EventDetails;
 import com.example.demo.entity.UserProfile;
 import com.example.demo.entity.Volunteer;
+import com.example.demo.entity.VolunteerHistory;
 import com.example.demo.entity.VolunteerHistoryJ;
 import com.example.demo.repositories.EventDetailsRepository;
 import com.example.demo.mapper.UserProfileMapper;
-import com.example.demo.repositories.VolunteerHistoryRepository;
+import com.example.demo.mapper.VolunteerHistoryMapper;
 import org.springframework.stereotype.Service;
+import java.sql.Timestamp;
+import java.sql.Date;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -19,17 +22,17 @@ public class MatchService {
 
     private final EventDetailsRepository eventRepo;
     private final VolunteerService volunteerService;
-    private final VolunteerHistoryRepository volunteerHistoryRepository;
+    private final VolunteerHistoryMapper volunteerHistoryMapper;
     private final UserProfileMapper userProfileMapper;
 
     public MatchService(EventDetailsRepository eventRepo,
                         UserProfileMapper userProfileMapper,
                         VolunteerService volunteerService,
-                        VolunteerHistoryRepository volunteerHistoryRepository) {
+                        VolunteerHistoryMapper volunteerHistoryMapper) {
         this.eventRepo = eventRepo;
         this.userProfileMapper = userProfileMapper;
         this.volunteerService = volunteerService;
-        this.volunteerHistoryRepository = volunteerHistoryRepository;
+        this.volunteerHistoryMapper = volunteerHistoryMapper;
     }
 
 
@@ -147,8 +150,10 @@ public class MatchService {
         // Availability match
         if (volunteer.getAvailability() != null) {
             try {
-                LocalDate availDate = LocalDate.parse(volunteer.getAvailability());
-                long days = Math.abs(ChronoUnit.DAYS.between(availDate, event.getEventDate()));
+                LocalDate availability = LocalDate.parse(volunteer.getAvailability());
+                LocalDate eventDate = event.getEventDate().toLocalDate();
+
+                long days = Math.abs(ChronoUnit.DAYS.between(availability, eventDate));
                 score += Math.max(0, 2 - (days / 2.0));
             } catch (Exception ignored) {}
         }
@@ -168,30 +173,48 @@ public class MatchService {
     }
 
     public String assignVolunteer(String volunteerName, String eventName) {
+        System.out.println("🚀 assignVolunteer called with: " + volunteerName + " / " + eventName);
+    
         UserProfile user = userProfileMapper.selectList(null).stream()
             .filter(v -> volunteerName.equalsIgnoreCase(v.getFullName()))
             .findFirst()
             .orElse(null);
     
-        Optional<EventDetails> eventOpt = eventRepo.findAll().stream()
-                .filter(e -> eventName.equalsIgnoreCase(e.getEventName()))
-                .findFirst();
-    
-        if (user != null && eventOpt.isPresent()) {
-            EventDetails event = eventOpt.get();
-        
-            VolunteerHistoryJ history = new VolunteerHistoryJ();
-            history.setUid(user.getUid()); // or getUserId() if renamed
-            history.setEventId(event.getEventID());
-            history.setParticipationDate(LocalDate.now());
-            history.setHoursVolunteered(0);
-            history.setParticipationStatus("Pending");
-        
-            volunteerHistoryRepository.save(history);
-        
-            return user.getFullName() + " assigned to " + event.getEventName();
+        Optional<EventDetails> eventOpt = eventRepo.findByEventNameIgnoreCase(eventName);
+
+        if (user == null || eventOpt.isEmpty()) {
+            return "Assignment failed. Please check the names and try again.";
         }
     
-        return "Assignment failed. Please try again.";
-    }    
+        EventDetails event = eventOpt.get();
+    
+        // 🛑 Check for existing match
+        List<VolunteerHistory> existing = volunteerHistoryMapper.findByNameAndEvent(volunteerName, eventName);
+        if (!existing.isEmpty()) {
+            return "This volunteer is already assigned to this event.";
+        }
+    
+        VolunteerHistory history = new VolunteerHistory();
+        history.setUserId(user.getUid());
+        history.setEventId(event.getEventID());
+        history.setEventName(event.getEventName());
+        history.setName(user.getFullName());
+        Date eventDate = event.getEventDate(); // java.sql.Date
+if (eventDate == null) {
+    System.out.println("⚠️ Event date is NULL");
+} else {
+    System.out.println("📅 Event date: " + eventDate.toString());
+    history.setParticipationDate(eventDate);
+}
+
+        history.setHoursVolunteered(0);
+        history.setStatus("Pending");
+        int inserted = volunteerHistoryMapper.insertHistory(history);
+        if (inserted == 0) {
+            return "❌ Insert failed.";
+        }
+    
+        return user.getFullName() + " assigned to " + event.getEventName();
+    }
+    
 }
