@@ -84,26 +84,26 @@
       });
   }
   
-  document.getElementById('volunteer-matching-form').addEventListener('submit', function(event) {
-    event.preventDefault();
+  // document.getElementById('volunteer-matching-form').addEventListener('submit', function(event) {
+  //   event.preventDefault();
 
-    let volunteerName = document.getElementById("matchingName").value;
-    let eventName = document.getElementById("matchingEvent").value;
+  //   let volunteerName = document.getElementById("matchingName").value;
+  //   let eventName = document.getElementById("matchingEvent").value;
 
-    if (!volunteerName || !eventName) {
-        alert("Please select a volunteer and an event.");
-        return;
-    }
+  //   if (!volunteerName || !eventName) {
+  //       alert("Please select a volunteer and an event.");
+  //       return;
+  //   }
 
-    fetch("/match", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ volunteerName, eventName })
-    })
-    .then(response => response.json())
-    .then(data => alert("Match Successful: " + data.message))
-    .catch(error => console.error("Error assigning volunteer:", error));
-  });
+  //   fetch("/match", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({ volunteerName, eventName })
+  //   })
+  //   .then(response => response.json())
+  //   .then(data => alert("Match Successful: " + data.message))
+  //   .catch(error => console.error("Error assigning volunteer:", error));
+  // });
 </script>
 
 <script>
