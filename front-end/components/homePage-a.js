@@ -12,24 +12,32 @@ function loadContent(tabId, htmlFile, jsFile, containerId) {
             }
 
             if (jsFile) {
-                const script = document.createElement('script');
-                script.src = jsFile + '?v=' + new Date().getTime();
-                script.id = "dynamic-script";
-                script.defer = true;
-                script.onload = function () {
-                    console.log(`${jsFile} loaded successfully`);
-                    
-                    // Call the initialize function after the script is loaded
+                if (!document.querySelector(`script[src^="${jsFile}"]`)) {
+                    const script = document.createElement('script');
+                    script.src = jsFile + '?v=' + new Date().getTime();
+                    script.id = "dynamic-script";
+                    script.defer = true;
+                    script.onload = function () {
+                        console.log(`${jsFile} loaded successfully`);
+            
+                        if (tabId === 'matching' && typeof initializeMatching === "function") {
+                            initializeMatching();
+                        }
+                        if (tabId === 'history' && typeof initializeHistory === "function") {
+                            initializeHistory();
+                        }
+                    };
+                    document.body.appendChild(script);
+                } else {
+                    // Already loaded, just re-initialize
                     if (tabId === 'matching' && typeof initializeMatching === "function") {
                         initializeMatching();
                     }
-
                     if (tabId === 'history' && typeof initializeHistory === "function") {
                         initializeHistory();
                     }
-                };
-                document.body.appendChild(script);
-            }
+                }
+            }            
         })
         .catch(error => console.error(`Error loading ${htmlFile}:`, error));
 }
