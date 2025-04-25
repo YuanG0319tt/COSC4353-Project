@@ -20,8 +20,8 @@ public class VolunteerController {
         return volunteerService.getAllVolunteers();
     }
 
-    @PostMapping
-    public Volunteer addVolunteer(@RequestBody Volunteer volunteer) {
-        return volunteerService.addVolunteer(volunteer);
-    }
+    // @PostMapping
+    // public Volunteer addVolunteer(@RequestBody Volunteer volunteer) {
+    //     return volunteerService.addVolunteer(volunteer);
+    // }
 }
