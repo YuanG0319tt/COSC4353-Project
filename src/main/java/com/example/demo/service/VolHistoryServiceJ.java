@@ -33,7 +33,7 @@ public class VolHistoryServiceJ {
             entity.setHistoryId(dto.getId().intValue());
         }
 
-        entity.setParticipationDate(java.time.LocalDate.parse(dto.getEventDate()));
+        entity.setParticipationDate(java.time.LocalDate.parse(dto.getParticipationDate()));
         entity.setHoursVolunteered((int) dto.getHoursVolunteered());
 
 
