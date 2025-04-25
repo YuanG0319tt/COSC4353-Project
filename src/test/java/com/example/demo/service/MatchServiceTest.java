@@ -1,11 +1,8 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.EventDetails;
-import com.example.demo.entity.UserInfo;
-import com.example.demo.entity.Volunteer;
-import com.example.demo.entity.VolunteerHistoryJ;
+import com.example.demo.entity.*;
+import com.example.demo.mapper.UserProfileMapper;
 import com.example.demo.repositories.EventDetailsRepository;
-import com.example.demo.repositories.UserInfoRepository;
 import com.example.demo.repositories.VolunteerHistoryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -23,10 +21,13 @@ class MatchServiceTest {
 
     @Mock
     private EventDetailsRepository eventRepo;
+
     @Mock
-    private UserInfoRepository userRepo;
+    private UserProfileMapper userProfileMapper;
+
     @Mock
     private VolunteerService volunteerService;
+
     @Mock
     private VolunteerHistoryRepository volunteerHistoryRepository;
 
@@ -38,7 +39,6 @@ class MatchServiceTest {
 
     @BeforeEach
     void setUp() {
-        // volunteer #1: skill = A, pref = B, location L, availability today
         v1 = new Volunteer();
         v1.setName("Alice");
         v1.setSkills(List.of("Cooking"));
@@ -46,7 +46,6 @@ class MatchServiceTest {
         v1.setLocation("Houston");
         v1.setAvailability(LocalDate.now().toString());
 
-        // volunteer #2: skill = B, pref = A, wrong loc, no availability
         v2 = new Volunteer();
         v2.setName("Bob");
         v2.setSkills(List.of("Driving"));
@@ -54,7 +53,6 @@ class MatchServiceTest {
         v2.setLocation("Austin");
         v2.setAvailability(null);
 
-        // event #1 requires Cooking, location Houston, urgency 2, today
         e1 = new EventDetails();
         e1.setEventName("FoodDrive");
         e1.setRequiredSkills("Cooking");
@@ -62,7 +60,6 @@ class MatchServiceTest {
         e1.setEventDate(LocalDate.now());
         e1.setUrgency(2);
 
-        // event #2 requires Gardening, location Austin, urgency 1, tomorrow
         e2 = new EventDetails();
         e2.setEventName("GardenHelp");
         e2.setRequiredSkills("Gardening");
@@ -71,13 +68,9 @@ class MatchServiceTest {
         e2.setUrgency(1);
     }
 
-
-
-
     @Test
     void testFindBestEventsForVolunteerNotFound() {
-        when(volunteerService.getAllVolunteers()).thenReturn(List.of(v1));
-        when(eventRepo.findAll()).thenReturn(List.of(e1));
+        when(volunteerService.getAllVolunteers()).thenReturn(List.of(v1));  // ✅ only needed stub
 
         var result = matchService.findBestEventsForVolunteer("NonExist");
         assertTrue(result.isEmpty());
@@ -89,7 +82,6 @@ class MatchServiceTest {
         when(eventRepo.findAll()).thenReturn(List.of(e1, e2));
 
         var list = matchService.findBestEventsForVolunteer("Alice");
-        // should return up to 5 sorted by score descending
         assertFalse(list.isEmpty());
         assertTrue(list.get(0).get("score").compareTo(list.get(1).get("score")) >= 0);
         assertEquals("Alice", list.get(0).get("volunteerName"));
@@ -98,7 +90,7 @@ class MatchServiceTest {
     @Test
     void testFindBestVolunteersForEventNotFound() {
         when(volunteerService.getAllVolunteers()).thenReturn(List.of(v1));
-        when(eventRepo.findAll()).thenReturn(List.of(e1));
+        // when(eventRepo.findAll()).thenReturn(List.of(e1));
 
         var result = matchService.findBestVolunteersForEvent("NoEvent");
         assertTrue(result.isEmpty());
@@ -117,27 +109,30 @@ class MatchServiceTest {
 
     @Test
     void testAssignVolunteerSuccess() {
-        UserInfo user = new UserInfo();
-        user.setUserId(10L);
-        user.setName("Alice");
-        when(userRepo.findAll()).thenReturn(List.of(user));
+        UserProfile user = new UserProfile();
+        user.setUid(10);
+        user.setFullName("Alice");
+
+        when(userProfileMapper.selectList(any())).thenReturn(List.of(user));
         when(eventRepo.findAll()).thenReturn(List.of(e1));
 
         String message = matchService.assignVolunteer("Alice", "FoodDrive");
         assertEquals("Alice assigned to FoodDrive", message);
-        // should save a history record
+
         ArgumentCaptor<VolunteerHistoryJ> cap = ArgumentCaptor.forClass(VolunteerHistoryJ.class);
         verify(volunteerHistoryRepository).save(cap.capture());
         VolunteerHistoryJ saved = cap.getValue();
-        assertEquals(10,   saved.getUid());
-        assertEquals( e1.getEventID(), saved.getEventId());
+
+        assertEquals(10, saved.getUid());
+        assertEquals(e1.getEventID(), saved.getEventId());
         assertEquals("Pending", saved.getParticipationStatus());
     }
 
     @Test
     void testAssignVolunteerFailure() {
-        when(userRepo.findAll()).thenReturn(List.of());
+        when(userProfileMapper.selectList(any())).thenReturn(List.of());
         when(eventRepo.findAll()).thenReturn(List.of());
+
         String message = matchService.assignVolunteer("X", "Y");
         assertEquals("Assignment failed. Please try again.", message);
         verify(volunteerHistoryRepository, never()).save(any());
