@@ -17,4 +17,5 @@ public class HttpMessage {
     public static final String APIKEY_FAILED = "API key call failed";
     public static final String SYSTEM_ERROR = "System error, please check the console or logs for details";
     public static final String SUCCESS = "Request successful";
+    public static final String DELETE_FAILED = "Delete failed";
 }
