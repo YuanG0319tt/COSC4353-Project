@@ -33,7 +33,7 @@ class VolHistoryServiceJTest {
     void setup() {
         // prepare a DTO template
         dto = new VolHistory();
-        dto.setEventDate("2025-04-22");
+        dto.setParticipationDate("2025-04-22");
         dto.setHoursVolunteered(2);
 
         // prepare a saved entity template
