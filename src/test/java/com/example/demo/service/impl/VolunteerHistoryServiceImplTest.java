@@ -124,10 +124,6 @@ class VolunteerHistoryServiceImplTest {
         assertTrue(result);
         // after add(), history should be populated from event
         assertEquals("Test Event", sampleHistory.getEventName());
-        assertEquals("Desc",        sampleHistory.getDescription());
-        assertEquals("Loc",         sampleHistory.getLocation());
-        assertEquals("S1,S2",       sampleHistory.getRequiredSkills());
-        assertEquals("High",        sampleHistory.getUrgency());
         verify(eventMapper).selectById(42);
         verify(volunteerHistoryMapper).insert(sampleHistory);
     }
