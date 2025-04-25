@@ -85,7 +85,7 @@
 					localStorage.setItem("uid",response.data.uid);
                     localStorage.setItem("role",response.data.role);
 					
-                    if(response.data.isFirstLogin == 'true'){
+                    if(response.data.isFirstLogin == 'true' && response.data.role == 'user'){
                         window.location.href = 'profile.html';
                     }else{
                         if(response.data.role == 'admin'){
@@ -109,14 +109,9 @@
 				alert(errorMessage);
 			}
 		});
-
-		
-    
-      // // Here, you would validate login credentials with your back-end
-      // alert('Login successful!');
-      // Redirect to profile.html after successful login
-      
     });
 </script>
+</body>
+</html>
 </body>
 </html>
