@@ -32,7 +32,7 @@ class VolHistoryControllerJTest {
     @Test
     void addVolunteerHistoryReturnsDto() throws Exception {
         VolHistory in = new VolHistory();
-        in.setEventDate("2025-04-22");
+        in.setParticipationDate("2025-04-22");
         in.setHoursVolunteered(2);
 
         VolHistory out = new VolHistory();
