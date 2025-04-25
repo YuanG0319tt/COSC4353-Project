@@ -54,7 +54,7 @@ function initializeHistory() {
         data.forEach(record => {
             const row = `<tr>
                 <td>${record.eventName}</td>
-                <td>${record.eventDate}</td>
+                <td>${record.participationDate ? new Date(record.participationDate).toLocaleDateString() : ""}</td>
                 <td>${record.name}</td>
                 <td>${record.hoursVolunteered}</td>
                 <td>${record.description}</td>
