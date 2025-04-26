@@ -47,7 +47,7 @@ class InputExceptionTest {
     void toString_containsClassAndFields() {
         InputException ex = make(500, "Server Error");
         String s = ex.toString();
-        // default Lombok toString is: InputException(errorCode=500, errorMessage=Server Error)
+        // default Lombok toString is: InputException(errorCode=500, errorMessage=Server Error)
         assertTrue(s.contains("InputException"),       "should contain class name");
         assertTrue(s.contains("errorCode=500"),         "should contain errorCode");
         assertTrue(s.contains("errorMessage=Server Error"), "should contain errorMessage");
@@ -70,7 +70,6 @@ class InputExceptionTest {
         assertTrue(ex instanceof RuntimeException, "should extend RuntimeException");
     }
 
-
     @Test
     void testAllArgsConstructor() {
         InputException ex = new InputException(400, "Bad Request");
@@ -92,5 +91,162 @@ class InputExceptionTest {
     void testIsRuntimeException() {
         InputException ex = new InputException();
         assertTrue(ex instanceof RuntimeException);
+    }
+
+    @Test
+    void testEqualsWithNullFields() {
+        InputException ex1 = new InputException();
+        InputException ex2 = new InputException();
+        
+        // Test equals with both objects having null fields
+        assertTrue(ex1.equals(ex2));
+        
+        // Test equals with one object having null errorCode
+        ex1.setErrorCode(400);
+        assertFalse(ex1.equals(ex2));
+        
+        // Test equals with one object having null errorMessage
+        ex1 = new InputException();
+        ex2 = new InputException();
+        ex1.setErrorMessage("Error");
+        assertFalse(ex1.equals(ex2));
+    }
+
+    @Test
+    void testHashCodeWithNullFields() {
+        InputException ex1 = new InputException();
+        ex1.setErrorCode(null);
+        ex1.setErrorMessage(null);
+        
+        InputException ex2 = new InputException();
+        ex2.setErrorCode(null);
+        ex2.setErrorMessage(null);
+        
+        assertEquals(ex1.hashCode(), ex2.hashCode());
+        
+        // Test hashCode with same non-null values
+        ex1.setErrorCode(400);
+        ex1.setErrorMessage("Error");
+        ex2.setErrorCode(400);
+        ex2.setErrorMessage("Error");
+        assertEquals(ex1.hashCode(), ex2.hashCode());
+    }
+
+    @Test
+    void testToStringWithNullFields() {
+        InputException ex = new InputException();
+        ex.setErrorCode(null);
+        ex.setErrorMessage(null);
+        String toStringOutput = ex.toString();
+        assertNotNull(toStringOutput);
+        assertTrue(toStringOutput.contains("errorCode=null"));
+        assertTrue(toStringOutput.contains("errorMessage=null"));
+    }
+
+    @Test
+    void testHashCodeConsistency() {
+        InputException ex = make(400, "Error");
+        int hashCode1 = ex.hashCode();
+        int hashCode2 = ex.hashCode();
+        assertEquals(hashCode1, hashCode2);
+    }
+
+    @Test
+    void testEqualsWithPartialNullFields() {
+        InputException ex1 = new InputException();
+        ex1.setErrorCode(400);
+        ex1.setErrorMessage(null);
+        
+        InputException ex2 = new InputException();
+        ex2.setErrorCode(400);
+        ex2.setErrorMessage("Error");
+        assertFalse(ex1.equals(ex2));
+        
+        ex1 = new InputException();
+        ex1.setErrorCode(null);
+        ex1.setErrorMessage("Error");
+        
+        ex2 = new InputException();
+        ex2.setErrorCode(400);
+        ex2.setErrorMessage("Error");
+        assertFalse(ex1.equals(ex2));
+    }
+
+    @Test
+    void testEqualsWithDifferentTypes() {
+        InputException ex = make(400, "Error");
+        assertFalse(ex.equals("not an InputException"));
+        assertFalse(ex.equals(null));
+        assertFalse(ex.equals(new Object()));
+    }
+
+    @Test
+    void testConstructorWithNegativeCode() {
+        InputException ex = make(-1, "Error");
+        assertEquals(-1, ex.getErrorCode());
+        assertEquals("Error", ex.getErrorMessage());
+    }
+
+    @Test
+    void testConstructorWithZeroCode() {
+        InputException ex = make(0, "Error");
+        assertEquals(0, ex.getErrorCode());
+        assertEquals("Error", ex.getErrorMessage());
+    }
+
+    @Test
+    void testConstructorWithMaxIntegerCode() {
+        InputException ex = make(Integer.MAX_VALUE, "Error");
+        assertEquals(Integer.MAX_VALUE, ex.getErrorCode());
+        assertEquals("Error", ex.getErrorMessage());
+    }
+
+    @Test
+    void testConstructorWithEmptyMessage() {
+        InputException ex = make(400, "");
+        assertEquals(400, ex.getErrorCode());
+        assertEquals("", ex.getErrorMessage());
+    }
+
+    @Test
+    void testConstructorWithWhitespaceMessage() {
+        InputException ex = make(400, "   ");
+        assertEquals(400, ex.getErrorCode());
+        assertEquals("   ", ex.getErrorMessage());
+    }
+
+    @Test
+    void testConstructorWithNullFields() {
+        InputException ex = new InputException();
+        ex.setErrorCode(null);
+        ex.setErrorMessage(null);
+        assertNull(ex.getErrorCode());
+        assertNull(ex.getErrorMessage());
+    }
+
+    @Test
+    void testEqualsWithNullCode() {
+        InputException ex1 = new InputException();
+        ex1.setErrorCode(null);
+        ex1.setErrorMessage("Error");
+        
+        InputException ex2 = new InputException();
+        ex2.setErrorCode(400);
+        ex2.setErrorMessage("Error");
+        
+        assertFalse(ex1.equals(ex2));
+    }
+
+    @Test
+    void testEqualsWithNullMessage() {
+        InputException ex1 = new InputException();
+        ex1.setErrorCode(400);
+        ex1.setErrorMessage(null);
+        
+        InputException ex2 = new InputException();
+        ex2.setErrorCode(400);
+        ex2.setErrorMessage("Error");
+        
+        assertFalse(ex1.equals(ex2));
     }
 }

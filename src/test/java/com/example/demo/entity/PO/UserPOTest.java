@@ -61,4 +61,118 @@ public class UserPOTest {
         assertTrue(toStringResult.contains("password123"));
         assertTrue(toStringResult.contains("admin"));
     }
+
+    @Test
+    public void testEqualsWithNullFields() {
+        UserPO user1 = new UserPO();
+        UserPO user2 = new UserPO();
+        
+        // Test equals with both objects having null fields
+        assertTrue(user1.equals(user2));
+        
+        // Test equals with one object having null email
+        user1.setEmail("test@example.com");
+        assertFalse(user1.equals(user2));
+        
+        // Test equals with one object having null password
+        user1 = new UserPO();
+        user2 = new UserPO();
+        user1.setPassword("password123");
+        assertFalse(user1.equals(user2));
+        
+        // Test equals with one object having null role
+        user1 = new UserPO();
+        user2 = new UserPO();
+        user1.setRole("admin");
+        assertFalse(user1.equals(user2));
+    }
+
+    @Test
+    public void testHashCodeWithNullFields() {
+        UserPO user1 = new UserPO();
+        UserPO user2 = new UserPO();
+        
+        // Test hashCode with null fields
+        assertEquals(user1.hashCode(), user2.hashCode());
+        
+        // Test hashCode with same non-null values
+        user1.setEmail("test@example.com");
+        user1.setPassword("password123");
+        user1.setRole("admin");
+        user2.setEmail("test@example.com");
+        user2.setPassword("password123");
+        user2.setRole("admin");
+        assertEquals(user1.hashCode(), user2.hashCode());
+    }
+
+    @Test
+    public void testToStringWithNullFields() {
+        UserPO userPO = new UserPO();
+        String toStringOutput = userPO.toString();
+        assertNotNull(toStringOutput);
+        assertTrue(toStringOutput.contains("email=null"));
+        assertTrue(toStringOutput.contains("password=null"));
+        assertTrue(toStringOutput.contains("role=null"));
+    }
+
+    @Test
+    public void testEqualsWithDifferentIds() {
+        UserPO user1 = new UserPO();
+        user1.setId(1);
+        user1.setEmail("test@example.com");
+        
+        UserPO user2 = new UserPO();
+        user2.setId(2);
+        user2.setEmail("test@example.com");
+        
+        assertFalse(user1.equals(user2));
+    }
+
+    @Test
+    public void testEqualsWithSelf() {
+        UserPO user = new UserPO();
+        user.setEmail("test@example.com");
+        assertTrue(user.equals(user));
+    }
+
+    @Test
+    public void testHashCodeConsistency() {
+        UserPO user = new UserPO();
+        user.setEmail("test@example.com");
+        user.setPassword("password123");
+        user.setRole("admin");
+        
+        int hashCode1 = user.hashCode();
+        int hashCode2 = user.hashCode();
+        assertEquals(hashCode1, hashCode2);
+    }
+
+    @Test
+    public void testAllFields() {
+        UserPO user = new UserPO();
+        user.setId(1);
+        user.setEmail("test@example.com");
+        user.setPassword("password123");
+        user.setRole("admin");
+        
+        assertEquals(1, user.getId());
+        assertEquals("test@example.com", user.getEmail());
+        assertEquals("password123", user.getPassword());
+        assertEquals("admin", user.getRole());
+    }
+
+    @Test
+    public void testToStringWithAllFields() {
+        UserPO user = new UserPO();
+        user.setId(1);
+        user.setEmail("test@example.com");
+        user.setPassword("password123");
+        user.setRole("admin");
+        
+        String toStringOutput = user.toString();
+        assertTrue(toStringOutput.contains("id=1"));
+        assertTrue(toStringOutput.contains("email=test@example.com"));
+        assertTrue(toStringOutput.contains("password=password123"));
+        assertTrue(toStringOutput.contains("role=admin"));
+    }
 }

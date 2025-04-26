@@ -80,4 +80,115 @@ class UserVOTest {
         // different class -> false
         assertFalse((Boolean) canEq.invoke(u, "not a UserVO"));
     }
+
+    @Test
+    void testEqualsWithNullFields() {
+        UserVO user1 = new UserVO();
+        UserVO user2 = new UserVO();
+        
+        // Test equals with both objects having null fields
+        assertTrue(user1.equals(user2));
+        
+        // Test equals with one object having null username
+        user1.setUsername("alice");
+        assertFalse(user1.equals(user2));
+        
+        // Test equals with one object having null role
+        user1 = new UserVO();
+        user2 = new UserVO();
+        user1.setRole("admin");
+        assertFalse(user1.equals(user2));
+        
+        // Test equals with one object having null isFirstLogin
+        user1 = new UserVO();
+        user2 = new UserVO();
+        user1.setIsFirstLogin("yes");
+        assertFalse(user1.equals(user2));
+        
+        // Test equals with one object having null uid
+        user1 = new UserVO();
+        user2 = new UserVO();
+        user1.setUid(1);
+        assertFalse(user1.equals(user2));
+    }
+
+    @Test
+    void testHashCodeWithNullFields() {
+        UserVO user1 = new UserVO();
+        UserVO user2 = new UserVO();
+        
+        // Test hashCode with null fields
+        assertEquals(user1.hashCode(), user2.hashCode());
+        
+        // Test hashCode with same non-null values
+        user1.setUsername("alice");
+        user1.setRole("admin");
+        user1.setIsFirstLogin("yes");
+        user1.setUid(1);
+        user2.setUsername("alice");
+        user2.setRole("admin");
+        user2.setIsFirstLogin("yes");
+        user2.setUid(1);
+        assertEquals(user1.hashCode(), user2.hashCode());
+    }
+
+    @Test
+    void testToStringWithNullFields() {
+        UserVO user = new UserVO();
+        String toStringOutput = user.toString();
+        assertNotNull(toStringOutput);
+        assertTrue(toStringOutput.contains("username=null"));
+        assertTrue(toStringOutput.contains("role=null"));
+        assertTrue(toStringOutput.contains("isFirstLogin=null"));
+        assertTrue(toStringOutput.contains("uid=null"));
+    }
+
+    @Test
+    void testHashCodeConsistency() {
+        UserVO user = make("alice", "admin", "yes", 1);
+        int hashCode1 = user.hashCode();
+        int hashCode2 = user.hashCode();
+        assertEquals(hashCode1, hashCode2);
+    }
+
+    @Test
+    void testAllFields() {
+        UserVO user = new UserVO();
+        user.setUsername("alice");
+        user.setRole("admin");
+        user.setIsFirstLogin("yes");
+        user.setUid(1);
+        
+        assertEquals("alice", user.getUsername());
+        assertEquals("admin", user.getRole());
+        assertEquals("yes", user.getIsFirstLogin());
+        assertEquals(1, user.getUid());
+    }
+
+    @Test
+    void testEqualsWithPartialNullFields() {
+        UserVO user1 = make("alice", null, "yes", 1);
+        UserVO user2 = make("alice", "admin", "yes", 1);
+        assertFalse(user1.equals(user2));
+        
+        user1 = make(null, "admin", "yes", 1);
+        user2 = make("alice", "admin", "yes", 1);
+        assertFalse(user1.equals(user2));
+        
+        user1 = make("alice", "admin", null, 1);
+        user2 = make("alice", "admin", "yes", 1);
+        assertFalse(user1.equals(user2));
+        
+        user1 = make("alice", "admin", "yes", null);
+        user2 = make("alice", "admin", "yes", 1);
+        assertFalse(user1.equals(user2));
+    }
+
+    @Test
+    void testEqualsWithDifferentTypes() {
+        UserVO user = make("alice", "admin", "yes", 1);
+        assertFalse(user.equals("not a UserVO"));
+        assertFalse(user.equals(null));
+        assertFalse(user.equals(new Object()));
+    }
 }
