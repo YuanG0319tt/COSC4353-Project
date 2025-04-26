@@ -23,21 +23,35 @@ function initializeHistory() {
     function sortTable(columnIndex) {
         sortOrder[columnIndex] = !sortOrder[columnIndex];
         let isAscending = sortOrder[columnIndex];
-
+    
+        const columnFields = [
+            'eventName',
+            'participationDate',
+            'name',
+            'hoursVolunteered',
+            'description',
+            'location',
+            'skills',
+            'urgency',
+            'status'
+        ];
+    
+        const fieldName = columnFields[columnIndex];
+    
         volunteerHistory.sort((a, b) => {
-            let valA = Object.values(a)[columnIndex];
-            let valB = Object.values(b)[columnIndex];
-
+            let valA = a[fieldName];
+            let valB = b[fieldName];
+    
             if (!isNaN(valA) && !isNaN(valB)) {
                 return isAscending ? valA - valB : valB - valA;
             } else {
                 return isAscending ? String(valA).localeCompare(String(valB)) : String(valB).localeCompare(String(valA));
             }
         });
-
+    
         updateSortIcons(columnIndex, isAscending);
         loadVolunteerHistory();
-    }
+    }    
 
     function updateSortIcons(columnIndex, isAscending) {
         for (let i = 0; i < 10; i++) {
